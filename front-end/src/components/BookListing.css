@@ -1,0 +1,14 @@
+
+.card {
+    display: flex;
+    flex-direction: column;
+
+    background: #66D575;
+    margin: 1em;
+    padding: 1em;
+    border-radius: 1em;
+}
+
+.book-thumbnail {
+    max-width: 20vw;
+}

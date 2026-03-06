@@ -1,0 +1,5 @@
+
+.book-listings-container {
+    display: flex;
+    flex-grow: auto;
+}
