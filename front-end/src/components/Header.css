@@ -1,0 +1,46 @@
+#header {
+	position: sticky;
+
+	width: 100%;
+	padding: 3rem 1rem;	
+
+	/* background-color: #66D575; */
+
+	background: 
+		linear-gradient(
+			90deg,
+			#66D575 0%, 
+			#66D575 30%,
+			rgba(0, 0, 0, 0) 100%
+		),
+		url("book_background_1.jpg");
+
+	--profile-icon-size: 65px;
+}
+
+#header h1 {
+	color: #FFF;
+	font-size: 3rem;
+	/* 250px is roughly the width of the profile menu */
+	max-width: calc(100% - 200px);
+	padding-left: 2rem;
+}
+
+@media screen and (orientation: portrait) {
+	#header h1 {
+		max-width: calc(100% - 80px);
+	}
+}
+
+.headerInner {
+	margin: 0 auto;
+
+	display: flex;
+	flex-direction: row;
+
+	justify-content: space-between;
+	align-items: center;
+
+	max-width: 1400px;
+}
+

@@ -1,0 +1,28 @@
+.formComponent {
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+
+	width: 440px;
+	max-width: 90%;
+
+	height: fit-content;
+
+	gap: 1.6rem;
+
+	border: 1px solid #777;
+}
+
+.formComponent button {
+	margin-top: 1rem;
+	width: 100%;
+}
+
+.formComponent h1, .formComponent h2, .formComponent h3 {
+	margin-bottom: 1rem;
+	text-align: center;
+}
+
+.formComponent p {
+	text-align: center;
+}

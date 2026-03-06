@@ -1,0 +1,55 @@
+.navComponent {
+	width: 100%;
+	padding: 1rem;
+	background-color: #eee;	
+	color: #222;
+	z-index: -3;
+}
+
+.navInner {
+	max-width: 1600px;
+	
+	margin: 0 auto;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: end;
+	align-items: center;
+	gap: 2rem;
+
+	z-index: -3;
+}
+
+.navLink {
+	font-size: 1rem;
+	display: block;
+	color: #222;
+	transition: all 200ms;
+	position: relative;
+	min-width: 100px;
+	max-width: fit-content;
+	padding: 5px 1rem;
+	text-align: center;
+
+	z-index: 1;
+}
+
+.navLink:hover, .navLink.activeNavLink {
+	color: #fff;
+}
+
+.navLink::after {
+	content: '';
+	height: 2px;
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	transition: all 200ms;
+	background-color: #66D575;
+	z-index: -2;
+}
+
+.navLink:hover::after, .navLink.activeNavLink::after {
+	height: calc(100%);
+}

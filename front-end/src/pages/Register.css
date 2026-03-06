@@ -1,0 +1,18 @@
+.registerContainer {
+	width: 100vw;
+	margin-top: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (orientation: landscape) and (max-height: 800px) {
+	.registerContainer {
+		position: relative;
+		top: -150px;
+	}
+
+	.registerContainer form {
+		background-color: white;
+	}
+}
