@@ -61,3 +61,6 @@ function body(expected: ZodObject): RequestHandler {
 
 	return handler
 }
+
+
+export default body

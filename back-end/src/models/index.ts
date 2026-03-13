@@ -11,33 +11,55 @@ export type User = {
 	name: string
 	email: string
 	password: string
-	profilePicture: string
+	profilePicture?: string
 }
 const UserSchema = new Schema<User>({
 	name: {
 		type: String,
 		unique: true,
+		required: true,
 	},
 	email: {
 		type: String,
 		unique: true,
+		required: true,
 	},
-	password: String,
-	profilePicture: String,
+	password: {
+		type: String,
+		required: true,
+	},
+	profilePicture: {
+		type: String,
+		default: process.env.SERVER_URL + "public/default_profile_picture.jpg"
+	},
 })
-const user = mongoose.model("User", UserSchema)
+const User = mongoose.model("User", UserSchema)
 
 /**
  * Represents an administrative user in the database.
  */
 export type Admin = User
 const AdminSchema = new Schema<Admin>({
-	name: String,
-	email: String,
-	password: String,
-	profilePicture: String,
+	name: {
+		type: String,
+		unique: true,
+		required: true,
+	},
+	email: {
+		type: String,
+		unique: true,
+		required: true,
+	},
+	password: {
+		type: String,
+		required: true,
+	},
+	profilePicture: {
+		type: String,
+		default: process.env.SERVER_URL + "public/default_profile_picture.jpg"
+	},
 })
-const admin = mongoose.model("Admin", AdminSchema)
+const Admin = mongoose.model("Admin", AdminSchema)
 
 /**
  * Represents a listing, posted by a user.
@@ -49,16 +71,26 @@ export type Listing = {
 	image: string
 }
 const ListingSchema = new Schema<Listing>({
-	title: String,
-	description: String,
-	image: String,
+	title: {
+		type: String,
+		required: true,
+	},
+	description: {
+		type: String,
+		required: true,
+	},
+	image: {
+		String,
+		default: process.env.SERVER_URL + "public/default_listing_picture.png"
+	},
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: "User",
 		index: true,
+		required: true,
 	},
 })
-const listing = mongoose.model("Listing", ListingSchema)
+const Listing = mongoose.model("Listing", ListingSchema)
 
 /**
  * Represents a user session; i.e., it tracks that a user is logged in.
@@ -71,31 +103,39 @@ export type Session = {
 	createdAt: number
 }
 const SessionSchema = new Schema<Session>({
-	createdAt: Number,
+	createdAt: {
+		type: Number,
+		default: Date.now
+	},	
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: "User",
-		index: true
+		index: true,
+		required: true
 	}
 })
-const session = mongoose.model("Session", SessionSchema)
+const Session = mongoose.model("Session", SessionSchema)
 
 /**
  * Represents an administrative user's session.
  */
 export type AdminSession = Session
 const AdminSessionSchema = new Schema<Session>({
-	createdAt: Number,
+	createdAt: {
+		type: Number,
+		default: Date.now
+	},
 	user: {
 		type: Schema.Types.ObjectId,
 		ref: "Admin",
-		index: true
+		index: true,
+		required: true
 	}
 })
-const adminSession = mongoose.model("AdminSession", AdminSessionSchema)
+const AdminSession = mongoose.model("AdminSession", AdminSessionSchema)
 
 //
-// Export the `db` object.
+// Export the namespace.
 //
 
 /**
@@ -105,24 +145,24 @@ const db = {
 	/**
 	 * The "User" model, which represents a (non-admin) user's information.
 	 */
-	user,
+	User,
 	/**
 	 * The "Admin" model, which represents an administrative user's 
 	 * information.
 	 */
-	admin,
+	Admin,
 	/**
 	 * Represents an admin user's session.
 	 */
-	adminSession,
+	AdminSession,
 	/**
 	 * Represents a (non-admin) user's session.
 	 */
-	session,
+	Session,
 	/**
 	 * Represents a book listing, posted by a user.
 	 */
-	listing
+	Listing,
 }
 
 export default db

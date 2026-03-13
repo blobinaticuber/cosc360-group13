@@ -7,12 +7,14 @@ type ErrorResponse = {
 	message: string
 	expected?: ZodStandardJSONSchemaPayload<ZodObject>
 	received?: any
+	conflict?: Record<string, boolean>
 }
 
 type ErrorOptions = {
 	message?: string
 	expected?: ZodObject
 	received?: any
+	conflict?: Record<string, boolean>
 }
 
 /**
@@ -28,7 +30,7 @@ export default function err(
 	}
 
 	let resBody: ErrorResponse = {
-		message: "No message."
+		message: "No message.",
 	}
 	
 	if (options.expected) {
@@ -38,6 +40,11 @@ export default function err(
 
 	if (options.received) {
 		resBody.received = options.received
+	}
+
+	if (options.conflict) {
+		resBody.message = "Conflict error."
+		resBody.conflict = options.conflict
 	}
 
 	if (options.message) {
