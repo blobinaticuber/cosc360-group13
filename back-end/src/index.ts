@@ -2,13 +2,39 @@ import express from "express"
 import cors from "cors"
 
 import routers from "./routers/index.js"
+import connectToDB from "./models/connectToDB.js"
 
-const server = express()
+async function main() {
 
-server.use(cors())
+	await connectToDB()
+	const server = express()
 
-routers.forEach(router => server.use(router))
+	//
+	// Register middleware.
+	//
 
-server.listen(process.env.PORT, () => {
-	console.log(`listening at http://localhost:${process.env.PORT}/`)
-})
+	server.use(cors())
+
+	//
+	// Register routers.
+	//
+
+	routers.forEach(router => server.use(router))
+
+	//
+	// Start the server.
+	//
+
+	if (process.env.PORT == undefined) {
+		throw new Error(
+			"The `PORT` variable is undefined. Ensure that it's set in the " +
+			"`.env` file."
+		)
+	}
+	
+	server.listen(process.env.PORT, () => {
+		console.log(`\n\tListening at http://localhost:${process.env.PORT}/\n`)
+	})
+}
+
+main()

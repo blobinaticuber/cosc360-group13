@@ -1,6 +1,76 @@
 # Restful API for Booklend
 
-Under construction.
+This is the back-end Rest API for Booklend.
 
-![Bob da builder](https://camo.githubusercontent.com/2fc3cea6593ad0a524bf3449fb5727ef9ac399972592ae22c5727cf368b774ce/68747470733a2f2f65787465726e616c2d636f6e74656e742e6475636b6475636b676f2e636f6d2f69752f3f753d6874747073253341253246253246777777696d6167652d75732e70706c75737374617469632e636f6d2532467468756d626e61696c7325324670686f746f7325324677313932302d7138302532466d61727175656525324631303335333639253246626f62635f73705f6865726f5f6c616e6473636170652e6a706726663d31266e6f66623d31266970743d34613137323932346163326365323831373933656136333565386164663437383733383064356437663231336136306235363364633566656162663336613762)
+## Running the Development Server
 
+To run the local development server, you need to start up two things:
+1) the database, and
+2) the Node server.
+
+If you have everything installed, this can be done with with two commands
+
+```sh
+docker compose up
+npm run dev
+```
+
+However, if it's your first time running the app, you might need to follow the steps explained below.
+
+### Running the Local Database
+
+The [docker compose](docker-compose.yml) file can used to run a local instance of a Mongo database within a docker container. To start the database, first ensure that you have Docker installed:
+
+```sh
+docker version
+```
+
+If the command isn't recognized, then you need to install Docker (which you can do from [here](https://docs.docker.com/desktop/)). If you get some output, but it says that the docker engine isn't running, you may need to open your Docker Desktop application to start it. Then try the command again.
+
+If you have Docker working, then you can start the database from this directory by running 
+
+```sh
+docker compose up
+```
+
+The first time you run this, Docker will need to install the Mongo image, which might take a second. Once the database starts running, you should see a pile of useless data dumped on your screen. You can close this terminal window and the database will still stay running until you use the docker command to end it.
+
+You can shut down the database with this command:
+
+```sh
+docker compose down
+```
+
+### Running the Node Server
+
+To run the Node server, you must first have Node installed. You can run this command to verify that you have it:
+
+```sh
+node --version
+```
+
+If the command isn't recognised, you can install Node from [here](https://nodejs.org/en/download). 
+
+If you have Node working, then you can install the dependencies for the server with this command:
+
+```sh
+npm install
+```
+
+You only need to run this once when the project's dependencies change, not every time you want to start the server. 
+
+You can start the local server with this command:
+
+```sh
+npm run dev
+```
+
+To stop the server, just use `Ctrl+C` or close the terminal window.
+
+## Running Tests
+
+If you have an issue running the server, you can try running the test suite to ensure everything is working properly.
+
+```sh
+npm run test:ui
+```
