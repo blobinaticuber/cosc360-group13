@@ -1,8 +1,8 @@
 import { Router } from "express"
 
-const ping = Router();
+const ping = Router()
 
-ping.get("/ping", (_, res) => {
+ping.get("/", (_, res) => {
 	res.writeHead(200)
 		.end()
 })

@@ -10,16 +10,19 @@ async function main() {
 	const server = express()
 
 	//
-	// Register middleware.
+	// Register global middleware.
 	//
 
 	server.use(cors())
+	server.use(express.json())
 
 	//
 	// Register routers.
 	//
 
-	routers.forEach(router => server.use(router))
+	for (const { path,  router } of routers) {
+		server.use(path, router)
+	}
 
 	//
 	// Start the server.
@@ -27,8 +30,8 @@ async function main() {
 
 	if (process.env.PORT == undefined) {
 		throw new Error(
-			"The `PORT` variable is undefined. Ensure that it's set in the " +
-			"`.env` file."
+			"\nThe `PORT` variable is undefined. Ensure that it's set in" +
+			"\nthe `.env` file."
 		)
 	}
 	

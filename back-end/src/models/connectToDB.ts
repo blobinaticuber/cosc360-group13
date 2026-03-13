@@ -18,8 +18,8 @@ async function connectToDB() {
 
 	if (databaseURI == undefined) {
 		throw new DatabaseConnectionError(
-			"The database URI couldn't be found. Make sure that the " +
-			"environment variable `DB_URI` is set in the `.env` file." 
+			"\nThe database URI couldn't be found. Make sure that the" +
+			"\nenvironment variable `DB_URI` is set in the `.env` file." 
 		)
 	}
 
@@ -27,8 +27,8 @@ async function connectToDB() {
 		await mongoose.connect(databaseURI)
 	} catch (e: any) {
 		throw new DatabaseConnectionError(
-			"Error connecting to MongoDB. Make sure that the database " +
-			"is running and the `DB_URI` is correct."
+			"\nError connecting to MongoDB. Make sure that the database" +
+			"\nis running and the `DB_URI` is correct."
 		)
 	}
 }

@@ -25,7 +25,7 @@ The [docker compose](docker-compose.yml) file can used to run a local instance o
 docker version
 ```
 
-If the command isn't recognized, then you need to install Docker (which you can do from [here](https://docs.docker.com/desktop/)). If you get some output, but it says that the docker engine isn't running, you may need to open your Docker Desktop application to start it. Then try the command again.
+If the command isn't recognized, then you need to install Docker (which you can do from [here](https://docs.docker.com/desktop/)). If you get some output but it says that the docker engine isn't running, you may need to open your Docker Desktop application to start it. Then try the command again.
 
 If you have Docker working, then you can start the database from this directory by running 
 
