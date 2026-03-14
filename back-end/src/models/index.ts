@@ -11,7 +11,7 @@ export type User = {
 	name: string
 	email: string
 	password: string
-	profilePicture?: string
+	profilePicture: string
 }
 const UserSchema = new Schema<User>({
 	name: {
@@ -30,7 +30,9 @@ const UserSchema = new Schema<User>({
 	},
 	profilePicture: {
 		type: String,
-		default: process.env.SERVER_URL + "public/default_profile_picture.jpg"
+		default: () => {
+			return process.env.SERVER_URL + "public/default_profile_picture.jpg"
+		}
 	},
 })
 const User = mongoose.model("User", UserSchema)
@@ -56,7 +58,9 @@ const AdminSchema = new Schema<Admin>({
 	},
 	profilePicture: {
 		type: String,
-		default: process.env.SERVER_URL + "public/default_profile_picture.jpg"
+		default: () => {
+			return process.env.SERVER_URL + "public/default_profile_picture.jpg"
+		}
 	},
 })
 const Admin = mongoose.model("Admin", AdminSchema)
@@ -80,8 +84,10 @@ const ListingSchema = new Schema<Listing>({
 		required: true,
 	},
 	image: {
-		String,
-		default: process.env.SERVER_URL + "public/default_listing_picture.png"
+		type: String,
+		default: () => {
+			return process.env.SERVER_URL + "public/default_listing_picture.png"
+		}
 	},
 	user: {
 		type: Schema.Types.ObjectId,

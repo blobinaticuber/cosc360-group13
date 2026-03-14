@@ -1,34 +1,34 @@
 {
-	"name": "booklend-api",
-	"version": "1.0.0",
-	"main": "index.js",
-	"scripts": {
-		"dev": "tsx --watch --env-file .env src/index.ts",
-		"build": "tsc",
-		"start": "node --env-file .env.local dist/index.js",
-		"test": "vitest --run",
-		"test:ui": "vitest --ui",
-		"test:coverage": "vitest run --coverage --ui"
-	},
-	"author": "Chad Glazier",
-	"license": "ISC",
-	"description": "The Rest API for Booklend",
-	"type": "module",
-	"dependencies": {
-		"cors": "^2.8.6",
-		"express": "^5.2.1",
-		"mongoose": "^9.3.0",
-		"zod": "^4.3.6"
-	},
-	"devDependencies": {
-		"@types/cors": "^2.8.19",
-		"@types/express": "^5.0.6",
-		"@types/mongoose": "^5.11.96",
-		"@types/node": "^25.4.0",
-		"@vitest/coverage-v8": "^4.1.0",
-		"@vitest/ui": "^4.0.18",
-		"tsx": "^4.21.0",
-		"typescript": "^5.9.3",
-		"vitest": "^4.0.18"
-	}
+  "name": "booklend-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx --watch --env-file .env src/index.ts",
+    "build": "tsc",
+    "start": "node --env-file .env.local dist/index.js",
+	"test": "vitest --run --config=vitest.browser.config.ts --browser.headless",
+    "test:ui": "vitest --config=vitest.browser.config.ts --browser.headless --ui"
+  },
+  "author": "Chad Glazier",
+  "license": "ISC",
+  "description": "The Rest API for Booklend",
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^25.4.0",
+    "@vitest/browser-webdriverio": "^4.1.0",
+    "@vitest/coverage-v8": "^4.1.0",
+    "@vitest/ui": "^4.0.18",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
 }

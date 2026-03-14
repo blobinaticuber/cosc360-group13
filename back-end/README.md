@@ -69,8 +69,18 @@ To stop the server, just use `Ctrl+C` or close the terminal window.
 
 ## Running Tests
 
-If you have an issue running the server, you can try running the test suite to ensure everything is working properly.
+If you have an issue with the server, you can try running the test suite to ensure everything is working properly.
+
+```sh
+npm run test
+```
+
+Note that the tests will create up a mock web-browser. This is used to simulate making requests from a real browser, which has specific behaviors (handling cookies, CORS, and so on). You may be prompted to allow this "browser" to make network requests; make sure to allow it if you want the tests to work.
+
+To see the test results with a slightly prettier interface, run:
 
 ```sh
 npm run test:ui
 ```
+
+This will open your default browser with a generated page showing the results.

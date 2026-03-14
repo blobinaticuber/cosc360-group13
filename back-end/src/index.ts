@@ -3,11 +3,13 @@ import cors from "cors"
 
 import routers from "./routers/index.js"
 import connectToDB from "./models/connectToDB.js"
+import errorHandler from "middleware/errorHandler.js"
+
+export const server = express()
 
 async function main() {
 
 	await connectToDB()
-	const server = express()
 
 	//
 	// Register global middleware.
@@ -23,6 +25,12 @@ async function main() {
 	for (const { path,  router } of routers) {
 		server.use(path, router)
 	}
+
+	//
+	// Register error handling middleware
+	//
+
+	server.use(errorHandler)
 
 	//
 	// Start the server.

@@ -1,7 +1,6 @@
 import type { RequestHandler } from "express"
 import type { ZodObject } from "zod"
 import err from "util/err.js"
-import Status from "util/Status.js"
 
 /**
  * Returns a middleware function that ensures the request body matches a given
@@ -49,9 +48,7 @@ function body(expected: ZodObject): RequestHandler {
 
 		const parsed = expected.safeParse(req.body)
 		if (!parsed.success) {
-			err(res, Status.BadRequest, { 
-				expected, received: req.body
-			})
+			err.invalidBody(res, expected, req.body)
 			return
 		}
 

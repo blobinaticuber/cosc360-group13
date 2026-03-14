@@ -1,10 +1,11 @@
-import { Router } from "express"
+import { Router } from "express";
+import Status from "util/Status.js"
 
-const ping = Router()
+const ping = Router();
 
 ping.get("/", (_, res) => {
-	res.writeHead(200)
-		.end()
-})
+	res.status(Status.OK)
+		.end();
+});
 
-export default ping
+export default ping;
