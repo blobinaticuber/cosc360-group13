@@ -84,3 +84,5 @@ npm run test:ui
 ```
 
 This will open your default browser with a generated page showing the results.
+
+Note that since the tests run on a web client, they cannot access the environment variables set in `.env`. Thus, they have a hard-coded URL for the server set in [this file](src/integration_tests/util.ts).

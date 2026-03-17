@@ -1,36 +1,37 @@
-import express from "express"
-import cors from "cors"
+import cors from "cors";
+import express from "express";
 
-import routers from "./routers/index.js"
-import connectToDB from "./models/connectToDB.js"
-import errorHandler from "middleware/errorHandler.js"
+import errorHandler from "middleware/errorHandler.js";
+import connectToDB from "./database/connectToDB.js";
+import routers from "./routers/index.js";
 
-export const server = express()
+export const server = express();
 
 async function main() {
-
-	await connectToDB()
+	await connectToDB();
 
 	//
 	// Register global middleware.
 	//
 
-	server.use(cors())
-	server.use(express.json())
+	server.use(cors({
+		credentials: true,
+	}));
+	server.use(express.json());
 
 	//
 	// Register routers.
 	//
 
-	for (const { path,  router } of routers) {
-		server.use(path, router)
+	for (const { path, router } of routers) {
+		server.use(path, router);
 	}
 
 	//
 	// Register error handling middleware
 	//
 
-	server.use(errorHandler)
+	server.use(errorHandler);
 
 	//
 	// Start the server.
@@ -39,13 +40,13 @@ async function main() {
 	if (process.env.PORT == undefined) {
 		throw new Error(
 			"\nThe `PORT` variable is undefined. Ensure that it's set in" +
-			"\nthe `.env` file."
-		)
+				"\nthe `.env` file.",
+		);
 	}
-	
+
 	server.listen(process.env.PORT, () => {
-		console.log(`\n\tListening at http://localhost:${process.env.PORT}/\n`)
-	})
+		console.log(`\n\tListening at http://localhost:${process.env.PORT}/\n`);
+	});
 }
 
-main()
+main();

@@ -1,23 +1,17 @@
-import type { Request, Response } from "express"
-import { Router } from "express"
-import body from "middleware/body.js"
-import db from "models/index.js"
-import { err, Status } from "util/index.js"
-import z from "zod"
+import db from "database/db.js";
+import type { Request, Response } from "express";
+import { Router } from "express";
+import body from "middleware/body.js";
+import Status from "util/Status.js";
+import err from "util/err.js";
+import type { RegistrationDetails } from "./schema.js";
+import { RegistrationDetailsSchema, UserDetailsSchema } from "./schema.js";
 
 const user = Router();
 
 //
-// The endpoint for creating a new user; i.e., registration.
+// The endpoint for creating a new user.
 //
-
-const RegistrationDetailsSchema = z.object({
-	name: z.string(),
-	email: z.email(),
-	password: z.string(),
-	profilePicture: z.string().optional(),
-})
-export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>
 
 user.post(
 	"/",
@@ -39,7 +33,7 @@ user.post(
 
 		try {
 			const newUser = new db.User(req.body);
-			newUser.save()
+			newUser.save();
 		} catch (e) {
 			return err.server(res);
 		}
@@ -51,13 +45,6 @@ user.post(
 //
 // The endpoint for retrieving a user's details.
 //
-
-export const UserDetailsSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	profilePicture: z.string(),
-})
-export type UserDetails = z.infer<typeof UserDetailsSchema>
 
 user.get("/", async (req, res) => {
 	const { name, id } = req.query;
@@ -90,9 +77,11 @@ user.get("/", async (req, res) => {
 });
 
 //
-// The endpoint for deleting a user.
+// The endpoint for creating a session (i.e., logging in).
 //
 
-
+user.post("/session", async (req, res) => {
+	
+})
 
 export default user;

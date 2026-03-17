@@ -1,6 +1,6 @@
 import type { Router } from "express"
-import ping from "./ping/index.js"
-import publicRouter from "./public/index.js"
+import ping from "./ping.js"
+import publicRouter from "./public.js"
 import user from "./user/user.js"
 
 const routers: { path: string, router: Router }[] = [
