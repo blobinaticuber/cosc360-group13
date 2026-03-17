@@ -1,4 +1,3 @@
-import { UserDetails } from "client/index.js"
 import type { Request, Response } from "express"
 import { Router } from "express"
 import body from "middleware/body.js"
@@ -12,17 +11,17 @@ const user = Router();
 // The endpoint for creating a new user; i.e., registration.
 //
 
-const RegistrationDetails = z.object({
+const RegistrationDetailsSchema = z.object({
 	name: z.string(),
 	email: z.email(),
 	password: z.string(),
 	profilePicture: z.string().optional(),
 })
-export type RegistrationDetails = z.infer<typeof RegistrationDetails>
+export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>
 
 user.post(
 	"/",
-	body(RegistrationDetails),
+	body(RegistrationDetailsSchema),
 	async (req: Request<{}, {}, RegistrationDetails>, res: Response) => {
 		const existingUser = await db.User.findOne({
 			$or: [
@@ -53,6 +52,13 @@ user.post(
 // The endpoint for retrieving a user's details.
 //
 
+export const UserDetailsSchema = z.object({
+	id: z.string(),
+	name: z.string(),
+	profilePicture: z.string(),
+})
+export type UserDetails = z.infer<typeof UserDetailsSchema>
+
 user.get("/", async (req, res) => {
 	const { name, id } = req.query;
 
@@ -75,7 +81,7 @@ user.get("/", async (req, res) => {
 	}
 
 	user.id = user._id.toString();
-	const parsed = UserDetails.safeParse(user);
+	const parsed = UserDetailsSchema.safeParse(user);
 	if (!parsed.success) {
 		return err.server(res);
 	}
@@ -84,7 +90,9 @@ user.get("/", async (req, res) => {
 });
 
 //
-// Export the router.
+// The endpoint for deleting a user.
 //
+
+
 
 export default user;
