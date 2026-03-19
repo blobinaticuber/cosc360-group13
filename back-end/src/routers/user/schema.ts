@@ -1,22 +1,141 @@
+import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
+import { RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema } from "./user.js"
+import { ErrConflictSchema, ErrInvalidBodySchema } from "util/errSchema.js"
 import z from "zod"
 
-export const RegistrationDetailsSchema = z.object({
-	name: z.string(),
-	email: z.email(),
-	password: z.string(),
-	profilePicture: z.string().optional(),
-})
-export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>
+const userSpec = new OpenAPIRegistry()
 
-export const UserDetailsSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	profilePicture: z.string(),
+userSpec.registerPath({
+	method: "post",
+	path: "/user",
+	description: "Register a new user.",
+	request: {
+		body: {
+			content: {
+				"application/json": {
+					schema: RegistrationDetailsSchema
+				}
+			}
+		}
+	},
+	responses: {
+		201: {
+			description: "User registered successfully."
+		},
+		400: {
+			description: "Invalid request body.",
+			content: {
+				"application/json": {
+					schema: ErrInvalidBodySchema
+				}
+			}
+		},
+		409: {
+			description: "Conflicting field (email or password).",
+			content: {
+				"application/json": {
+					schema: ErrConflictSchema
+				}
+			}
+		}
+	}
 })
-export type UserDetails = z.infer<typeof UserDetailsSchema>
 
-export const UserCredentialsSchema = z.object({
-	email: z.email(),
-	password: z.string()
+userSpec.registerPath({
+	method: "get",
+	path: "/user",
+	description: "Get public information about a user from their name or ID.",
+	request: {
+		query: z.object({
+			id: z.string().optional(),
+			name: z.string().optional()
+		})
+	},
+	responses: {
+		200: {
+			description: "User registered successfully.",
+			content: {
+				"application/json": {
+					schema: UserDetailsSchema
+				}
+			}
+		},
+		404: {
+			description: "No matching user found.",
+		}
+	}
 })
-export type UserCredentials = z.infer<typeof UserCredentialsSchema>
+
+userSpec.registerPath({
+	method: "delete",
+	path: "/user",
+	description: "Delete the currently logged-in user.",
+	request: {
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string()
+		})
+	},
+	responses: {
+		200: {
+			description: "The user was deleted."
+		},
+		401: {
+			description: "There isn't an authenticated user to delete."
+		}
+	}
+})
+
+userSpec.registerPath({
+	method: "post",
+	path: "/user/session",
+	description: "Create a new session; i.e., log in.",
+	request: {
+		body: {
+			content: {
+				"application/json": {
+					schema: UserCredentialsSchema
+				}
+			}
+		}
+	},
+	responses: {
+		200: {
+			description: "The user is now logged in (and a cookie is set)."
+		},
+		404: {
+			description: "The email isn't recognized."
+		},
+		401: {
+			description: "The email is recognized, but the password is wrong."
+		},
+		400: {
+			description: "The request body is invalid.",
+			content: {
+				"application/json": {
+					schema: UserCredentialsSchema
+				}
+			}
+		}
+	}
+})
+
+userSpec.registerPath({
+	method: "delete",
+	path: "/user/session",
+	description: "Delete a user session; i.e., log out.",
+	request: {
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string()
+		})
+	},
+	responses: {
+		200: {
+			description: "The user is now logged out."
+		},
+		401: {
+			description: "There isn't a user to log out."
+		}
+	}
+})
+
+export default userSpec

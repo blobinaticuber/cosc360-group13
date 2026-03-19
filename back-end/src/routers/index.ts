@@ -1,12 +1,12 @@
 import type { Router } from "express"
-import ping from "./ping.js"
 import publicRouter from "./public.js"
 import user from "./user/user.js"
+import docs from "./docs.js"
 
 const routers: { path: string, router: Router }[] = [
-	{ path: "/ping", router: ping },
 	{ path: "/public", router: publicRouter },
-	{ path: "/user", router: user }
+	{ path: "/user", router: user },
+	{ path: "/", router: docs}
 ]
 
 export default routers

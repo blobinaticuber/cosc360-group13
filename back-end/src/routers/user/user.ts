@@ -4,17 +4,28 @@ import { Router } from "express"
 import body from "middleware/body.js"
 import Status from "util/Status.js"
 import err from "util/err.js"
-import type { ErrServer } from "util/errSchema.js"
-import type { RegistrationDetails, UserCredentials, UserDetails } from "./schema.js"
-import { RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema } from "./schema.js"
+import { ErrConflictSchema, ErrInvalidBodySchema, type ErrServer } from "util/errSchema.js"
 import { compare, encrypt } from "util/encryption.js"
 import auth from "middleware/auth.js"
+import z from "zod"
 
 const user = Router()
 
 //
 // The endpoint for creating a new user.
 //
+
+export const RegistrationDetailsSchema = 
+	z.object({
+		name: z.string(),
+		email: z.email(),
+		password: z.string(),
+		profilePicture: z.string().optional(),
+	}).meta({ 
+		id: "RegistrationDetails",
+		description: "The details used to register a new user."
+	})
+export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>
 
 user.post(
 	"/",
@@ -52,6 +63,18 @@ user.post(
 //
 // The endpoint for retrieving a user's details.
 //
+
+export const UserDetailsSchema = 
+	z.object({
+		id: z.string(),
+		name: z.string(),
+		profilePicture: z.string(),
+	})
+	.meta({
+		id: "UserDetails",
+		description: "The public information about a user.",
+	})
+export type UserDetails = z.infer<typeof UserDetailsSchema>
 
 user.get(
 	"/", 
@@ -108,7 +131,7 @@ user.delete(
 		})
 
 		res.clearCookie(process.env.AUTH_COOKIE!, {
-				httpOnly: false,
+				httpOnly: true,
 				sameSite: "lax"
 			})
 			.status(Status.OK)
@@ -119,6 +142,17 @@ user.delete(
 //
 // The endpoint for creating a session i.e., logging in.
 //
+
+export const UserCredentialsSchema = 
+	z.object({
+		email: z.email(),
+		password: z.string()
+	})
+	.meta({
+		id: "UserCredentials",
+		description: "The credentials used to log a user in."
+	})
+export type UserCredentials = z.infer<typeof UserCredentialsSchema>
 
 user.post(
 	"/session", 
@@ -144,7 +178,7 @@ user.post(
 		await session.save()
 
 		res.cookie(process.env.AUTH_COOKIE!, session._id.toString(), {
-				httpOnly: false,
+				httpOnly: true,
 				sameSite: "lax"
 			})
 			.status(Status.OK)
@@ -166,7 +200,7 @@ user.delete(
 		await req.session!.deleteOne()
 	
 		res.clearCookie(process.env.AUTH_COOKIE!, {
-				httpOnly: false,
+				httpOnly: true,
 				sameSite: "lax"
 			})
 			.status(Status.OK)

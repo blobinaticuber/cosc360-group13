@@ -46,11 +46,11 @@ async function main() {
 		);
 	}
 
-	server.listen(Number.parseInt(process.env.PORT), "127.0.0.1", 512, () => {
-		console.log(`\n\tListening at http://127.0.0.1:${process.env.PORT}/\n`);
+	server.listen(process.env.PORT, () => {
+		console.log(`\n\tListening at http://localhost:${process.env.PORT}/\n`);
 	});
 }
 
 main();
 
-export default server
+export default server;

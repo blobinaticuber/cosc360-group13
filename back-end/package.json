@@ -14,11 +14,13 @@
   "description": "The Rest API for Booklend",
   "type": "module",
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.4.3",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "mongoose": "^9.3.0",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -28,6 +30,7 @@
     "@types/express": "^5.0.6",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^25.4.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
