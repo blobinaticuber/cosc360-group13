@@ -8,7 +8,8 @@ const userSpec = new OpenAPIRegistry()
 userSpec.registerPath({
 	method: "post",
 	path: "/user",
-	description: "Register a new user.",
+	description: "Register a new user",
+	tags: [ "Users" ],
 	request: {
 		body: {
 			content: {
@@ -44,7 +45,8 @@ userSpec.registerPath({
 userSpec.registerPath({
 	method: "get",
 	path: "/user",
-	description: "Get public information about a user from their name or ID.",
+	tags: [ "Users" ],
+	description: "Get public information about a user",
 	request: {
 		query: z.object({
 			id: z.string().optional(),
@@ -53,7 +55,7 @@ userSpec.registerPath({
 	},
 	responses: {
 		200: {
-			description: "User registered successfully.",
+			description: "User details successfully retrieved.",
 			content: {
 				"application/json": {
 					schema: UserDetailsSchema
@@ -69,7 +71,8 @@ userSpec.registerPath({
 userSpec.registerPath({
 	method: "delete",
 	path: "/user",
-	description: "Delete the currently logged-in user.",
+	tags: [ "Users" ],
+	description: "Delete the user that is currently logged in",
 	request: {
 		cookies: z.object({
 			[process.env.AUTH_COOKIE!]: z.string()
@@ -88,7 +91,8 @@ userSpec.registerPath({
 userSpec.registerPath({
 	method: "post",
 	path: "/user/session",
-	description: "Create a new session; i.e., log in.",
+	tags: [ "Users" ],
+	description: "Log in (create a session)",
 	request: {
 		body: {
 			content: {
@@ -122,7 +126,8 @@ userSpec.registerPath({
 userSpec.registerPath({
 	method: "delete",
 	path: "/user/session",
-	description: "Delete a user session; i.e., log out.",
+	tags: [ "Users" ],
+	description: "Log out (delete a session)",
 	request: {
 		cookies: z.object({
 			[process.env.AUTH_COOKIE!]: z.string()

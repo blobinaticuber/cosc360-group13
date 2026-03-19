@@ -1,12 +1,14 @@
-import cors from "cors";
-import express from "express";
+import cors from "cors"
+import express from "express"
 
-import cookieParser from "cookie-parser";
-import errorHandler from "middleware/errorHandler.js";
-import connect from "./database/connect.js";
-import routers from "./routers/index.js";
+import cookieParser from "cookie-parser"
+import errorHandler from "middleware/errorHandler.js"
+import connect from "./database/connect.js"
+import routers from "./routers/index.js"
+import docs from "./routers/docs.js"
+import startupMessage from "util/startupMessage.js"
 
-const server = express();
+const server = express()
 
 async function main() {
 	await connect();
@@ -17,23 +19,29 @@ async function main() {
 
 	server.use(cors({
 		credentials: true,
-	}));
-	server.use(express.json());
-	server.use(cookieParser());
+	}))
+	server.use(express.json())
+	server.use(cookieParser())
+
+	//
+	// Register the docs router.
+	//
+
+	server.use("/", docs)
 
 	//
 	// Register routers.
 	//
 
 	for (const { path, router } of routers) {
-		server.use(path, router);
+		server.use(path, router)
 	}
 
 	//
 	// Register error handling middleware
 	//
 
-	server.use(errorHandler);
+	server.use(errorHandler)
 
 	//
 	// Start the server.
@@ -43,12 +51,10 @@ async function main() {
 		throw new Error(
 			"\nThe `PORT` variable is undefined. Ensure that it's set in" +
 				"\nthe `.env` file.",
-		);
+		)
 	}
 
-	server.listen(process.env.PORT, () => {
-		console.log(`\n\tListening at http://localhost:${process.env.PORT}/\n`);
-	});
+	server.listen(process.env.PORT, () => console.log(startupMessage()));
 }
 
 main();
