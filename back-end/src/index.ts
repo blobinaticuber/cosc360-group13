@@ -6,7 +6,7 @@ import errorHandler from "middleware/errorHandler.js";
 import connect from "./database/connect.js";
 import routers from "./routers/index.js";
 
-export const server = express();
+const server = express();
 
 async function main() {
 	await connect();
@@ -52,3 +52,5 @@ async function main() {
 }
 
 main();
+
+export default server
