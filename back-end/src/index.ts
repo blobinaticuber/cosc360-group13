@@ -1,14 +1,15 @@
 import cors from "cors";
 import express from "express";
 
+import cookieParser from "cookie-parser";
 import errorHandler from "middleware/errorHandler.js";
-import connectToDB from "./database/connectToDB.js";
+import connect from "./database/connect.js";
 import routers from "./routers/index.js";
 
 export const server = express();
 
 async function main() {
-	await connectToDB();
+	await connect();
 
 	//
 	// Register global middleware.
@@ -18,6 +19,7 @@ async function main() {
 		credentials: true,
 	}));
 	server.use(express.json());
+	server.use(cookieParser());
 
 	//
 	// Register routers.
@@ -44,8 +46,8 @@ async function main() {
 		);
 	}
 
-	server.listen(process.env.PORT, () => {
-		console.log(`\n\tListening at http://localhost:${process.env.PORT}/\n`);
+	server.listen(Number.parseInt(process.env.PORT), "127.0.0.1", 512, () => {
+		console.log(`\n\tListening at http://127.0.0.1:${process.env.PORT}/\n`);
 	});
 }
 

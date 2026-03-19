@@ -12,7 +12,7 @@ class DatabaseConnectionError extends Error {}
  * 
  * @throws `DatabaseConnectionError`
  */
-async function connectToDB() {
+async function connect() {
 
 	const databaseURI = process.env.DB_URI
 
@@ -24,7 +24,9 @@ async function connectToDB() {
 	}
 
 	try {
-		await mongoose.connect(databaseURI)
+		await mongoose.connect(databaseURI, {
+			dbName: process.env.DB_NAME!
+		})
 	} catch (e: any) {
 		throw new DatabaseConnectionError(
 			"\nError connecting to MongoDB. Make sure that the database" +
@@ -33,4 +35,4 @@ async function connectToDB() {
 	}
 }
 
-export default connectToDB
+export default connect

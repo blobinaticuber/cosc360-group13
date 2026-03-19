@@ -6,20 +6,25 @@
     "dev": "tsx --watch --env-file .env src/index.ts",
     "build": "tsc",
     "start": "node --env-file .env.local dist/index.js",
-	"test": "vitest --run --config=vitest.browser.config.ts --browser.headless",
-    "test:ui": "vitest --config=vitest.browser.config.ts --browser.headless --ui"
+    "test": "vitest --run --config=vitest.browser.config.ts",
+    "test:ui": "vitest --config=vitest.browser.config.ts --ui"
   },
   "author": "Chad Glazier",
   "license": "ISC",
   "description": "The Rest API for Booklend",
   "type": "module",
   "dependencies": {
+    "@vitest/browser-playwright": "^4.1.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "mongoose": "^9.3.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/mongoose": "^5.11.96",

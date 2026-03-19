@@ -1,13 +1,16 @@
-import db from "database/db.js";
-import type { Request, Response } from "express";
-import { Router } from "express";
-import body from "middleware/body.js";
-import Status from "util/Status.js";
-import err from "util/err.js";
-import type { RegistrationDetails } from "./schema.js";
-import { RegistrationDetailsSchema, UserDetailsSchema } from "./schema.js";
+import db from "database/db.js"
+import type { Request, Response } from "express"
+import { Router } from "express"
+import body from "middleware/body.js"
+import Status from "util/Status.js"
+import err from "util/err.js"
+import type { ErrServer } from "util/errSchema.js"
+import type { RegistrationDetails, UserCredentials, UserDetails } from "./schema.js"
+import { RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema } from "./schema.js"
+import { compare, encrypt } from "util/encryption.js"
+import auth from "middleware/auth.js"
 
-const user = Router();
+const user = Router()
 
 //
 // The endpoint for creating a new user.
@@ -16,72 +19,159 @@ const user = Router();
 user.post(
 	"/",
 	body(RegistrationDetailsSchema),
-	async (req: Request<{}, {}, RegistrationDetails>, res: Response) => {
+	async (
+		req: Request<{}, {}, RegistrationDetails>, 
+		res: Response
+	) => {
 		const existingUser = await db.User.findOne({
 			$or: [
 				{ email: req.body.email },
 				{ name: req.body.name },
 			],
-		}).exec();
+		}).exec()
 
 		if (existingUser != null) {
 			return err.conflict(res, {
 				email: req.body.email == existingUser.email,
 				name: req.body.name == existingUser.name,
-			});
+			})
 		}
 
 		try {
-			const newUser = new db.User(req.body);
-			newUser.save();
+			req.body.password = encrypt(req.body.password)
+			const newUser = new db.User(req.body)
+			await newUser.save()
 		} catch (e) {
-			return err.server(res);
+			return err.server(res)
 		}
 
-		res.status(Status.Created).end();
+		res.status(Status.Created).end()
 	},
-);
+)
 
 //
 // The endpoint for retrieving a user's details.
 //
 
-user.get("/", async (req, res) => {
-	const { name, id } = req.query;
+user.get(
+	"/", 
+	async (
+		req: Request, 
+		res: Response<UserDetails | ErrServer | undefined>
+	) => {
+		const { name, id } = req.query
 
-	let user = null;
+		let user = null
 
-	if (typeof name == "string") {
-		user = await db.User.findOne({
-			name: name,
-		});
-	} else if (typeof id == "string") {
-		try {
-			user = await db.User.findById(id);
-		} catch {
-			user = null;
+		if (typeof name == "string") {
+			user = await db.User.findOne({
+				name: name,
+			}).exec()
+		} else if (typeof id == "string") {
+			try {
+				user = await db.User.findById(id)
+			} catch {
+				user = null
+			}
 		}
-	}
 
-	if (user == null) {
-		return res.status(Status.NotFound).end();
-	}
+		if (user == null) {
+			return res.status(Status.NotFound).end()
+		}
 
-	user.id = user._id.toString();
-	const parsed = UserDetailsSchema.safeParse(user);
-	if (!parsed.success) {
-		return err.server(res);
-	}
+		user.id = user._id.toString()
+		const parsed = UserDetailsSchema.safeParse(user)
+		if (!parsed.success) {
+			return err.server(res)
+		}
 
-	return res.status(Status.OK).json(parsed.data);
-});
+		return res.status(Status.OK).json(parsed.data)
+	}
+)
 
 //
-// The endpoint for creating a session (i.e., logging in).
+// The endpoint for deleting a user account.
 //
 
-user.post("/session", async (req, res) => {
+user.delete(
+	"/",
+	auth,
+	async (
+		req: Request,
+		res: Response<undefined>
+	) => {
+		const userId = req.session!.user
+
+		await db.User.findByIdAndDelete(userId)
+		await db.Session.deleteMany({
+			user: userId
+		})
+
+		res.clearCookie(process.env.AUTH_COOKIE!, {
+				httpOnly: false,
+				sameSite: "lax"
+			})
+			.status(Status.OK)
+			.end()	
+	}
+)
+
+//
+// The endpoint for creating a session i.e., logging in.
+//
+
+user.post(
+	"/session", 
+	body(UserCredentialsSchema),
+	async (
+		req: Request<{}, {}, UserCredentials>, 
+		res: Response<undefined>
+	) => {
+		const user = await db.User.findOne({
+			email: req.body.email
+		}).exec()
+		if (user == null) {
+			return res.status(Status.NotFound).end()
+		}
+
+		if (!compare(req.body.password, user.password)) {
+			return res.status(Status.Unauthorized).end()
+		}
+
+		const session = new db.Session({
+			user: user._id
+		})
+		await session.save()
+
+		res.cookie(process.env.AUTH_COOKIE!, session._id.toString(), {
+				httpOnly: false,
+				sameSite: "lax"
+			})
+			.status(Status.OK)
+			.end()
+	}
+)
+
+//
+// The endpoint for deleting a session i.e., logging out.
+//
+
+user.delete(
+	"/session",
+	auth,
+	async (
+		req: Request,
+		res: Response
+	) => {
+		await req.session!.deleteOne()
 	
-})
+		res.clearCookie(process.env.AUTH_COOKIE!, {
+				httpOnly: false,
+				sameSite: "lax"
+			})
+			.status(Status.OK)
+			.end()
+	}
+)
 
-export default user;
+export default user
