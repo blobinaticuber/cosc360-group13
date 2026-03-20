@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { ListingResultsSchema } from "./search.js"
+import { ListingResultsSchema, UserResultsSchema } from "./search.js"
 
 const searchSpec = new OpenAPIRegistry()
 
@@ -55,7 +55,7 @@ searchSpec.registerPath({
 			description: "The matching users were found.",
 			content: {
 				"application/json": {
-					schema: ListingResultsSchema
+					schema: UserResultsSchema
 				}
 			}
 		},

@@ -18,6 +18,7 @@ async function main() {
 	//
 
 	server.use(cors({
+		origin: process.env.CLIENT_URL!,
 		credentials: true,
 	}))
 	server.use(express.json())
