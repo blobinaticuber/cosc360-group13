@@ -1,90 +1,211 @@
-import { UserDetails } from "client/index.js"
+import db from "database/db.js"
 import type { Request, Response } from "express"
 import { Router } from "express"
 import body from "middleware/body.js"
-import db from "models/index.js"
-import { err, Status } from "util/index.js"
+import Status from "util/Status.js"
+import err from "util/err.js"
+import { ErrConflictSchema, ErrInvalidBodySchema, type ErrServer } from "util/errSchema.js"
+import { compare, encrypt } from "util/encryption.js"
+import auth from "middleware/auth.js"
 import z from "zod"
 
-const user = Router();
+const user = Router()
 
 //
-// The endpoint for creating a new user; i.e., registration.
+// The endpoint for creating a new user.
 //
 
-const RegistrationDetails = z.object({
-	name: z.string(),
-	email: z.email(),
-	password: z.string(),
-	profilePicture: z.string().optional(),
-})
-export type RegistrationDetails = z.infer<typeof RegistrationDetails>
+export const RegistrationDetailsSchema = 
+	z.object({
+		name: z.string(),
+		email: z.email(),
+		password: z.string(),
+		profilePicture: z.string().optional(),
+	}).meta({ 
+		id: "RegistrationDetails",
+		description: "The details used to register a new user."
+	})
+export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>
 
 user.post(
 	"/",
-	body(RegistrationDetails),
-	async (req: Request<{}, {}, RegistrationDetails>, res: Response) => {
+	body(RegistrationDetailsSchema),
+	async (
+		req: Request<{}, {}, RegistrationDetails>, 
+		res: Response
+	) => {
 		const existingUser = await db.User.findOne({
 			$or: [
 				{ email: req.body.email },
 				{ name: req.body.name },
 			],
-		}).exec();
+		}).exec()
 
 		if (existingUser != null) {
 			return err.conflict(res, {
 				email: req.body.email == existingUser.email,
 				name: req.body.name == existingUser.name,
-			});
+			})
 		}
 
 		try {
-			const newUser = new db.User(req.body);
-			newUser.save()
+			req.body.password = encrypt(req.body.password)
+			const newUser = new db.User(req.body)
+			await newUser.save()
 		} catch (e) {
-			return err.server(res);
+			return err.server(res)
 		}
 
-		res.status(Status.Created).end();
+		res.status(Status.Created).end()
 	},
-);
+)
 
 //
 // The endpoint for retrieving a user's details.
 //
 
-user.get("/", async (req, res) => {
-	const { name, id } = req.query;
+export const UserDetailsSchema = 
+	z.object({
+		id: z.string(),
+		name: z.string(),
+		profilePicture: z.string(),
+	})
+	.meta({
+		id: "UserDetails",
+		description: "The public information about a user.",
+	})
+export type UserDetails = z.infer<typeof UserDetailsSchema>
 
-	let user = null;
+user.get(
+	"/", 
+	async (
+		req: Request, 
+		res: Response<UserDetails | ErrServer | undefined>
+	) => {
+		const { name, id } = req.query
 
-	if (typeof name == "string") {
-		user = await db.User.findOne({
-			name: name,
-		});
-	} else if (typeof id == "string") {
-		try {
-			user = await db.User.findById(id);
-		} catch {
-			user = null;
+		let user = null
+
+		if (typeof name == "string") {
+			user = await db.User.findOne({
+				name: name,
+			}).exec()
+		} else if (typeof id == "string") {
+			try {
+				user = await db.User.findById(id)
+			} catch {
+				user = null
+			}
 		}
-	}
 
-	if (user == null) {
-		return res.status(Status.NotFound).end();
-	}
+		if (user == null) {
+			return res.status(Status.NotFound).end()
+		}
 
-	user.id = user._id.toString();
-	const parsed = UserDetails.safeParse(user);
-	if (!parsed.success) {
-		return err.server(res);
-	}
+		user.id = user._id.toString()
+		const parsed = UserDetailsSchema.safeParse(user)
+		if (!parsed.success) {
+			return err.server(res)
+		}
 
-	return res.status(Status.OK).json(parsed.data);
-});
+		return res.status(Status.OK).json(parsed.data)
+	}
+)
 
 //
-// Export the router.
+// The endpoint for deleting a user account.
 //
 
-export default user;
+user.delete(
+	"/",
+	auth,
+	async (
+		req: Request,
+		res: Response<undefined>
+	) => {
+		const userId = req.session!.user
+
+		await db.User.findByIdAndDelete(userId)
+		await db.Session.deleteMany({
+			user: userId
+		})
+
+		res.clearCookie(process.env.AUTH_COOKIE!, {
+				httpOnly: true,
+				sameSite: "lax"
+			})
+			.status(Status.OK)
+			.end()	
+	}
+)
+
+//
+// The endpoint for creating a session i.e., logging in.
+//
+
+export const UserCredentialsSchema = 
+	z.object({
+		email: z.email(),
+		password: z.string()
+	})
+	.meta({
+		id: "UserCredentials",
+		description: "The credentials used to log a user in."
+	})
+export type UserCredentials = z.infer<typeof UserCredentialsSchema>
+
+user.post(
+	"/session", 
+	body(UserCredentialsSchema),
+	async (
+		req: Request<{}, {}, UserCredentials>, 
+		res: Response<undefined>
+	) => {
+		const user = await db.User.findOne({
+			email: req.body.email
+		}).exec()
+		if (user == null) {
+			return res.status(Status.NotFound).end()
+		}
+
+		if (!compare(req.body.password, user.password)) {
+			return res.status(Status.Unauthorized).end()
+		}
+
+		const session = new db.Session({
+			user: user._id
+		})
+		await session.save()
+
+		res.cookie(process.env.AUTH_COOKIE!, session._id.toString(), {
+				httpOnly: true,
+				sameSite: "lax"
+			})
+			.status(Status.OK)
+			.end()
+	}
+)
+
+//
+// The endpoint for deleting a session i.e., logging out.
+//
+
+user.delete(
+	"/session",
+	auth,
+	async (
+		req: Request,
+		res: Response
+	) => {
+		await req.session!.deleteOne()
+	
+		res.clearCookie(process.env.AUTH_COOKIE!, {
+				httpOnly: true,
+				sameSite: "lax"
+			})
+			.status(Status.OK)
+			.end()
+	}
+)
+
+export default user

@@ -148,26 +148,10 @@ const AdminSession = mongoose.model("AdminSession", AdminSessionSchema)
  * Wraps the Mongoose models used for interacting with the database.
  */
 const db = {
-	/**
-	 * The "User" model, which represents a (non-admin) user's information.
-	 */
 	User,
-	/**
-	 * The "Admin" model, which represents an administrative user's 
-	 * information.
-	 */
-	Admin,
-	/**
-	 * Represents an admin user's session.
-	 */
-	AdminSession,
-	/**
-	 * Represents a (non-admin) user's session.
-	 */
 	Session,
-	/**
-	 * Represents a book listing, posted by a user.
-	 */
+	Admin,
+	AdminSession,
 	Listing,
 }
 
