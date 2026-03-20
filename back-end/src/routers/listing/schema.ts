@@ -8,7 +8,8 @@ const listingSpec = new OpenAPIRegistry()
 listingSpec.registerPath({
 	method: "post",
 	path: "/listing",
-	description: "Create a new listing",
+	summary: "Create a listing",
+	description: "Create a new listing.",
 	tags: [ "Listing" ],
 	request: {
 		body: {
@@ -40,7 +41,8 @@ listingSpec.registerPath({
 listingSpec.registerPath({
 	method: "get",
 	path: "/listing/{id}",
-	description: "Get the details about a listing",
+	summary: "Get the details of a listing",
+	description: "Get the details about a listing from its ID.",
 	tags: [ "listing" ],
 	request: {
 		params: z.object({ id: z.string() })
@@ -63,7 +65,8 @@ listingSpec.registerPath({
 listingSpec.registerPath({
 	method: "patch",
 	path: "/listing/{id}",
-	description: "Update an existing listing",
+	summary: "Update a listing",
+	description: "Update an existing listing.",
 	tags: [ "Listing" ],
 	request: {
 		body: {
@@ -98,7 +101,8 @@ listingSpec.registerPath({
 listingSpec.registerPath({
 	method: "delete",
 	path: "/listing/{id}",
-	description: "Delete a listing",
+	summary: "Delete a listing",
+	description: "Delete the listing with the specified ID.",
 	tags: [ "listing" ],
 	request: {
 		params: z.object({ id: z.string() })
