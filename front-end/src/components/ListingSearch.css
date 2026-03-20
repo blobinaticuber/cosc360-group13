@@ -1,0 +1,9 @@
+
+
+input {
+    border: 0.2em solid black;
+    border-radius: 0.5em;
+    padding: 1em;
+    margin: 1em;
+    width: 50%;
+}
