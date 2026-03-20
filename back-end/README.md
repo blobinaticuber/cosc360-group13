@@ -52,6 +52,10 @@ You can shut down the database with this command:
 docker compose down
 ```
 
+If you have any issues with the database and need to debug it, I would recommend
+installing MongoDB's GUI from
+[here](https://www.mongodb.com/products/tools/compass).
+
 ### Running the Node Server
 
 To run the Node server, you must first have Node installed. You can run this
