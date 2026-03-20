@@ -129,6 +129,9 @@ user.delete(
 		await db.Session.deleteMany({
 			user: userId
 		})
+		await db.Listing.deleteMany({
+			user: userId
+		})
 
 		res.clearCookie(process.env.AUTH_COOKIE!, {
 				httpOnly: true,
