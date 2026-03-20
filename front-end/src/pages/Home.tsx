@@ -33,9 +33,10 @@ function Home() {
 		<Header currentPage="/" user={guestUser()} />
 		<ListingSearch query={query} onQueryChange={setQuery}/>
 		<div className="book-listings-container">
-			{filteredBooks.map(book => (
-				<BookListing title={book.title} description={book.description}/>
-			))}
+			{filteredBooks.length > 0 ? filteredBooks.map(book => (
+				<BookListing title={book.title} description={book.description}/>)) :
+				<p>There weren't any results matching your search.</p>
+			}
 		</div>
 
 	</>)
