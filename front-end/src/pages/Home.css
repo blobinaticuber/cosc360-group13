@@ -1,5 +1,5 @@
 
 .book-listings-container {
-    display: flex;
-    flex-grow: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }

@@ -3,12 +3,17 @@ import "./BookListing.css"
 // TODO: have properties so we can update the title, description, image from database?
 // TODO: when you click on it, it should take you to a full page with more information
 
-function BookListing() {
+type props = {
+    title: string;
+    description: string
+};
+
+function BookListing({title, description}: props) {
     return (
         <div className="card">
             <img className="book-thumbnail" src="../../public/book_background.jpg"/>
-            <h2>Book Title</h2>
-            <p>(Description) Lorem ipsum dolar sit amet</p>
+            <h2>{title}</h2>
+            <p>{description}</p>
         </div>
     )
 }
