@@ -7,7 +7,7 @@ export default function CreateListing() {
 
             <Form
                 method="POST"
-                url="/api/listings"
+                url="/api/submit"
                 contentType="application/json"
                 validator={(data) => {
                     if (!data.title || !data.author) {
