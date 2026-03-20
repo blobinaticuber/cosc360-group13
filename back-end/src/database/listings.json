@@ -1,0 +1,43 @@
+[
+	{
+		"title": "Pride and Prejudice",
+		"description": "Great condition",
+		"image": "test"
+	},
+	{
+		"title": "Eragon",
+		"description": "A bit worn, but still good. Need it back in 2 months",
+		"image": "test"
+	},
+	{
+		"title": "The City of Ember",
+		"description": "Keep it forever!",
+		"image": "test"
+	},
+	{
+		"title": "To Kill a Mockingbird",
+		"description": "Used for many years in an English classroom (sorry)",
+		"image": "test"
+	},
+	{
+		"title": "Lord of the Flies",
+		"description": "Very cool book, would recommend 10/10",
+		"image": "test"
+	},
+	{
+		"title": "The Hunger Games",
+		"description": "This book was so awesome! I will be renting it out",
+		"image": "test"
+	},
+	{
+		"title": "The Maze Runner",
+		"description": "It was very scary. Highly recommended for dystopian novel fans.",
+		"image": "test"
+	},
+	{
+		"title": "Divergent",
+		"description": "The worldbuilding was kinda bad haha. I am selling it",
+		"image": "test"
+	}
+
+]

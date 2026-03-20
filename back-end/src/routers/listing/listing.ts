@@ -3,7 +3,6 @@ import { Router } from "express"
 import type { Request, Response } from "express"
 import auth from "middleware/auth.js"
 import body from "middleware/body.js"
-import { resolveTlsa } from "node:dns"
 import err from "util/err.js"
 import Status from "util/Status.js"
 import z from "zod"
@@ -70,14 +69,19 @@ listing.get(
 		res: Response<ListingDetails>
 	) => {
 
-		const listing = await db.Listing.findById(req.params.id).exec() as any
+		const result = await db.Listing.findById(req.params.id).exec()
 
-		if (listing == null) {
+		if (result == null) {
 			return res.status(Status.NotFound).end()
 		}
 
-		listing.id = listing._id.toString();
-		listing.user = listing.user.toString()
+		let listing: any = result.toObject() 
+		listing = {
+			...listing,
+			id: listing._id.toString(),
+			user: listing.user.toString()
+		}
+
 		const parsed = ListingDetailsSchema.safeParse(listing)
 		if (!parsed.success) {
 			return err.server(res)
