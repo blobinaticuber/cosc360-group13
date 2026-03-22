@@ -2,15 +2,13 @@
 	position: sticky;
 
 	width: 100%;
-	padding: 3rem 1rem;	
+	padding: 3rem 1rem;
 
-	/* background-color: #66D575; */
-
-	background: 
+	background:
 		linear-gradient(
 			90deg,
-			#66D575 0%, 
-			#66D575 30%,
+			var(--ui-green) 0%,
+			var(--ui-green) 30%,
 			rgba(0, 0, 0, 0) 100%
 		),
 		url("book_background_1.jpg");
@@ -19,7 +17,7 @@
 }
 
 #header h1 {
-	color: #FFF;
+	color: var(--text-colour);
 	font-size: 3rem;
 	/* 250px is roughly the width of the profile menu */
 	max-width: calc(100% - 200px);
@@ -43,4 +41,3 @@
 
 	max-width: 1400px;
 }
-

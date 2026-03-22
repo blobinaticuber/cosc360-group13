@@ -19,7 +19,7 @@
 	height: var(--icon-size);
 	border-radius: 100%;
 
-	border: 3px solid #66D575;
+	border: 3px solid var(--ui-green);
 	transition: all 200ms;
 }
 
@@ -36,10 +36,10 @@
 .profileDropDownMenu {
 	width: 100%;
 
-	background-color: #fff;
+	background-color: var(--background-colour);
 	border: 1px solid #777;
 	padding: 1rem;
-	
+
 	display: flex;
 	flex-direction: column;
 	align-items: center;

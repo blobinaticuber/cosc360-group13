@@ -1,14 +1,14 @@
 .navComponent {
 	width: 100%;
 	padding: 1rem;
-	background-color: #eee;	
-	color: #222;
+	background-color: var(--background-colour);
+	color: var(--text-colour);
 	z-index: -3;
 }
 
 .navInner {
 	max-width: 1600px;
-	
+
 	margin: 0 auto;
 
 	display: flex;
@@ -23,7 +23,7 @@
 .navLink {
 	font-size: 1rem;
 	display: block;
-	color: #222;
+	color: var(--text-colour);
 	transition: all 200ms;
 	position: relative;
 	min-width: 100px;
@@ -35,7 +35,7 @@
 }
 
 .navLink:hover, .navLink.activeNavLink {
-	color: #fff;
+	color: var(--text-colour);
 }
 
 .navLink::after {
@@ -46,7 +46,7 @@
 	bottom: 0px;
 	left: 0;
 	transition: all 200ms;
-	background-color: #66D575;
+	background-color: var(--ui-green);
 	z-index: -2;
 }
 
