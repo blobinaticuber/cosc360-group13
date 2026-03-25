@@ -53,3 +53,14 @@
 .navLink:hover::after, .navLink.activeNavLink::after {
 	height: calc(100%);
 }
+
+.navLinkText {
+		display: block;
+	}
+
+
+@media screen and (max-width: 600px) {
+	.navLinkText {
+		display: none;
+	}
+}

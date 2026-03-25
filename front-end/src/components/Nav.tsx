@@ -48,7 +48,7 @@ function NavLink({ to, currentPage, label, icon }: NavLinkProps) {
 		className={"navLink" + (currentPage == to ? " activeNavLink" : "")}
 	>
 		{icon && <><FontAwesomeIcon icon={icon} />&nbsp;</>}
-		{label}
+		<p className="navLinkText">{label}</p>
 	</Link>
 }
 
