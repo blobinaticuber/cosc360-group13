@@ -55,12 +55,22 @@
 }
 
 .navLinkText {
-		display: block;
-	}
+	display: block;
+}
+
+.navLink svg {
+	height: 1em;
+	width: 1em;
+}
 
 
 @media screen and (max-width: 600px) {
 	.navLinkText {
 		display: none;
+	}
+
+	.navLink svg {
+		height: 2em;
+		width: 2em;
 	}
 }
