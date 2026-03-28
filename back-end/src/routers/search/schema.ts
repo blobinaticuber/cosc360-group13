@@ -95,6 +95,9 @@ searchSpec.registerPath({
 		400: {
 			description: "The `page` query wasn't an integer."
 		},
+		404: {
+			description: "No matching books were found."
+		},
 		500: {
 			description: "The server had an issue connecting to the Google Books API or retrieving results from it.",
 			content: {

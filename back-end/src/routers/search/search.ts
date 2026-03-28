@@ -213,7 +213,7 @@ search.get(
 
 		const { items } = body as { items: Volume[] }
 
-		if (items.length == 0) {
+		if (!items || items.length == 0) {
 			res.status(Status.NotFound).end()
 			return
 		}
