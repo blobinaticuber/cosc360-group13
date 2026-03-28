@@ -1,6 +1,7 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { ListingResultsSchema, UserResultsSchema } from "./search.js"
+import { BookDetailsSchema, ListingResultsSchema, UserResultsSchema } from "./search.js"
+import { ErrServerSchema } from "util/errSchema.js"
 
 const searchSpec = new OpenAPIRegistry()
 
@@ -64,6 +65,43 @@ searchSpec.registerPath({
 		},
 		400: {
 			description: "The `page` query wasn't an integer."
+		}
+	}
+})
+
+searchSpec.registerPath({
+	method: "get",
+	path: "/search/book/{title}",
+	summary: "Search for a book by its title",
+	description: "Searches for a book by its title, using the Google Books API to retrieve results. Results are limited to twenty matching books at a time. Use the `page` query to get more results (e.g., `page=1`, the default, will show the top 20 matches, `page=2` shows results 21-40, and so on).",
+	tags: [ "Book", "Search" ],
+	request: {
+		query: z.object({
+			page: z.int().positive().optional()
+		}),
+		params: z.object({
+			title: z.string()
+		})
+	},
+	responses: {
+		200: {
+			description: "Matching books were found.",
+			content: {
+				"application/json": {
+					schema: z.array(BookDetailsSchema)
+				}
+			}
+		},
+		400: {
+			description: "The `page` query wasn't an integer."
+		},
+		500: {
+			description: "The server had an issue connecting to the Google Books API or retrieving results from it.",
+			content: {
+				"application/json": {
+					schema: ErrServerSchema
+				}
+			}
 		}
 	}
 })
