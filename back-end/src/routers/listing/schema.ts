@@ -9,7 +9,7 @@ listingSpec.registerPath({
 	method: "post",
 	path: "/listing",
 	summary: "Create a listing",
-	description: "Create a new listing under whichever user is currently logged in.",
+	description: "Create a new listing under whichever user is currently logged in. The `book` field is the ID of the book as it appears in the Google Books API. To get such an ID, you should use the book search endpoint.",
 	tags: [ "Listing" ],
 	request: {
 		body: {

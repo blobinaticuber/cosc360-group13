@@ -20,10 +20,7 @@ export const ListingCreationSchema =
 	z.object({
 		book: z.string().meta({
 			description: "The Google Books ID of the book being listed",
-		}),
-		user: z.string().meta({
-			description: "The ID of the user listing the book",
-		}),
+		})
 	})
 	.meta({
 		id: "ListingCreation",

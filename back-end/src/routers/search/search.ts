@@ -185,4 +185,45 @@ search.get(
 	},
 );
 
+//
+// Get all listings posted by a user.
+//
+
+export const UserListingSchema = ListingDetailsSchema.omit({ user: true })
+type UserListing = z.infer<typeof UserListingSchema>
+
+search.get(
+	"/:userId/listings",
+	async (
+		req: Request< { userId: string }, {}, {}>,
+		res: Response<UserListing[]>
+	) => {
+		const userId = req.params.userId
+
+		const listingResults = await db.Listing.find({
+			user: userId
+		}).exec()
+
+		if (listingResults.length == 0) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		const listings = listingResults
+			.map(result => {
+				return {
+					...result.toObject(),
+					id: result._id.toString()
+				}
+			})
+		const data = z.array(UserListingSchema).safeParse(listings)
+		if (!data.success) {
+			err.server(res, "Error parsing results from the database")
+			return
+		}
+
+		res.status(Status.OK).json(data.data)
+	}
+)
+
 export default search;

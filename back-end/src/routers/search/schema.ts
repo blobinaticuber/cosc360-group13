@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { UserResultsSchema } from "./search.js"
+import { UserListingSchema, UserResultsSchema } from "./search.js"
 import { BookDetailsSchema } from "routers/book/book.js"
 import { ErrServerSchema } from "util/errSchema.js"
 import { ListingDetailsSchema } from "routers/listing/listing.js"
@@ -75,7 +75,7 @@ searchSpec.registerPath({
 	method: "get",
 	path: "/search/book/{title}",
 	summary: "Search for a book by its title",
-	description: "Searches for a book by its title, using the Google Books API to retrieve results. Results are limited to twenty matching books at a time. Use the `page` query to get more results (e.g., `page=1`, the default, will show the top 20 matches, `page=2` shows results 21-40, and so on).",
+	description: "Searches for a book by its title, using the Google Books API to retrieve results. Results are limited to 10 matching books at a time. Use the `page` query to get more results (e.g., `page=1`, the default, will show the top 10 matches, `page=2` shows results 11-20, and so on).",
 	tags: [ "Book", "Search" ],
 	request: {
 		query: z.object({
@@ -108,6 +108,32 @@ searchSpec.registerPath({
 				}
 			}
 		}
+	}
+})
+
+searchSpec.registerPath({
+	method: "get",
+	path: "/search/{userId}/listings",
+	summary: "Search for listings by user",
+	description: "Retrieves all listings that were posted by a user.",
+	tags: [ "Listing", "Search" ],
+	request: {
+		params: z.object({
+			userId: z.string()
+		})
+	},
+	responses: {
+		200: {
+			description: "The user's listings were found.",
+			content: {
+				"application/json": {
+					schema: z.array(UserListingSchema)
+				}
+			}
+		},
+		404: {
+			description: "No matching listings were found."
+		},
 	}
 })
 
