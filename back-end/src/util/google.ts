@@ -13,6 +13,7 @@ if (!API_KEY) {
 	
       1) Make sure you have a Google Books API key. If you don't have one, 
          you can make one for free at:
+		 
               \u001b[4;94mhttps://console.cloud.google.com\u001b[0m
 		
       2) Create or update a file named \`.env.local\` inside of the 
@@ -97,7 +98,11 @@ const googleBooks = {
 		
 		return body.items
 			.map(volumeToBookDetails)
-			.filter(book => !book.categories.includes("Audiobooks"))
+			.filter(book => {
+				if (!book.categories) 
+					return true
+				return !book.categories.includes("Audiobooks")
+			})
 	},
 
 	/**

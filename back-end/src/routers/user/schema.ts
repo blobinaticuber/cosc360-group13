@@ -78,7 +78,9 @@ userSpec.registerPath({
 	description: "Delete the user that is currently logged in.",
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string()
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
 		})
 	},
 	responses: {
@@ -135,7 +137,9 @@ userSpec.registerPath({
 	description: "Log out (delete a session).",
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string()
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
 		})
 	},
 	responses: {

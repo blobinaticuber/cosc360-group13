@@ -4,10 +4,6 @@ import { Router } from "express"
 
 const book = Router()
 
-//
-// The endpoint for getting book details from one or more volume IDs.
-//
-
 export const BookDetailsSchema = z.object({
 	id: z.string().meta({ 
 		description: "The ID of this book/volume in the Google Books database." 
@@ -33,12 +29,16 @@ export const BookDetailsSchema = z.object({
 })
 export type BookDetails = z.infer<typeof BookDetailsSchema>
 
-book.get(
-	"/",
-	async (req, res) => {
+//
+// The endpoint for getting book details from one or more volume IDs.
+//
 
-	}
-)
+// book.get(
+// 	"/",
+// 	async (req, res) => {
+
+// 	}
+// )
 
 
 

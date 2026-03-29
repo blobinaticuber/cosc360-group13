@@ -18,7 +18,12 @@ listingSpec.registerPath({
 					schema: ListingCreationSchema
 				}
 			}
-		}
+		},
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
+		})
 	},
 	responses: {
 		201: {
@@ -78,6 +83,11 @@ listingSpec.registerPath({
 	request: {
 		params: z.object({ 
 			id: z.string() 
+		}),
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
 		})
 	},
 	responses: {
