@@ -1,15 +1,17 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { BookDetailsSchema, ListingResultsSchema, UserResultsSchema } from "./search.js"
+import { UserResultsSchema } from "./search.js"
+import { BookDetailsSchema } from "routers/book/book.js"
 import { ErrServerSchema } from "util/errSchema.js"
+import { ListingDetailsSchema } from "routers/listing/listing.js"
 
 const searchSpec = new OpenAPIRegistry()
 
 searchSpec.registerPath({
 	method: "get",
 	path: "/search/listing/{title}",
-	summary: "Search for a listing by its title",
-	description: "Search for a book listing by its title. The response will include any listing where the title includes the {title} as a substring.",
+	summary: "Search for a listing",
+	description: "Search for a book listing by the title of the associated book. The response will include any listing where the book title includes the {title} as a substring. Results are limited to 10 at a time, but you can use the `page` parameter to see more. E.g., to get the top 10 results, use `page=1`, to get listings 11-20, use `page=2`, and so on.",
 	tags: [ "Listing", "Search" ],
 	request: {
 		query: z.object({
@@ -24,7 +26,7 @@ searchSpec.registerPath({
 			description: "The matching results were found.",
 			content: {
 				"application/json": {
-					schema: ListingResultsSchema
+					schema: z.array(ListingDetailsSchema)
 				}
 			}
 		},
