@@ -3,10 +3,12 @@
     display: flex;
     flex-direction: column;
 
-    background: #66D575;
+    background: var(--ui-green);
     margin: 1em;
     padding: 1em;
     border-radius: 1em;
+
+    color: var(--text-colour);
 }
 
 .book-thumbnail {
