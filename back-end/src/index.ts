@@ -14,14 +14,19 @@ async function main() {
 	await connect();
 
 	//
-	// Register global middleware.
+	// Register global middleware and settings.
 	//
 
 	server.use(cors({
+		origin: process.env.CLIENT_URL!,
 		credentials: true,
 	}))
 	server.use(express.json())
 	server.use(cookieParser())
+
+	if (process.env.MODE == "development") {
+		server.set("json spaces", 2)
+	}
 
 	//
 	// Register the docs router.

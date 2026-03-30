@@ -5,11 +5,13 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Account from "./pages/Account"
 import Admin from "./pages/Admin";
+import CreateListing from "./pages/CreateListing"
 
-export type PagePath = "/" | "/login" | "/register" | "/account" | "/admin"
+export type PagePath = "/" | "/login" | "/register" | "/account" | "/admin" | "/account"
 
 export const pageTitle: Record<PagePath, string> = {
 	"/": "Home",
+	"/submit": "Create Listing",
 	"/login": "Log In",
 	"/register": "Create an Account",
 	"/account": "My Account",
@@ -21,6 +23,7 @@ function App() {
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Home />} />
+				<Route path="/submit" element={<CreateListing />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/account" element={<Account />} />
