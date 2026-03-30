@@ -32,7 +32,7 @@ const UserSchema = new Schema<User>({
 	profilePicture: {
 		type: String,
 		default: () => {
-			return process.env.SERVER_URL + "public/default_profile_picture.jpg"
+			return process.env.SERVER_URL + "/public/default_profile_picture.jpg"
 		}
 	},
 })
@@ -60,7 +60,7 @@ const AdminSchema = new Schema<Admin>({
 	profilePicture: {
 		type: String,
 		default: () => {
-			return process.env.SERVER_URL + "public/default_profile_picture.jpg"
+			return process.env.SERVER_URL + "/public/default_profile_picture.jpg"
 		}
 	},
 })
@@ -101,7 +101,7 @@ const ListingSchema = new Schema<Listing>({
 				type: String, 
 				default: () => {
 					return process.env.SERVER_URL + 
-						"public/default_listing_picture.jpg"
+						"/public/default_listing_picture.jpg"
 				}
 			},
 			title: {

@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate:client": "swagger-typescript-api generate --path \"http://localhost:3000/openapi.json\" --name BooklendAPI --output src/client --api-class-name=\"BooklendAPI\" --clean-output --disable-throw-on-error"
+    "generate:client": "swagger-typescript-api generate --path \"http://localhost:3000/openapi.json\" --name ServerTypes --output src/server --api-class-name=\"APIClient\" --disable-throw-on-error --no-client --extract-response-error --extract-response-body"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",

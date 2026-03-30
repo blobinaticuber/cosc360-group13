@@ -40,7 +40,7 @@ function volumeToBookDetails(volume: Volume): BookDetails {
 			?? volume.volumeInfo?.imageLinks?.thumbnail
 			?? volume.volumeInfo?.imageLinks?.smallThumbnail
 			?? process.env.SERVER_URL + 
-				"public/default_listing_picture.png",
+				"/public/default_listing_picture.png",
 		title: volume.volumeInfo?.title! + 
 			(volume.volumeInfo?.subtitle != undefined
 				? ": " + volume.volumeInfo?.subtitle 
