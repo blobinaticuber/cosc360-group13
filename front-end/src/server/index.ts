@@ -25,6 +25,11 @@ const server = {
 		default:
 			return null
 		}
+	},
+
+	paths: {
+		login: URL + "/user/session",
+		register: URL + "/user"
 	}
 }
 

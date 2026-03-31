@@ -1,13 +1,13 @@
 import { faArrowRightToBracket, faEnvelope, faLock, faUser } from "@fortawesome/free-solid-svg-icons"
-import Button from "../components/Button"
-import "./Register.css"
-import { Link } from "react-router-dom"
-import server from "../util/server"
-import Form from "../components/Form"
 import { useState } from "react"
-import TextInput from "../components/TextInput"
+import { Link } from "react-router-dom"
+import Button from "../components/Button"
+import Form from "../components/forms/Form"
+import TextInput from "../components/forms/TextInput"
+import Header from "../components/layout/Header"
+import server from "../server"
 import validEmail from "../util/validEmail"
-import Header from "../components/Header"
+import "./Register.css"
 
 function Register() {
 	const [emailErr, setEmailErr] = useState("")
@@ -24,7 +24,7 @@ function Register() {
 		<main className="registerContainer">
 			<Form
 				method="POST"
-				url={server.routes.register.url}
+				url={server.paths.register}
 				validator={(data) => {
 					let errorMarked = false
 
@@ -34,19 +34,19 @@ function Register() {
 					setConfirmPasswordErr("")
 
 					if (!data["email"]) {
-						setEmailErr("This field is required.") 
+						setEmailErr("This field is required.")
 						errorMarked = true
 					}
 					if (!data["displayName"]) {
-						setDisplayNameErr("This field is required.") 
+						setDisplayNameErr("This field is required.")
 						errorMarked = true
 					}
 					if (!data["password"]) {
-						setPasswordErr("This field is required.") 
+						setPasswordErr("This field is required.")
 						errorMarked = true
 					}
 					if (!data["confirmPassword"]) {
-						setConfirmPasswordErr("This field is required.") 
+						setConfirmPasswordErr("This field is required.")
 						errorMarked = true
 					}
 					if (data["confirmPassword"] != data["password"]) {
@@ -63,12 +63,12 @@ function Register() {
 				onResponse={async (res) => {
 					// This is a placeholder which just logs the server 
 					// response.
-					const body = await (await res).json()
+					const body = await res.json()
 					console.log(body)
 				}}
 			>
 				<h1>Create an Account</h1>
-			
+
 				<TextInput
 					name="email"
 					error={emailErr}
@@ -86,7 +86,7 @@ function Register() {
 					icon={faLock}
 					type="password"
 				/>
-				<TextInput 
+				<TextInput
 					name="confirmPassword"
 					label="Confirm Password"
 					error={confirmPasswordErr}

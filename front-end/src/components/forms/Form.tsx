@@ -1,6 +1,6 @@
-import type { PropsWithChildren } from "react"
+import { useState, type PropsWithChildren } from "react"
 import "./Form.css"
-import type { HTTPMethod } from "../types"
+import type { HTTPMethod } from "../../types"
 
 type FormProps = PropsWithChildren<{
 	/**
@@ -48,7 +48,7 @@ type FormProps = PropsWithChildren<{
 	 * A callback to handle the response after successfully submitting the 
 	 * form.
 	 */
-	onResponse?: (res: Promise<Response>) => void | Promise<void>
+	onResponse?: (res: Response) => void | Promise<void>
 
 	/**
 	 * Additional options that you can choose to set. These settings will be
@@ -56,10 +56,29 @@ type FormProps = PropsWithChildren<{
 	 * may need this to set things regarding credentials, CORS, etc.
 	 */
 	requestOptions?: RequestInit
+
+	/**
+	 * If you don't want the form to automatically send a request when it's
+	 * submitted, you can instead specify this function. This function will
+	 * execute when the user submits the form, and the normal request will
+	 * not be sent. (Naturally, `onResponse` will also never be called)
+	 * 
+	 * This callback will be executed after `validator`. 
+	 * 
+	 * @param data Maps input `name`s to their `value`s. This is done in
+	 * the same way that using the `FormData` constructor does. However, this
+	 * map will omit any `File` inputs.
+	 * @param files Maps the `name`s of any `File` inputs to the attached
+	 * `File`.
+	 */
+	onSubmit?: (
+		data: Record<string, string>, 
+		files: Record<string, File>
+	) => void | Promise<void>
 }>
 
 /**
- * A component to use instead of `form`. This component should still enclose
+ * A component to use instead of `<form>`. This component should still enclose
  * various input elements, but will automatically handle some of the repetitive
  * logic that comes up when handling form submissions. 
  * 
@@ -77,14 +96,16 @@ type FormProps = PropsWithChildren<{
  */
 function Form({ 
 	children, validator, url, contentType, 
-	method, onResponse, requestOptions
+	method, onResponse, requestOptions, onSubmit
 }: FormProps) {
 	// Set default values for the optional props.
 	requestOptions ??= {}
 	contentType ??= "application/json"
 
+	const [ loading, setLoading ] = useState(false)
+
 	return (
-		<form className="formComponent" noValidate onSubmit={e => {
+		<form className="formComponent" noValidate onSubmit={async (e) => {
 			e.preventDefault()
 
 			const formData = new FormData(e.target)
@@ -106,10 +127,12 @@ function Form({
 			if (method === "GET") {
 				const params = new URLSearchParams(data)
 			
-				const res = fetch(url + params.toString(), {
+				setLoading(true)
+				const res = await fetch(url + params.toString(), {
 					method: "GET",
 					...requestOptions
 				})
+				setLoading(false)
 
 				if (onResponse) {
 					onResponse(res)
@@ -128,7 +151,18 @@ function Form({
 				break
 			}
 
-			const res = fetch(url, {
+			if (onSubmit) {
+				const maybePromise = onSubmit(data, files)
+				if (maybePromise instanceof Promise) {
+					setLoading(true)
+					await maybePromise
+					setLoading(false)
+				}
+				return
+			}
+
+			setLoading(true)
+			const res = await fetch(url, {
 				method,
 				headers: {
 					"Content-Type": contentType
@@ -136,12 +170,15 @@ function Form({
 				body,
 				...requestOptions
 			})
+			setLoading(false)
 
 			if (onResponse) {
 				onResponse(res)
 			}
 		}}>
-			{children}
+			<fieldset disabled={loading}>
+				{children}
+			</fieldset>
 		</form>
 	)
 }

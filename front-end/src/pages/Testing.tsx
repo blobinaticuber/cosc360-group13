@@ -1,17 +1,17 @@
-import Header from "../components/Header"
-import guestUser from "../util/guestUser"
+import { useState } from "react"
 import BookSelect from "../components/book_search/BookSelect"
 import Button from "../components/Button"
-import { useState } from "react"
-import Modal from "../components/Modal"
-import "./Testing.css"
+import Header from "../components/layout/Header"
+import Modal from "../components/popup/Modal"
 import type { BookDetails } from "../server"
-import BookCard from "../components/book_search/BookCard"
+import guestUser from "../util/guestUser"
+import "./Testing.css"
+import Popup from "../components/popup/Popup"
 
 function Testing() {
 
-	const [ showBookSelect, setShowBookSelect ] = useState(false)
-	const [ selectedBook, setSelectedBook ] = useState<null | BookDetails>(null)
+	const [showBookSelect, setShowBookSelect] = useState(false)
+	const [selectedBook, setSelectedBook] = useState<null | BookDetails>(null)
 
 	return <>
 		<Header currentPage="/test" user={guestUser()} />
@@ -23,21 +23,17 @@ function Testing() {
 				setShowBookSelect(true)
 			}}
 		/>
-		{showBookSelect && <>
-			<div className="popupContainer">
-				<Modal
-					onClickAway={() => setShowBookSelect(prev => !prev)}
-					show={showBookSelect}
-				>
-					<BookSelect 
-						onSelect={book => {
-							setSelectedBook(book)
-							setShowBookSelect(false)
-						}} 
-					/>
-				</Modal>
-			</div>
-		</>}
+		<Popup
+			show={showBookSelect}	
+			onClickAway={() => setShowBookSelect(false)}
+		>
+			<BookSelect 
+				onSelect={book => {
+					setSelectedBook(book)
+					setShowBookSelect(false)
+				}}
+			/>
+		</Popup>
 	</>
 }
 

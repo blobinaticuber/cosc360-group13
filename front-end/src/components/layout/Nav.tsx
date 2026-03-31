@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import "./Nav.css"
-import { pageTitle, type PagePath } from "../App"
+import { pageTitle, type PagePath } from "../../App"
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faUser } from "@fortawesome/free-solid-svg-icons"

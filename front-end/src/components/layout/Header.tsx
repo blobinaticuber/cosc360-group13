@@ -1,5 +1,5 @@
-import { pageTitle, type PagePath } from "../App"
-import type { User } from "../types"
+import { pageTitle, type PagePath } from "../../App"
+import type { User } from "../../types"
 import "./Header.css"
 import Nav from "./Nav"
 import ProfileDropDown from "./ProfileDropDown"
