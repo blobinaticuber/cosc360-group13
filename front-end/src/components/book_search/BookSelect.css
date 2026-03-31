@@ -1,7 +1,8 @@
 .bookSelectContainer {
 	border: 1px solid #777;
-	border-left: 0;
-	border-right: 0;
+	/* border-left: 0;
+	border-right: 0; */
+	border-radius: 10px;
 
 	display: flex;
 	flex-direction: column;
@@ -11,8 +12,7 @@
 	
 	padding: 1rem;
 
-	min-width: min(100%, 600px);
-	max-width: min(900px, 100%);
+	width: min(calc(100vw - 2rem), 800px);
 
 	background-color: white;
 }
@@ -22,8 +22,21 @@
 
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 0px;
 
 	max-height: calc(60vh);
 	overflow-y: auto;
+}
+
+.resultsContainer>div {
+	border-top: 0;
+}
+
+.resultsContainer>div:last-of-type {
+	border-bottom: 0;
+}
+
+.bookSelectContainer .message {
+	text-align: center;
+	color: #666;
 }

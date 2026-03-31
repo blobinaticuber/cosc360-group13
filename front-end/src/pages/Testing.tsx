@@ -5,10 +5,13 @@ import Button from "../components/Button"
 import { useState } from "react"
 import Modal from "../components/Modal"
 import "./Testing.css"
+import type { BookDetails } from "../server"
+import BookCard from "../components/book_search/BookCard"
 
 function Testing() {
 
 	const [ showBookSelect, setShowBookSelect ] = useState(false)
+	const [ selectedBook, setSelectedBook ] = useState<null | BookDetails>(null)
 
 	return <>
 		<Header currentPage="/test" user={guestUser()} />
@@ -28,7 +31,7 @@ function Testing() {
 				>
 					<BookSelect 
 						onSelect={book => {
-							console.log(book)
+							setSelectedBook(book)
 							setShowBookSelect(false)
 						}} 
 					/>

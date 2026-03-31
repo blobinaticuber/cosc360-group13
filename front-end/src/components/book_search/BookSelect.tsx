@@ -34,6 +34,10 @@ function BookSelect({
 						onClick={() => onSelect(book)}
 					/>)
 				}
+				{books.length == 0 && 
+				<p className="message">
+					<em>No matching books found.</em>
+				</p>}
 			</div>
 		}
 
