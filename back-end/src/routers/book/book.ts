@@ -25,6 +25,9 @@ export const BookDetailsSchema = z.object({
 	}),
 	title: z.string().meta({
 		description: "The title (and subtitle, if there is one) of the book. The subtitle is separated from the title like \"Title: Subtitle\"."
+	}),
+	publishDate: z.string().optional().meta({
+		description: "The publication date of the book."
 	})
 })
 export type BookDetails = z.infer<typeof BookDetailsSchema>

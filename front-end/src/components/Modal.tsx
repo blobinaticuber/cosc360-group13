@@ -17,6 +17,11 @@ type ModalProps = PropsWithChildren<{
 	 * that isn't part of the modal.
 	 */
 	onClickAway?: (event: PointerEvent) => void
+
+	/**
+	 * This will be passed down to the underlying container element.
+	 */
+	onClick?: () => void
 }>
 
 /**
@@ -28,7 +33,7 @@ type ModalProps = PropsWithChildren<{
  * element. In order to keep this element as general as possible, it has no
  * default styles.
  */
-function Modal({ className, show, onClickAway, children }: ModalProps) {
+function Modal({ className, show, onClickAway, children, onClick }: ModalProps) {
 	const modal = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
@@ -69,6 +74,7 @@ function Modal({ className, show, onClickAway, children }: ModalProps) {
 		<div
 			className={className ?? ""}
 			ref={modal}
+			onClick={onClick}
 		>
 			{children}
 		</div>

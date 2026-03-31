@@ -44,7 +44,8 @@ function volumeToBookDetails(volume: Volume): BookDetails {
 		title: volume.volumeInfo?.title! + 
 			(volume.volumeInfo?.subtitle != undefined
 				? ": " + volume.volumeInfo?.subtitle 
-				: "")
+				: ""),
+		publishDate: volume.volumeInfo?.publishedDate
 	}
 }
 

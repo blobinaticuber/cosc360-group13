@@ -1,12 +1,14 @@
 .bookSearch {
-	--book-search-bar-height: 30px;
+	--book-search-bar-height: 35px;
 	--book-search-bar-width: 300px;
 	
 	position: relative;
-	width: var(--book-search-bar-width);
+	width: 100%;
+	min-width: var(--book-search-bar-width);
+	max-width: 900px;
 	height: var(--book-search-bar-height);
 
-	border: 2px solid rgb(184, 184, 184);
+	border: 2px solid #aaa;
 	transition: all 400ms;
 	border-radius: 30px;
 	box-sizing: border-box;
@@ -21,7 +23,7 @@
 
 	position: absolute;
 	left: 10px;
-	top: calc(var(--book-search-bar-height) / 2 - var(--icon-size) / 2 - 2px);
+	top: calc(var(--book-search-bar-height) / 2 - var(--icon-size) / 2 - 3px);
 	width: var(--icon-size);
 	height: var(--icon-size);
 	color: rgb(184, 184, 184);

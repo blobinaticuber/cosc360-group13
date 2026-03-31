@@ -93,6 +93,8 @@ export interface ListingDetailData {
     image: string;
     /** The title (and subtitle, if there is one) of the book. The subtitle is separated from the title like "Title: Subtitle". */
     title: string;
+    /** The publication date of the book. */
+    publishDate?: string;
   };
   /** The user who posted the listing. */
   user: {
@@ -127,6 +129,8 @@ export type ListingDetailResult = {
     image: string;
     /** The title (and subtitle, if there is one) of the book. The subtitle is separated from the title like "Title: Subtitle". */
     title: string;
+    /** The publication date of the book. */
+    publishDate?: string;
   };
   /** The user who posted the listing. */
   user: {
@@ -157,6 +161,8 @@ export type BookDetailData = {
   image: string;
   /** The title (and subtitle, if there is one) of the book. The subtitle is separated from the title like "Title: Subtitle". */
   title: string;
+  /** The publication date of the book. */
+  publishDate?: string;
 }[];
 
 export type BookDetailError = {
@@ -187,5 +193,7 @@ export type ListingsListData = {
     image: string;
     /** The title (and subtitle, if there is one) of the book. The subtitle is separated from the title like "Title: Subtitle". */
     title: string;
+    /** The publication date of the book. */
+    publishDate?: string;
   };
 }[];

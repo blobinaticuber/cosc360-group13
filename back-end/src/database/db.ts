@@ -108,6 +108,10 @@ const ListingSchema = new Schema<Listing>({
 				type: String,
 				required: true,
 				index: true
+			},
+			publishDate: {
+				type: String,
+				required: false
 			}
 		}),
 		required: true,
