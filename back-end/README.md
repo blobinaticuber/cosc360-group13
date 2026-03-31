@@ -31,10 +31,10 @@ If the command isn't recognized, then you need to install Docker (which you can 
 If you have Docker working, then you can start the database from this directory by running
 
 ```sh
-docker compose up
+docker compose up --detach
 ```
 
-The first time you run this, Docker will need to install the Mongo image, which might take a second. Once the database starts running, you should see a pile of useless data dumped on your screen. You can close this terminal window and the database will still stay running until you use the docker command to end it.
+The first time you run this, Docker will need to install the Mongo image, which might take a second. Once the database starts running, you can close this terminal window and the database will still stay running until you use the docker command to end it.
 
 You can shut down the database with this command:
 
