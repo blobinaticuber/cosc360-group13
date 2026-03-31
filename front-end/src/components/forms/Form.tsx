@@ -1,4 +1,4 @@
-import { useState, type PropsWithChildren } from "react"
+import { useEffect, useState, type PropsWithChildren } from "react"
 import "./Form.css"
 import type { HTTPMethod } from "../../types"
 
@@ -75,6 +75,17 @@ type FormProps = PropsWithChildren<{
 		data: Record<string, string>, 
 		files: Record<string, File>
 	) => void | Promise<void>
+
+	/**
+	 * When the form is submitted and a request is sent, this function will
+	 * be called with `loading == true`. When the response is recieved, it will
+	 * be called again with `loading == false`. 
+	 * 
+	 * Note that the form's fieldset is already disabled automatically when the
+	 * request is pending, so you don't have to disable any elements yourself
+	 * during loading.
+	 */
+	onLoading?: (loading: boolean) => void
 }>
 
 /**
@@ -95,7 +106,7 @@ type FormProps = PropsWithChildren<{
  * the response object.
  */
 function Form({ 
-	children, validator, url, contentType, 
+	children, validator, url, contentType, onLoading,
 	method, onResponse, requestOptions, onSubmit
 }: FormProps) {
 	// Set default values for the optional props.
@@ -103,6 +114,12 @@ function Form({
 	contentType ??= "application/json"
 
 	const [ loading, setLoading ] = useState(false)
+
+	useEffect(() => {
+		if (onLoading) {
+			onLoading(loading)
+		}
+	}, [ loading ])
 
 	return (
 		<form className="formComponent" noValidate onSubmit={async (e) => {

@@ -3,7 +3,12 @@ import type { BookDetailData } from "./ServerTypes"
 const URL = import.meta.env.VITE_SERVER_BASE_URL as string
 
 export type BookDetails = BookDetailData[number]
+export { type UserDetails } from "./ServerTypes"
 
+/**
+ * This object wraps some methods and properties used for interacting with the
+ * back-end of the app. 
+ */
 const server = {
 	async searchBooks(
 		title: string, page?: number

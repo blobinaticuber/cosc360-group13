@@ -1,5 +1,5 @@
 import { pageTitle, type PagePath } from "../../App"
-import type { User } from "../../types"
+import type { UserDetails } from "../../server/ServerTypes"
 import "./Header.css"
 import Nav from "./Nav"
 import ProfileDropDown from "./ProfileDropDown"
@@ -11,7 +11,7 @@ type HeaderProps = {
 	 * The currently logged-in user. If one is not provided, then it is assumed
 	 * that the user is a guest.
 	 */
-	user?: User
+	user?: UserDetails
 
 	/**
 	 * For some pages (like the login and registration pages), including the

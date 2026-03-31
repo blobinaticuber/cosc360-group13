@@ -1,4 +1,4 @@
-import "./BookSelect.css"
+import "./BookSelectDialog.css"
 import BookSearchBar from "./BookSearchBar"
 import BookCard from "./BookCard"
 import type { BookDetailData } from "../../server/ServerTypes"

@@ -45,10 +45,23 @@ function Login() {
 					return !errorMarked
 				}}
 				onResponse={async (res) => {
-					// This is a placeholder which just logs the server 
-					// response.
-					const body = await res.json()
-					console.log(body)
+
+					if (res.ok) {
+						// Logged in!
+						return
+					}
+
+					// Handle errors
+					switch (res.status) {
+					case 404: // Bad email
+						setEmailErr("Unrecognized email")
+						return
+					case 401: // Good email; bad password
+						setPasswordErr("Incorrect password")
+						return
+					default:  // Unknown error
+						alert("Unexpected server error.")
+					}
 				}}
 			>
 				<h1>Log In</h1>

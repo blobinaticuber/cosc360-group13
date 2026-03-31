@@ -83,7 +83,7 @@ const ListingSchema = new Schema<Listing>({
 			},
 			authors: { 
 				type: [String], 
-				required: true 
+				default: () => []
 			},
 			rating: { 
 				type: Number, 
@@ -95,7 +95,7 @@ const ListingSchema = new Schema<Listing>({
 			},
 			description: { 
 				type: String, 
-				default: () => "<em>No description available</em>" 
+				default: () => "<em>No description available.</em>" 
 			},
 			image: { 
 				type: String, 

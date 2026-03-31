@@ -1,4 +1,4 @@
-import { faArrowRightToBracket, faEnvelope, faLock, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faArrowRightToBracket, faEnvelope, faLock, faSpinner, faUser } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import Button from "../components/Button"
@@ -10,10 +10,11 @@ import validEmail from "../util/validEmail"
 import "./Register.css"
 
 function Register() {
-	const [emailErr, setEmailErr] = useState("")
-	const [displayNameErr, setDisplayNameErr] = useState("")
-	const [passwordErr, setPasswordErr] = useState("")
-	const [confirmPasswordErr, setConfirmPasswordErr] = useState("")
+	const [ emailErr, setEmailErr ] = useState("")
+	const [ nameErr, setNameErr ] = useState("")
+	const [ passwordErr, setPasswordErr ] = useState("")
+	const [ confirmPasswordErr, setConfirmPasswordErr ] = useState("")
+	const [ loading, setLoading ] = useState(false)
 
 	return (<>
 		<Header
@@ -29,7 +30,7 @@ function Register() {
 					let errorMarked = false
 
 					setEmailErr("")
-					setDisplayNameErr("")
+					setNameErr("")
 					setPasswordErr("")
 					setConfirmPasswordErr("")
 
@@ -37,8 +38,8 @@ function Register() {
 						setEmailErr("This field is required.")
 						errorMarked = true
 					}
-					if (!data["displayName"]) {
-						setDisplayNameErr("This field is required.")
+					if (!data["name"]) {
+						setNameErr("This field is required.")
 						errorMarked = true
 					}
 					if (!data["password"]) {
@@ -61,11 +62,28 @@ function Register() {
 					return !errorMarked
 				}}
 				onResponse={async (res) => {
-					// This is a placeholder which just logs the server 
-					// response.
-					const body = await res.json()
-					console.log(body)
+					
+					if (res.ok) {
+						// Registered !!
+						return
+					}
+					
+					// Handle errors
+					switch (res.status) {
+					case 409: // Conflict error
+						const { conflicts } = await res.json()
+						if ("name" in conflicts && conflicts.name) {
+							setNameErr("This name is taken")
+						}
+						if ("email" in conflicts && conflicts.email) {
+							setEmailErr("This email is already in use")
+						}
+						return
+					default:  // Unknown error
+						alert("Unexpected server error.")
+					}
 				}}
+				onLoading={setLoading}
 			>
 				<h1>Create an Account</h1>
 
@@ -75,9 +93,9 @@ function Register() {
 					icon={faEnvelope}
 				/>
 				<TextInput
-					name="displayName"
+					name="name"
 					label="Display Name"
-					error={displayNameErr}
+					error={nameErr}
 					icon={faUser}
 				/>
 				<TextInput
@@ -96,6 +114,8 @@ function Register() {
 				<Button
 					icon={faArrowRightToBracket}
 					text="Register"
+					key="register"
+					spinning={loading}
 				/>
 				<p>
 					Already have an account? <Link to="/login">Log in</Link>.

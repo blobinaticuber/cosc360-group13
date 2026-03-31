@@ -1,7 +1,7 @@
 import { faCircleUser, faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import type { User } from "../../types"
+import type { UserDetails } from "../../server"
 import guestUser from "../../util/guestUser"
 import Button from "../Button"
 import Modal from "../popup/Modal"
@@ -12,7 +12,7 @@ type ProfileDropDownProps = {
 	 * The currently logged-in user. If one is not provided, then it is assumed
 	 * that the user is a guest.
 	 */
-	user?: User
+	user?: UserDetails
 }
 
 
@@ -27,7 +27,7 @@ type ProfileDropDownProps = {
  * elsewhere.
  */
 function ProfileDropDown({ user }: ProfileDropDownProps) {
-	const { profilePicture, username } = user ?? guestUser()
+	const { profilePicture, name } = user ?? guestUser()
 
 	const navigate = useNavigate()
 
@@ -58,7 +58,7 @@ function ProfileDropDown({ user }: ProfileDropDownProps) {
 			>
 				{user ?
 					<>
-						<h2>{username}</h2>
+						<h2>{name}</h2>
 						<Button
 							onClick={() => {
 								navigate("/account")

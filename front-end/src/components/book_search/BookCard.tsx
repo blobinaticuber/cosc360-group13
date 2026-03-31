@@ -22,7 +22,7 @@ function BookCard({
 		<div className="textSection">
 			<h1>{book.title}</h1>
 			<div className="detailsContainer">
-				{book.authors &&
+				{book.authors && book.authors.length > 0 &&
 					<p className="authors">
 						<FontAwesomeIcon icon={faPenNib} className="icon" />
 						&nbsp;
