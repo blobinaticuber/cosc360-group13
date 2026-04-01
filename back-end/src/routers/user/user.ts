@@ -1,5 +1,5 @@
 import db from "database/db.js"
-import type { Request, Response } from "express"
+import type { CookieOptions, Request, Response } from "express"
 import { Router } from "express"
 import auth from "middleware/auth.js"
 import body from "middleware/body.js"
@@ -10,6 +10,14 @@ import { type ErrServer } from "util/errSchema.js"
 import z from "zod"
 
 const user = Router();
+
+const COOKIE_SETTINGS: CookieOptions = {
+	httpOnly: true,
+	sameSite: "lax",
+	secure: process.env.MODE == "production" 
+		? true
+		: false, 
+}
 
 //
 // The endpoint for creating a new user.
@@ -132,11 +140,7 @@ user.delete(
 			user: userId,
 		});
 
-		res.clearCookie(
-			process.env.AUTH_COOKIE!, {
-				httpOnly: true,
-				sameSite: "lax",
-			})
+		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
 			.end();
 	},
@@ -179,11 +183,7 @@ user.post(
 		});
 		await session.save();
 
-		res.cookie(
-			process.env.AUTH_COOKIE!, session._id.toString(), {
-				httpOnly: true,
-				sameSite: "lax",
-			})
+		res.cookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
 			.end();
 	},
@@ -202,14 +202,48 @@ user.delete(
 	) => {
 		await req.session!.deleteOne();
 
-		res.clearCookie(
-			process.env.AUTH_COOKIE!, {
-				httpOnly: true,
-				sameSite: "lax"
-			})
+		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
 			.end();
 	},
 );
+
+//
+// The endpoint for getting information about the currently logged-in user.
+//
+
+export const PersonalDetailsSchema =
+	UserDetailsSchema.extend({
+		email: z.email()
+	})
+	.meta({
+		description: "The personal (as opposed to public) details about a user"
+	})
+type PersonalDetails = z.infer<typeof PersonalDetailsSchema> 
+
+user.get(
+	"/me",
+	auth,
+	async (
+		req: Request,
+		res: Response<PersonalDetails>
+	) => {
+		const userId = req.session!.user
+
+		const user = await db.User.findById(userId).exec()
+		if (user == null) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		const parsed = PersonalDetailsSchema.safeParse(user.toObject())
+		if (!parsed.success) {
+			err.server(res, "Error parsing database object")
+			return
+		}
+
+		res.status(Status.OK).json(parsed.data)
+	}
+)
 
 export default user;

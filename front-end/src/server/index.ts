@@ -149,7 +149,8 @@ const server = {
 	},
 
 	/**
-	 * Searches for a user by their name.
+	 * Searches for a user by their name. You can also use `name == "*"` to get
+	 * all users.
 	 * 
 	 * @param name
 	 * @param page A positive integer representing which "page" of results you
@@ -217,6 +218,37 @@ const server = {
 		}
 	},
 
+	/**
+	 * Get the details about the currently logged-in user.
+	 */
+	async currentUser(): Result<
+		UserDetails, "not logged in" | "unknown error"
+	> {
+		const res = await fetch(
+			URL + "/user/me",
+			{
+				method: "GET",
+				credentials: "include"
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json()
+			return [body as UserDetails, null]
+		case 401:
+			return [null, "not logged in"]
+		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Contains full URL for certain endpoints. This can be useful if you want
+	 * to set the `url` property of a `<Form>`, for example, or if you just
+	 * want to send a custom `fetch` request rather than using the methods of
+	 * this object.
+	 */
 	paths: {
 		login: URL + "/user/session",
 		register: URL + "/user"

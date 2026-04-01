@@ -1,9 +1,10 @@
 import "./BookSelectDialog.css"
-import BookSearchBar from "./BookSearchBar"
 import BookCard from "./BookCard"
 import type { BookDetailData } from "../../server/ServerTypes"
 import { useState } from "react"
 import type { BookDetails } from "../../server"
+import SearchBar from "../SearchBar"
+import server from "../../server"
 
 type BookSelectProps = {
 	onSelect: (book: BookDetails) => void
@@ -19,11 +20,15 @@ function BookSelect({
 	return <div
 		className="bookSelectContainer"
 	>
-		<BookSearchBar
+		<SearchBar
+			search={async (title) => {
+				const [books, _] = await server.searchBooks(title)
+				return books ?? []
+			}}
 			onResults={books => {
-				setBooks(books ? [...books] : [])
+				setBooks(books)
 				setSearched(true)
-			}} 
+			}}
 		/>
 		{searched &&
 			<div className="resultsContainer">

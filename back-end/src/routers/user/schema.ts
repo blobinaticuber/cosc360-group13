@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
-import { RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema } from "./user.js"
+import { PersonalDetailsSchema, RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema } from "./user.js"
 import { ErrConflictSchema, ErrInvalidBodySchema } from "util/errSchema.js"
 import z from "zod"
 
@@ -148,6 +148,37 @@ userSpec.registerPath({
 		},
 		401: {
 			description: "There isn't a user to log out."
+		}
+	}
+})
+
+userSpec.registerPath({
+	method: "get",
+	path: "/user/me",
+	tags: [ "User" ],
+	summary: "Get Personal Information",
+	description: "Retrieves the personal data about the currently logged-in user.",
+	request: {
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
+		})
+	},
+	responses: {
+		200: {
+			description: "User data was successfully retrieved.",
+			content: {
+				"application/json": {
+					schema: PersonalDetailsSchema
+				}
+			}
+		},
+		401: {
+			description: "The user wasn't recognized."
+		},
+		404: {
+			description: "The user's session was identified, but their details couldn't be retrieved. This is extremely unlikely to ever happen."
 		}
 	}
 })
