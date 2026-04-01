@@ -24,8 +24,7 @@ function Home() {
 	const [query, setQuery] = useState("");
 
 	useEffect(() => {
-		const searchTerm = query.trim() || "*";
-		fetch(`${baseUrl}/search/listing/${searchTerm}`)
+		fetch(`${baseUrl}/search/listing/${query.trim()}`)
 		.then(res => res.json())
 		.then(data => setBooks(data as Listing[]))
 		.catch(error => {
@@ -34,7 +33,7 @@ function Home() {
 		});
 
 		console.log(books);
-	}, [query, baseUrl])
+	}, [query]);
 
 	// const filteredBooks = books.filter(book =>
 	// 	book.title.toLowerCase().includes(query.trim().toLowerCase()) ||
