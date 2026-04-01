@@ -1,11 +1,12 @@
 import { faCircleUser, faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { useRef, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import type { UserDetails } from "../../server"
 import guestUser from "../../util/guestUser"
 import Button from "../Button"
 import Modal from "../popup/Modal"
 import "./ProfileDropDown.css"
+import server from "../../server"
 
 type ProfileDropDownProps = {
 	/**
@@ -27,12 +28,12 @@ type ProfileDropDownProps = {
  * elsewhere.
  */
 function ProfileDropDown({ user }: ProfileDropDownProps) {
+
 	const { profilePicture, name } = user ?? guestUser()
 
 	const navigate = useNavigate()
-
+	const { pathname } = useLocation()
 	const [showProfileMenu, setShowProfileMenu] = useState(false)
-
 	const profileIcon = useRef<HTMLImageElement | null>(null)
 
 	return (
@@ -69,14 +70,14 @@ function ProfileDropDown({ user }: ProfileDropDownProps) {
 							text={"My Account"}
 						/>
 						<Button
-							onClick={() => {
-								// "logging out" can't be implemented until
-								// the authentication system is figured out
-								// (on the backend).
-								//
-								// This is a placeholder.
+							onClick={async () => {
+								await server.logOut()
 
-								navigate(0)
+								if (pathname == "/") {
+									navigate(0) // the input to refresh the page
+								} else {
+									navigate("/")
+								}
 							}}
 							className="profileDropDownButton"
 							style="subtle"

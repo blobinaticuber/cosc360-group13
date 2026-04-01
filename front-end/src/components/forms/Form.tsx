@@ -147,6 +147,7 @@ function Form({
 				setLoading(true)
 				const res = await fetch(url + params.toString(), {
 					method: "GET",
+					credentials: "include",
 					...requestOptions
 				})
 				setLoading(false)
@@ -185,6 +186,7 @@ function Form({
 					"Content-Type": contentType
 				},
 				body,
+				credentials: "include",
 				...requestOptions
 			})
 			setLoading(false)

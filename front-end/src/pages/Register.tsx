@@ -7,6 +7,7 @@ import TextInput from "../components/forms/TextInput"
 import Header from "../components/layout/Header"
 import server from "../server"
 import validEmail from "../util/validEmail"
+import { toast } from "react-toastify"
 import "./Register.css"
 
 function Register() {
@@ -65,7 +66,8 @@ function Register() {
 				onResponse={async (res) => {
 					
 					if (res.ok) {
-						navigate("/")
+						toast.success("Account created", { autoClose: 2000 })
+						navigate("/login")
 						return
 					}
 					

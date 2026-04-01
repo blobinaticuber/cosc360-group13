@@ -9,6 +9,7 @@ import server from "../server"
 import validEmail from "../util/validEmail"
 import { useNavigate } from "react-router-dom"
 import "./Login.css"
+import { toast } from "react-toastify"
 
 function Login() {
 	const navigate = useNavigate()
@@ -49,6 +50,7 @@ function Login() {
 				onResponse={async (res) => {
 
 					if (res.ok) {
+						toast.success("Logged in", { autoClose: 2000 })
 						navigate("/")
 						return
 					}

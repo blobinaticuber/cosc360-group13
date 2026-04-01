@@ -1,13 +1,13 @@
-import db from "database/db.js";
-import type { Request, Response } from "express";
-import { Router } from "express";
-import auth from "middleware/auth.js";
-import body from "middleware/body.js";
-import Status from "types/Status.js";
-import { compare, encrypt } from "util/encryption.js";
-import err from "util/err.js";
-import { type ErrServer } from "util/errSchema.js";
-import z from "zod";
+import db from "database/db.js"
+import type { Request, Response } from "express"
+import { Router } from "express"
+import auth from "middleware/auth.js"
+import body from "middleware/body.js"
+import Status from "types/Status.js"
+import { compare, encrypt } from "util/encryption.js"
+import err from "util/err.js"
+import { type ErrServer } from "util/errSchema.js"
+import z from "zod"
 
 const user = Router();
 
@@ -135,7 +135,7 @@ user.delete(
 		res.clearCookie(
 			process.env.AUTH_COOKIE!, {
 				httpOnly: true,
-				sameSite: "strict",
+				sameSite: "lax",
 			})
 			.status(Status.OK)
 			.end();
@@ -182,7 +182,7 @@ user.post(
 		res.cookie(
 			process.env.AUTH_COOKIE!, session._id.toString(), {
 				httpOnly: true,
-				sameSite: "strict",
+				sameSite: "lax",
 			})
 			.status(Status.OK)
 			.end();
@@ -205,7 +205,7 @@ user.delete(
 		res.clearCookie(
 			process.env.AUTH_COOKIE!, {
 				httpOnly: true,
-				sameSite: "strict",
+				sameSite: "lax"
 			})
 			.status(Status.OK)
 			.end();
