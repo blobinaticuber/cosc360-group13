@@ -7,6 +7,7 @@ import type { BookDetails } from "../../server"
 type BookSelectorProps = {
 	onSelect: (book: BookDetails) => void
 	text?: string
+	buttonClass?: string
 }
 
 /**
@@ -14,15 +15,19 @@ type BookSelectorProps = {
  * book by searching the Google Books database. When the user selects a book,
  * the callback `onSelect` is invoked.
  * 
+ * The `buttonClass` can be set to a CSS class name and it will be passed to
+ * the underlying `<button>` element, allowing you to customize the styles.
+ * 
  * Note that the underlying button calls `e.preventDefault()` when it's 
  * clicked, so you can safely include this component in a `<form>` without
  * accidentally submitting it.
  */
-function BookSelector({ onSelect, text }: BookSelectorProps) {
+function BookSelector({ onSelect, text, buttonClass }: BookSelectorProps) {
 	const [showBookSelect, setShowBookSelect] = useState(false)
 
 	return <>
 		<Button
+			className={buttonClass}
 			text={text ?? "Select a Book"}
 			onClick={e => {
 				e.preventDefault()
