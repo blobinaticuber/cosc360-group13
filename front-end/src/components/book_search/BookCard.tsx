@@ -13,7 +13,7 @@ function BookCard({
 	onClick
 }: BookCardProps) {
 	return <div 
-		className={"bookCard"} 
+		className={"bookCard" + (onClick ? " clickable" : "")} 
 		onClick={onClick}
 	>
 		<div className="imgContainer">

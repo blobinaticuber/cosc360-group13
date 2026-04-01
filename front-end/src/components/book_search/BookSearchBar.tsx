@@ -27,7 +27,7 @@ function BookSearchBar({
 		setLoading(false)
 
 		if (onResults) {
-			onResults(results)
+			onResults(results ?? [])
 		}
 	}
 

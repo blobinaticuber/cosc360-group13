@@ -17,7 +17,7 @@
 	transition: all 400ms;
 }
 
-.bookCard:hover {
+.bookCard.clickable:hover {
 	border-color: #66D575;
 	background-color: rgb(147, 255, 147);
 	cursor: pointer;

@@ -15,7 +15,7 @@ function Home() {
 			<SearchBar 
 				search={async (term) => {
 					const [listings, _] = await server.searchListing(term)
-					return listings
+					return listings ?? []
 				}} 
 				onResults={listings => {
 					setListings([...listings])

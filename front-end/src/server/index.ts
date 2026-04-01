@@ -6,12 +6,18 @@ export type BookDetails = BookDetailData[number]
 export type ListingDetails = ListingDetailData
 export { type UserDetails } from "./ServerTypes"
 
+type GeneralErrorValue = string
+type ResultWithoutValue<ErrorValue extends GeneralErrorValue> = 
+	Promise<ErrorValue | null>
+type Result<ExpectedValue, ErrorValue extends GeneralErrorValue> = 
+	Promise<[ ExpectedValue, null ] | [ null, ErrorValue ]>
+
 /**
  * This object wraps some methods and properties used for interacting with the
  * back-end of the app. 
  * 
  * The return values of the functions enclosed here follow the convention of
- * returning an error as a value. Many of the functions has a set of possible
+ * returning an error as a value. Many of the functions have a set of possible
  * error strings, each of which denote a specific error. This lets you use
  * them like so:
  * 
@@ -33,7 +39,9 @@ export { type UserDetails } from "./ServerTypes"
  * ```
  * 
  * If none of the error strings are matched, or if the `err` result is `null`,
- * then we know that the request worked without any problems. 
+ * then we know that the request worked without any problems. Additionally, if
+ * you don't actually care about what kind of error occurred, you can just
+ * check `err == null` instead of handling each error type individually.
  * 
  * If a function should return a value, then we simply pair the normal return
  * value with the error value in an array. The expected result always comes
@@ -50,9 +58,10 @@ export { type UserDetails } from "./ServerTypes"
  * 	// ...
  * 	return
  * }
- * 
- * // We can safely use `books` since none of the possible errors were matched.
  * ```
+ * 
+ * In this case, the expected value (`books`) will be `null` if there was an
+ * error. That is, if `books == null`, then `err != null`, and vice versa.
  */
 const server = {
 	/**
@@ -68,12 +77,7 @@ const server = {
 	 */
 	async searchBooks(
 		title: string, page?: number
-	): Promise<[
-		BookDetailData, 
-		  null 
-		| "no matches found" 
-		| "unknown error"
-	]> {
+	): Result<BookDetails[], "no matches found"	| "unknown error"> {
 		const query = new URLSearchParams({
 			page: (page ?? 1).toString()
 		})
@@ -87,9 +91,9 @@ const server = {
 			const results = await res.json()
 			return [results as BookDetailData, null]
 		case 404:
-			return [[], "no matches found"]
+			return [null, "no matches found"]
 		default:
-			return [[], "unknown error"]
+			return [null, "unknown error"]
 		}
 	},
 
@@ -102,10 +106,8 @@ const server = {
 	 */
 	async createListing(
 		bookId: string
-	): Promise<null 
-		| "unrecognized user" 
-		| "unknown book id" 
-		| "unknown error"
+	): ResultWithoutValue<
+		"unrecognized user" | "unknown book id" | "unknown error"
 	> {
 		const res = await fetch(
 			URL + "/listing",
@@ -158,12 +160,7 @@ const server = {
 	 */
 	async searchUser(
 		name: string, page?: number
-	): Promise<[
-		UserDetails[], 
-		  null 
-		| "no users found"
-		| "unknown error"
-	]> {
+	): Result<UserDetails[], "no users found" | "unknown error"> {
 		const query = new URLSearchParams({
 			page: (page ?? 1).toString()
 		})
@@ -179,9 +176,9 @@ const server = {
 
 		switch (res.status) {
 		case 404:
-			return [[], "no users found"]
+			return [null, "no users found"]
 		default:
-			return [[], "unknown error"]
+			return [null, "unknown error"]
 		}
 	},
 
@@ -198,12 +195,7 @@ const server = {
 	 */
 	async searchListing(
 		name: string, page?: number
-	): Promise<[
-		ListingDetails[],
-	 	  null
-		| "unknown error"
-		| "no listings found"
-	]> {
+	): Result<ListingDetails[], "unknown error" | "no listings found"> {
 		const query = new URLSearchParams({
 			page: (page ?? 1).toString()
 		})
@@ -219,9 +211,9 @@ const server = {
 
 		switch (res.status) {
 		case 404:
-			return [[], "no listings found"]
+			return [null, "no listings found"]
 		default:
-			return [[], "unknown error"]
+			return [null, "unknown error"]
 		}
 	},
 
