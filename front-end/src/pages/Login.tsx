@@ -30,11 +30,11 @@ function Login() {
 					setPasswordErr("")
 
 					if (!data["email"]) {
-						setEmailErr("This field is required.") 
+						setEmailErr("Please enter your email.") 
 						errorMarked = true
 					}
 					if (!data["password"]) {
-						setPasswordErr("This field is required.") 
+						setPasswordErr("Please enter your password.") 
 						errorMarked = true
 					}
 					if (!validEmail(data["email"])) {
@@ -57,17 +57,20 @@ function Login() {
 					name="email"
 					error={emailErr}
 					icon={faEnvelope}
+					placeholder="example@email.com"
 				/>
 				<TextInput
 					name="password"
 					error={passwordErr}
 					icon={faLock}
 					type="password"
+					placeholder="Password"
 				/>
 
 				<Button
 					icon={faArrowRightToBracket}
 					text="Log In"
+					
 				/>
 				<p>
 					Don't have an account?

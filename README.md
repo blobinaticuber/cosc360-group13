@@ -14,3 +14,12 @@ npm install
 npm run dev
 ```
 
+# Testing
+
+```sh
+cd front-end
+npm install --save-dev jest
+npm install --save-dev @babel/preset-react
+npm run test
+```
+

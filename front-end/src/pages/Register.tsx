@@ -34,19 +34,19 @@ function Register() {
 					setConfirmPasswordErr("")
 
 					if (!data["email"]) {
-						setEmailErr("This field is required.") 
+						setEmailErr("Please enter an email.") 
 						errorMarked = true
 					}
 					if (!data["displayName"]) {
-						setDisplayNameErr("This field is required.") 
+						setDisplayNameErr("Please enter a display name.") 
 						errorMarked = true
 					}
 					if (!data["password"]) {
-						setPasswordErr("This field is required.") 
+						setPasswordErr("Please enter your password.") 
 						errorMarked = true
 					}
 					if (!data["confirmPassword"]) {
-						setConfirmPasswordErr("This field is required.") 
+						setConfirmPasswordErr("Please confirm your password.") 
 						errorMarked = true
 					}
 					if (data["confirmPassword"] != data["password"]) {
@@ -73,24 +73,28 @@ function Register() {
 					name="email"
 					error={emailErr}
 					icon={faEnvelope}
+					placeholder="example@email.com"
 				/>
 				<TextInput
 					name="displayName"
 					label="Display Name"
 					error={displayNameErr}
 					icon={faUser}
+					placeholder="Username"
 				/>
 				<TextInput
 					name="password"
 					error={passwordErr}
 					icon={faLock}
 					type="password"
+					placeholder="Password"
 				/>
 				<TextInput 
 					name="confirmPassword"
 					label="Confirm Password"
 					error={confirmPasswordErr}
 					type="password"
+					placeholder="Confirm Password"
 				/>
 
 				<Button
