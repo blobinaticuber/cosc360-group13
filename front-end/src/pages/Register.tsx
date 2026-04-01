@@ -1,6 +1,6 @@
-import { faArrowRightToBracket, faEnvelope, faLock, faSpinner, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faArrowRightToBracket, faEnvelope, faLock, faUser } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Button from "../components/Button"
 import Form from "../components/forms/Form"
 import TextInput from "../components/forms/TextInput"
@@ -10,6 +10,7 @@ import validEmail from "../util/validEmail"
 import "./Register.css"
 
 function Register() {
+	const navigate = useNavigate()
 	const [ emailErr, setEmailErr ] = useState("")
 	const [ nameErr, setNameErr ] = useState("")
 	const [ passwordErr, setPasswordErr ] = useState("")
@@ -64,7 +65,7 @@ function Register() {
 				onResponse={async (res) => {
 					
 					if (res.ok) {
-						// Registered !!
+						navigate("/")
 						return
 					}
 					

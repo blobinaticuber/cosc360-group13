@@ -1,0 +1,146 @@
+meta {
+  name: Search for a listing
+  type: http
+  seq: 2
+  tags: [
+    Listing
+    Search
+  ]
+}
+
+get {
+  url: {{baseUrl}}/search/listing/:title
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~page: 
+}
+
+params:path {
+  title: 
+}
+
+docs {
+  Search for a book listing by the title of the associated book. The response will include any listing where the book title includes the {title} as a substring. Results are limited to 10 at a time, but you can use the `page` parameter to see more. E.g., to get the top 10 results, use `page=1`, to get listings 11-20, use `page=2`, and so on.
+}
+
+example {
+  name: 200 Response
+  description: The matching results were found.
+  
+  request: {
+    url: {{baseUrl}}/search/listing/:title
+    method: GET
+    mode: none
+    params:query: {
+      ~page: 
+    }
+  
+    params:path: {
+      title: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "id": "",
+            "book": {
+              "id": "",
+              "authors": [],
+              "rating": 0,
+              "categories": [],
+              "description": "",
+              "image": "",
+              "title": "",
+              "publishDate": ""
+            },
+            "user": {
+              "id": "",
+              "name": "",
+              "profilePicture": ""
+            }
+          }
+        ]
+      '''
+    }
+  }
+}
+
+example {
+  name: 400 Response
+  description: The `page` query wasn't an integer.
+  
+  request: {
+    url: {{baseUrl}}/search/listing/:title
+    method: GET
+    mode: none
+    params:query: {
+      ~page: 
+    }
+  
+    params:path: {
+      title: 
+    }
+  }
+  
+  response: {
+    status: {
+      code: 400
+      text: Bad Request
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: 404 Response
+  description: No matching results were found.
+  
+  request: {
+    url: {{baseUrl}}/search/listing/:title
+    method: GET
+    mode: none
+    params:query: {
+      ~page: 
+    }
+  
+    params:path: {
+      title: 
+    }
+  }
+  
+  response: {
+    status: {
+      code: 404
+      text: Not Found
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}

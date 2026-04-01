@@ -1,0 +1,97 @@
+meta {
+  name: Search for listings by user
+  type: http
+  seq: 3
+  tags: [
+    Listing
+    Search
+  ]
+}
+
+get {
+  url: {{baseUrl}}/search/:userId/listings
+  body: none
+  auth: inherit
+}
+
+params:path {
+  userId: 
+}
+
+docs {
+  Retrieves all listings that were posted by a user.
+}
+
+example {
+  name: 200 Response
+  description: The user's listings were found.
+  
+  request: {
+    url: {{baseUrl}}/search/:userId/listings
+    method: GET
+    mode: none
+    params:path: {
+      userId: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "id": "",
+            "book": {
+              "id": "",
+              "authors": [],
+              "rating": 0,
+              "categories": [],
+              "description": "",
+              "image": "",
+              "title": "",
+              "publishDate": ""
+            }
+          }
+        ]
+      '''
+    }
+  }
+}
+
+example {
+  name: 404 Response
+  description: No matching listings were found.
+  
+  request: {
+    url: {{baseUrl}}/search/:userId/listings
+    method: GET
+    mode: none
+    params:path: {
+      userId: 
+    }
+  }
+  
+  response: {
+    status: {
+      code: 404
+      text: Not Found
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}

@@ -132,10 +132,11 @@ user.delete(
 			user: userId,
 		});
 
-		res.clearCookie(process.env.AUTH_COOKIE!, {
-			httpOnly: true,
-			sameSite: "lax",
-		})
+		res.clearCookie(
+			process.env.AUTH_COOKIE!, {
+				httpOnly: true,
+				sameSite: "strict",
+			})
 			.status(Status.OK)
 			.end();
 	},
@@ -178,10 +179,11 @@ user.post(
 		});
 		await session.save();
 
-		res.cookie(process.env.AUTH_COOKIE!, session._id.toString(), {
-			httpOnly: true,
-			sameSite: "lax",
-		})
+		res.cookie(
+			process.env.AUTH_COOKIE!, session._id.toString(), {
+				httpOnly: true,
+				sameSite: "strict",
+			})
 			.status(Status.OK)
 			.end();
 	},
@@ -200,10 +202,11 @@ user.delete(
 	) => {
 		await req.session!.deleteOne();
 
-		res.clearCookie(process.env.AUTH_COOKIE!, {
-			httpOnly: true,
-			sameSite: "lax",
-		})
+		res.clearCookie(
+			process.env.AUTH_COOKIE!, {
+				httpOnly: true,
+				sameSite: "strict",
+			})
 			.status(Status.OK)
 			.end();
 	},

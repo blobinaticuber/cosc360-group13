@@ -7,9 +7,11 @@ import TextInput from "../components/forms/TextInput"
 import Header from "../components/layout/Header"
 import server from "../server"
 import validEmail from "../util/validEmail"
+import { useNavigate } from "react-router-dom"
 import "./Login.css"
 
 function Login() {
+	const navigate = useNavigate()
 	const [emailErr, setEmailErr] = useState("")
 	const [passwordErr, setPasswordErr] = useState("")
 
@@ -47,7 +49,7 @@ function Login() {
 				onResponse={async (res) => {
 
 					if (res.ok) {
-						// Logged in!
+						navigate("/")
 						return
 					}
 
