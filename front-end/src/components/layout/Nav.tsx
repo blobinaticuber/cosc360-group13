@@ -3,7 +3,7 @@ import "./Nav.css"
 import { pageTitle, type PagePath } from "../../App"
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faHouse, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faFlask, faHouse, faUser } from "@fortawesome/free-solid-svg-icons"
 
 type NavProps = {
 	currentPage: PagePath
@@ -19,9 +19,9 @@ function Nav({ currentPage }: NavProps) {
 					icon={faHouse}
 				/>
 				<NavLink 
-					to="/account" 
+					to="/test" 
 					currentPage={currentPage}
-					icon={faUser}
+					icon={faFlask}
 				/>
 				<NavLink 
 					to="/register" 

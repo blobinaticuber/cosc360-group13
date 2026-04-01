@@ -6,6 +6,7 @@ import type { BookDetails } from "../../server"
 
 type BookSelectorProps = {
 	onSelect: (book: BookDetails) => void
+	text?: string
 }
 
 /**
@@ -17,12 +18,12 @@ type BookSelectorProps = {
  * clicked, so you can safely include this component in a `<form>` without
  * accidentally submitting it.
  */
-function BookSelector({ onSelect }: BookSelectorProps) {
+function BookSelector({ onSelect, text }: BookSelectorProps) {
 	const [showBookSelect, setShowBookSelect] = useState(false)
 
 	return <>
 		<Button
-			text="Select a Book"
+			text={text ?? "Select a Book"}
 			onClick={e => {
 				e.preventDefault()
 				setShowBookSelect(true)

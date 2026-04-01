@@ -42,16 +42,21 @@ type ButtonProps = {
 	 * a spinner and the button will be disabled. 
 	 */
 	spinning?: boolean
+
+	/**
+	 * Set this to `true` to disable the button.
+	 */
+	disable?: boolean
 }
 
 function Button({ 
-	className, onClick, style, icon, text, spinning
+	className, onClick, style, icon, text, spinning, disable
 }: ButtonProps) {
 	style ??= "normal"
 
 	return (
 		<button
-			disabled={spinning}
+			disabled={spinning || disable}
 			className={
 				"buttonComponent" + 
 				" " + (className ?? "") +

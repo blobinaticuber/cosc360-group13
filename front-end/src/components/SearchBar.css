@@ -1,4 +1,4 @@
-.bookSearch {
+.search {
 	--book-search-bar-height: 35px;
 	
 	position: relative;
@@ -11,11 +11,11 @@
 	box-sizing: border-box;
 }
 
-.bookSearch.focused {
+.search.focused {
 	border-color: #66D575;
 }
 
-.bookSearch .searchIcon {
+.search .searchIcon {
 	--icon-size: 1rem;
 
 	position: absolute;
@@ -27,15 +27,15 @@
 	transition: all 400ms;
 }
 
-.bookSearch.focused .searchIcon {
+.search.focused .searchIcon {
 	color: gray;
 }
 
-.bookSearch .spinning {
+.search .spinning {
 	animation: spinning 1000ms linear infinite;
 }
 
-.bookSearch input {
+.search>input {
 	padding-right: 10px;
 	padding-left: 2.2rem;
 	width: 100%;

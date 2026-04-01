@@ -1,17 +1,16 @@
-import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import "./SearchBar.css"
+import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { useEffect, useRef, useState } from "react"
-import server from "../../server"
-import type { BookDetailData } from "../../server/ServerTypes"
-import "./BookSearchBar.css"
 
-export type BookSearchBarProps = {
-	onResults?: (books: BookDetailData | null) => void
+export type SearchBarProps<T extends any> = {
+	search: (searchTerm: string) => T[] | Promise<T[]>
+	onResults?: (results: T[]) => void
 }
 
-function BookSearchBar({
-	onResults
-}: BookSearchBarProps) {
+function SearchBar<T>({
+	search, onResults
+}: SearchBarProps<T>) {
 
 	const [focused, setFocused] = useState(false)
 	const [loading, setLoading] = useState(false)
@@ -22,9 +21,15 @@ function BookSearchBar({
 			return
 		}
 
-		setLoading(true)
-		const [results, _] = await server.searchBooks(inputRef.current?.value!)
-		setLoading(false)
+		const searchResponse = search(inputRef.current?.value!)
+		let results: T[]
+		if (searchResponse instanceof Promise) {
+			setLoading(true)
+			results = await searchResponse
+			setLoading(false)			
+		} else {
+			results = searchResponse
+		}
 
 		if (onResults) {
 			onResults(results)
@@ -48,7 +53,7 @@ function BookSearchBar({
 
 	}, [])
 
-	return <div className={"bookSearch" + (focused ? " focused" : "")}>
+	return <div className={"search" + (focused ? " focused" : "")}>
 		{loading
 			? <FontAwesomeIcon
 				key="spinner"
@@ -61,7 +66,6 @@ function BookSearchBar({
 		}
 		<input
 			type="text"
-			className="bookSearchInput"
 			ref={inputRef}
 			placeholder="Enter the title of a book"
 			disabled={loading}
@@ -69,4 +73,4 @@ function BookSearchBar({
 	</div>
 }
 
-export default BookSearchBar
+export default SearchBar

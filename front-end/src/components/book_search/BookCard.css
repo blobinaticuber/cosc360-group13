@@ -1,6 +1,6 @@
 .bookCard {
 	min-width: 300px;
-	width: calc(100% - 1rem);
+	width: 100%;
 	max-width: 900px;
 
 	height: fit-content;

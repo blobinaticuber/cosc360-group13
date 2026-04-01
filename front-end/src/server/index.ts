@@ -1,8 +1,9 @@
-import type { BookDetailData, ListingCreation, UserDetails } from "./ServerTypes"
+import type { BookDetailData, ListingCreation, ListingDetailData, UserDetails } from "./ServerTypes"
 
 const URL = import.meta.env.VITE_SERVER_BASE_URL as string
 
 export type BookDetails = BookDetailData[number]
+export type ListingDetails = ListingDetailData
 export { type UserDetails } from "./ServerTypes"
 
 /**
@@ -179,6 +180,46 @@ const server = {
 		switch (res.status) {
 		case 404:
 			return [[], "no users found"]
+		default:
+			return [[], "unknown error"]
+		}
+	},
+
+	/**
+	 * Searches for listings by the title of the books they contain. you can
+	 * also use `name == "*"` to get all listings.
+	 * 
+	 * @param name The name of the book to search for related listings.
+	 * @param page A positive integer representing which "page" of results you
+	 * want. Each page will include up to ten books. E.g., if you want the top
+	 * ten results, use `page == 1` (the default); for results 11 through 20,
+	 * use `page == 2`, and so on.
+	 * @returns A list of matching listings.
+	 */
+	async searchListing(
+		name: string, page?: number
+	): Promise<[
+		ListingDetails[],
+	 	  null
+		| "unknown error"
+		| "no listings found"
+	]> {
+		const query = new URLSearchParams({
+			page: (page ?? 1).toString()
+		})
+
+		const res = await fetch(
+			URL + "/search/listing/" + name + "?" + query.toString()
+		)
+
+		if (res.ok) {
+			const listings = await res.json()
+			return [listings as ListingDetails[], null]
+		}
+
+		switch (res.status) {
+		case 404:
+			return [[], "no listings found"]
 		default:
 			return [[], "unknown error"]
 		}
