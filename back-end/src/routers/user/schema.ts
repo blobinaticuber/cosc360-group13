@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
-import { PersonalDetailsSchema, RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema } from "./user.js"
+import { PersonalDetailsSchema, RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema, UserUpdateSchema } from "./user.js"
 import { ErrConflictSchema, ErrInvalidBodySchema } from "util/errSchema.js"
 import z from "zod"
 
@@ -173,6 +173,42 @@ userSpec.registerPath({
 					schema: PersonalDetailsSchema
 				}
 			}
+		},
+		401: {
+			description: "The user wasn't recognized."
+		},
+		404: {
+			description: "The user's session was identified, but their details couldn't be retrieved. This is extremely unlikely to ever happen."
+		}
+	}
+})
+
+userSpec.registerPath({
+	method: "patch",
+	path: "/user",
+	tags: [ "User" ],
+	summary: "Update Personal Information",
+	description: "Updates the details about the currently logged-in user.",
+	request: {
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
+		}),
+		body: {
+			content: {
+				"application/json": {
+					schema: UserUpdateSchema
+				}
+			}
+		}
+	},
+	responses: {
+		200: {
+			description: "User data was successfully updated.",
+		},
+		400: {
+			description: "The request body was invalid."
 		},
 		401: {
 			description: "The user wasn't recognized."

@@ -62,6 +62,14 @@ export type SessionCreateError = UserCredentials;
 
 export type SessionDeleteData = any;
 
+/** The personal (as opposed to public) details about a user */
+export interface GetUserData {
+  id: string;
+  name: string;
+  profilePicture: string;
+  email: string;
+}
+
 export type ListingCreateData = any;
 
 export type ListingCreateError = {

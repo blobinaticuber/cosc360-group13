@@ -1,10 +1,11 @@
-import type { BookDetailData, ListingCreation, ListingDetailData, UserDetails } from "./ServerTypes"
+import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails } from "./ServerTypes"
 
 const URL = import.meta.env.VITE_SERVER_BASE_URL as string
 
 export type BookDetails = BookDetailData[number]
 export type ListingDetails = ListingDetailData
 export { type UserDetails } from "./ServerTypes"
+export type PersonalDetails = GetUserData
 
 type GeneralErrorValue = string
 type ResultWithoutValue<ErrorValue extends GeneralErrorValue> = 
@@ -222,7 +223,7 @@ const server = {
 	 * Get the details about the currently logged-in user.
 	 */
 	async currentUser(): Result<
-		UserDetails, "not logged in" | "unknown error"
+		PersonalDetails, "not logged in" | "unknown error"
 	> {
 		const res = await fetch(
 			URL + "/user/me",
@@ -235,7 +236,7 @@ const server = {
 		switch (res.status) {
 		case 200:
 			const body = await res.json()
-			return [body as UserDetails, null]
+			return [body as PersonalDetails, null]
 		case 401:
 			return [null, "not logged in"]
 		default:

@@ -8,7 +8,7 @@ import Account from "./pages/Account"
 import Admin from "./pages/Admin"
 import CreateListing from "./pages/CreateListing"
 import Testing from "./pages/Testing"
-import type { UserDetails } from "./server"
+import type { PersonalDetails } from "./server"
 import server from "./server"
 
 export type PagePath = 
@@ -31,17 +31,16 @@ export const pageTitle: Record<PagePath, string> = {
 }
 
 type UserContextType = [ 
-	user: UserDetails | null, 
-	setUser: Dispatch<SetStateAction<UserDetails | null>> | null
+	user: PersonalDetails | null, 
+	setUser: Dispatch<SetStateAction<PersonalDetails | null>> | null
 ]
 export const UserContext = createContext<UserContextType>([ null, null ])
 
 function App() {
-	const [user, setUser] = useState<UserDetails | null>(null)
+	const [user, setUser] = useState<PersonalDetails | null>(null)
 
 	useEffect(() => {
-		server.currentUser()
-			.then(([ user, _ ]) => setUser(user))
+		server.currentUser().then(([ user, _ ]) => setUser(user))
 	}, [])
 
 	return (

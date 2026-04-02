@@ -249,4 +249,82 @@ user.get(
 	}
 )
 
+//
+// The endpoint for updating the current user's information.
+//
+
+export const UserUpdateSchema = 
+	z.object({
+		name: z.string().nonempty(),
+		email: z.email().nonempty(),
+		password: z.string().nonempty(),
+		profilePicture: z.string().nonempty()
+	})
+	.partial()
+	.meta({
+		description: "The fields of a user that need to be updated. Only include the fields that you want changed."
+	})
+type UserUpdate = z.infer<typeof UserUpdateSchema>
+
+user.patch(
+	"/",
+	auth,
+	body(UserUpdateSchema),
+	async (
+		req: Request<{}, {}, UserUpdate>,
+		res: Response
+	) => {
+		const update = req.body
+
+		// Check for conflicts
+
+		const potentialConflicts: Partial<{ name: string, email: string }> = {}
+		if (update.name) {
+			potentialConflicts.name = update.name
+		}
+		if (update.email) {
+			potentialConflicts.email = update.email
+		}
+
+		const conflictingUsers = await db.User.find(potentialConflicts).exec()
+
+		if (conflictingUsers.length > 0) {
+			err.conflict(res, {
+				name: conflictingUsers.some(user => user.name == update.name),
+				email: conflictingUsers.some(user => user.email == update.email)
+			})
+			return
+		}
+
+		// If no conflicts were found, we can update the user.
+
+		const user = await db.User.findById(req.session!.user).exec()
+		if (!user) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		if (update.name) {
+			user.name = update.name
+		}
+
+		if (update.email) {
+			user.email = update.email
+		}
+
+		if (update.password) {
+			user.password = encrypt(update.password)
+		}
+
+		if (update.profilePicture) {
+			user.profilePicture = update.profilePicture
+		}
+
+		// Save the changes
+
+		await user.save()
+		res.status(Status.OK).end()
+	}
+)
+
 export default user;

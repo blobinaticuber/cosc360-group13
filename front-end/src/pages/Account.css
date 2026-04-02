@@ -1,0 +1,65 @@
+.accountDashboard {
+	display: grid;
+
+	column-gap: 30px;
+	row-gap: 30px;
+
+	grid-template-columns: 1fr 4fr;
+	grid-template-rows: auto auto;
+
+	width: 100%;
+	height: fit-content;
+	padding: 20px;
+}
+
+.accountDashboard .profileSummary {
+	grid-column: 1;
+	grid-row: 1;
+	
+	max-width: 250px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.accountDashboard .profileSummary img {
+	max-width: 100%;
+	height: auto;
+	padding: 2rem;
+	border-radius: 100%;
+}
+
+.accountDashboard .profileSummary .name {
+	font-size: 1.6rem;
+}
+
+.accountDashboard .profileSummary .email {
+	grid-column: 1;
+	grid-row: 2;
+}
+
+.accountDashboard .accountControls {
+	max-width: 250px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.accountDashboard .accountControls button {
+	width: 100%;
+}
+
+.accountDashboard .accountControls button.deleteAccount {
+	margin-top: 30px;
+}
+
+.accountDashboard .listings {
+	grid-column: 2;
+	grid-row: 1 / 2;
+}
