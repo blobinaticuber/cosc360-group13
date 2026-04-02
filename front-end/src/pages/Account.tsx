@@ -12,10 +12,14 @@ import { toast } from "react-toastify"
 import validEmail from "../util/validEmail"
 
 function Account() {
-	const [user, setUser] = useContext(UserContext)
-	if (!user) return <></>
-
 	const navigate = useNavigate()
+
+	const [user, setUser] = useContext(UserContext)
+	if (!user) {
+		navigate("/")
+		return <></>
+	}
+
 	const [editing, setEditing] = useState(false)
 	const [loading, setLoading] = useState(false)
 
@@ -120,7 +124,8 @@ function Account() {
 								setUser!(prev => {
 									return { ...prev!, ...updateFields }
 								})
-								return				
+								setEditing(false)
+								return			
 							case "email already taken":
 								setEmailErr("This email is already in use")
 								return
