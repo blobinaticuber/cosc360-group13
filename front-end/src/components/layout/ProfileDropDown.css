@@ -1,9 +1,9 @@
 .profileDropDownContainer {
 	--icon-size: 50px;
 
-	position: absolute;
+	/* position: absolute;
 	right: 1rem;
-	top: calc(50% - 0.5 * var(--icon-size));
+	top: calc(50% - 0.5 * var(--icon-size)); */
 
 	display: flex;
 	flex-direction: column;
@@ -48,7 +48,7 @@
 	text-align: center;
 
 	position: relative;
-	z-index: 100;
+	z-index: 1000;
 }
 
 .profileDropDownButton {
@@ -66,11 +66,11 @@
 		position: static;
 	}
 
-	.profileDropDownIcon {
+	/* .profileDropDownIcon {
 		position: absolute;
 		right: 1rem;
 		top: calc(50% - 0.5 * var(--icon-size));
-	}
+	} */
 
 	.profileDropDownMenu {
 		width: 100vw;
