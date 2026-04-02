@@ -33,9 +33,10 @@ function Header({
 			<header id="header">
 				
 				<div className="headerInner">
-					<h1>{hidePageTitle ?
-						<>&nbsp;</>
-						:
+					<h1>{
+					// hidePageTitle ?
+						// <>&nbsp;</>
+						// :
 						<>Booklend</>
 						// pageTitle[currentPage]
 					}</h1>
