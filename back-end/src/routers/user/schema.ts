@@ -215,6 +215,14 @@ userSpec.registerPath({
 		},
 		404: {
 			description: "The user's session was identified, but their details couldn't be retrieved. This is extremely unlikely to ever happen."
+		},
+		409: {
+			description: "There was a conflict in the user's new data.",
+			content: {
+				"application/json": {
+					schema: ErrConflictSchema
+				}
+			}
 		}
 	}
 })

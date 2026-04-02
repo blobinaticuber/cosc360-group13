@@ -1,4 +1,4 @@
-import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails } from "./ServerTypes"
+import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate } from "./ServerTypes"
 
 const URL = import.meta.env.VITE_SERVER_BASE_URL as string
 
@@ -242,6 +242,81 @@ const server = {
 		default:
 			return [null, "unknown error"]
 		}
+	},
+
+	/**
+	 * Updates the details of the currently logged-in user. The object you pass
+	 * to this function should only contain the fields you want updated. For
+	 * example, if you wanted to update the `name` of the user, you can just
+	 * use:
+	 * 
+	 * ```
+	 * server.updateUser({ name: "new name" })
+	 * ```
+	 * 
+	 * Any fields you don't include in the update object will be left 
+	 * unchanged.
+	 * 
+	 * @param updates An object with a set of optional fields defining the user
+	 * data that should be updated.
+	 */
+	async updateUser(updates: UserUpdate): ResultWithoutValue<
+		  "invalid request body"
+		| "not logged in"
+		| "unknown error"
+		| "email already taken"
+		| "name already taken"
+		| "email and name already taken"
+	> {
+		const res = await fetch(
+			URL + "/user",
+			{
+				method: "PATCH",
+				credentials: "include",
+				body: JSON.stringify(updates),
+				headers: [
+					[ "Content-Type", "application/json" ]
+				],
+
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+			return null
+		case 400:
+			return "invalid request body"
+		case 401:
+		case 404:
+			return "not logged in"
+		case 409:
+			const { conflicts } = await res.json() as UserPartialUpdateError
+			if (conflicts["name"] && conflicts["email"]) {
+				return "email and name already taken"
+			}
+			if (conflicts["name"]) {
+				return "name already taken"
+			}
+			if (conflicts["email"]) {
+				return "email already taken"
+			}
+			return "unknown error"
+		default:
+			return "unknown error"
+		}
+	},
+
+	/**
+	 * Deletes the currently logged-in user.
+	 */
+	async deleteUser() {
+		await fetch(
+			URL + "/user",
+			{
+				method: "DELETE",
+				credentials: "include",
+			}
+		)
 	},
 
 	/**

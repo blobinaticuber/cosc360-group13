@@ -35,6 +35,18 @@ type TextInputProps = {
 	 * Specifies an icon to display next to the input.
 	 */
 	icon?: IconDefinition
+
+	/**
+	 * Sets the initial value of the element.
+	 */
+	initialValue?: string
+
+	/**
+	 * Defines a callback to be executed whenever the value is changed. If
+	 * you're using this inside of a `<Form>` component, you shouldn't need
+	 * this since the form will track the state for you.
+	 */
+	onChange?: (value: string) => void
 }
 
 /**
@@ -44,7 +56,7 @@ type TextInputProps = {
  * neatly display error messages.
  */
 function TextInput({
-	type, label, name, error, placeholder, icon
+	type, label, name, error, placeholder, icon, initialValue, onChange
 }: TextInputProps) {
 	type ??= "text"
 
@@ -57,7 +69,13 @@ function TextInput({
 				</span>
 				{error && <span className="errorMessage">{error}</span>}
 			</label>
-			<input name={name} type={type} placeholder={placeholder} />
+			<input 
+				name={name} 
+				type={type} 
+				placeholder={placeholder} 
+				defaultValue={initialValue}
+				onChange={e => onChange && onChange(e.target.value)}
+			/>
 		</div>
 	)
 }

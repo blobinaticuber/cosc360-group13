@@ -33,6 +33,29 @@ export interface UserCredentials {
   password: string;
 }
 
+/** The personal (as opposed to public) details about a user */
+export interface PersonalDetails {
+  id: string;
+  name: string;
+  profilePicture: string;
+  email: string;
+}
+
+/** The fields of a user that need to be updated. Only include the fields that you want changed. */
+export interface UserUpdate {
+  /** @minLength 1 */
+  name?: string;
+  /**
+   * @format email
+   * @minLength 1
+   */
+  email?: string;
+  /** @minLength 1 */
+  password?: string;
+  /** @minLength 1 */
+  profilePicture?: string;
+}
+
 /** Used to define a new listing. */
 export interface ListingCreation {
   /** The Google Books ID of the book being listed */
@@ -56,19 +79,20 @@ export type UserListData = UserDetails;
 
 export type UserDeleteData = any;
 
+export type UserPartialUpdateData = any;
+
+export type UserPartialUpdateError = {
+  type: "conflict";
+  conflicts: Record<string, boolean>;
+};
+
 export type SessionCreateData = any;
 
 export type SessionCreateError = UserCredentials;
 
 export type SessionDeleteData = any;
 
-/** The personal (as opposed to public) details about a user */
-export interface GetUserData {
-  id: string;
-  name: string;
-  profilePicture: string;
-  email: string;
-}
+export type GetUserData = PersonalDetails;
 
 export type ListingCreateData = any;
 

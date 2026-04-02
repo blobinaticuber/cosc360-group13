@@ -7,7 +7,7 @@
 
 .buttonComponent.normal {
 	background-color: var(--ui-green);
-	color: var(--text-colour);
+	color: #fff;
 }
 
 .buttonComponent.normal:hover {
@@ -18,7 +18,7 @@
 .buttonComponent.subtle {
 	background-color: var(--background-colour);
 	color: var(--text-colour);
-	border: 2px solid var(--text-colour);
+	border: 2px solid #ddd;
 	padding: 6px;
 }
 

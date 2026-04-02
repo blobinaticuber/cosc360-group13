@@ -3,7 +3,7 @@
 	--background-colour: #ffffff;
     --ui-green: #66D575;
 }
-
+/* 
 @media (prefers-color-scheme: dark) {
 	:root {
 		--text-colour: #ffffff;
@@ -20,4 +20,4 @@
 body {
     height: 100vh;
     background-color: var(--background-colour);
-}
+} */

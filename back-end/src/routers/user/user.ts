@@ -217,6 +217,7 @@ export const PersonalDetailsSchema =
 		email: z.string()
 	})
 	.meta({
+		id: "PersonalDetails",
 		description: "The personal (as opposed to public) details about a user"
 	})
 type PersonalDetails = z.infer<typeof PersonalDetailsSchema> 
@@ -262,6 +263,7 @@ export const UserUpdateSchema =
 	})
 	.partial()
 	.meta({
+		id: "UserUpdate",
 		description: "The fields of a user that need to be updated. Only include the fields that you want changed."
 	})
 type UserUpdate = z.infer<typeof UserUpdateSchema>
