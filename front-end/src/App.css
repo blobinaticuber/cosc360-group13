@@ -1,0 +1,23 @@
+:root {
+	--text-colour: #000000;
+	--background-colour: #ffffff;
+    --ui-green: #66D575;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--text-colour: #ffffff;
+		--background-colour: #000000;
+        --ui-green: #204325;
+	}
+
+}
+
+* {
+    color: var(--text-colour);
+}
+
+body {
+    height: 100vh;
+    background-color: var(--background-colour);
+}
