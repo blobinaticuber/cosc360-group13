@@ -83,7 +83,7 @@ All code for the back-end API is in [src/](./src). Within this folder, there is 
 
 The other folders inside of the source folder are listed and briefly described below:
 
-- [database](./src/database/) contains the code used for setting up the initial database connection ([connect.ts](./src/database/connect.ts)) and defining all of the database schema ([db.ts](./src/database/db.ts)), which are rely on the [Mongoose](https://www.mongodb.com/docs/drivers/node/current/integrations/mongoose/mongoose-get-started/) package. Mongoose handles communication with the underlying Mongo database. The `db` object exported from `db.ts` is used throughout the rest of the modules to make database calls.
+- [database](./src/database/) contains the code used for setting up the initial database connection ([connect.ts](./src/database/connect.ts)) and defining all of the database schema ([db.ts](./src/database/db.ts)), which rely on the [Mongoose](https://www.mongodb.com/docs/drivers/node/current/integrations/mongoose/mongoose-get-started/) package. Mongoose handles communication with the underlying Mongo database. The `db` object exported from `db.ts` is used throughout the rest of the modules to make database calls.
 - [util](./src/util/) contains a set of generally-useful functions used throughout the rest of the program. Similarly, [types](./src/types/) contain a few files that define types that don't fit neatly anywhere else.
 - [middleware](./src/middleware/) defines our middleware functions, which I explain below.
 - [routers](./src/routers/) contain the actual routers for the program.
