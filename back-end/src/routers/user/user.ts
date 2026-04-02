@@ -214,7 +214,7 @@ user.delete(
 
 export const PersonalDetailsSchema =
 	UserDetailsSchema.extend({
-		email: z.email()
+		email: z.string()
 	})
 	.meta({
 		description: "The personal (as opposed to public) details about a user"
@@ -236,7 +236,10 @@ user.get(
 			return
 		}
 
-		const parsed = PersonalDetailsSchema.safeParse(user.toObject())
+		const parsed = PersonalDetailsSchema.safeParse({
+			id: userId.toString(),
+			...user.toObject()
+		})
 		if (!parsed.success) {
 			err.server(res, "Error parsing database object")
 			return

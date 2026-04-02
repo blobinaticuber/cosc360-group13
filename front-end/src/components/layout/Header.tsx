@@ -1,17 +1,12 @@
 import { pageTitle, type PagePath } from "../../App"
-import type { UserDetails } from "../../server/ServerTypes"
 import "./Header.css"
 import Nav from "./Nav"
 import ProfileDropDown from "./ProfileDropDown"
+import { UserContext } from "../../App"
+import { useContext } from "react"
 
 type HeaderProps = {
 	currentPage: PagePath
-
-	/**
-	 * The currently logged-in user. If one is not provided, then it is assumed
-	 * that the user is a guest.
-	 */
-	user?: UserDetails
 
 	/**
 	 * For some pages (like the login and registration pages), including the
@@ -27,8 +22,11 @@ type HeaderProps = {
 }
 
 function Header({ 
-	currentPage, user, hideProfileMenu, hidePageTitle 
+	currentPage, hideProfileMenu, hidePageTitle 
 }: HeaderProps) {
+
+	const [ user, _ ] = useContext(UserContext)
+
 	return (
 		<>
 			<Nav
