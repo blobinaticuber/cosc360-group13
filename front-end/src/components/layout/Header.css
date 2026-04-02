@@ -17,7 +17,7 @@
 }
 
 #header h1 {
-	color: #fff;
+	color: var(--text-colour);
 	font-size: 3rem;
 	/* 250px is roughly the width of the profile menu */
 	max-width: calc(100% - 200px);

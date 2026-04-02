@@ -21,7 +21,7 @@
 }
 
 .navLink {
-	border: 2px solid black;
+	border: 2px solid var(--text-colour);
 	border-radius: 1em 0 1em 0;
 	font-size: 1rem;
 	display: block;
@@ -38,7 +38,7 @@
 }
 
 .navLink:hover, .navLink.activeNavLink {
-	background-color: #fff;
+	background-color: var(--background-colour);
 }
 
 .navLinkText {
