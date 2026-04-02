@@ -35,7 +35,7 @@
 }
 
 .navLink:hover, .navLink.activeNavLink {
-	color: var(--text-colour);
+	color: #fff;
 }
 
 .navLink::after {

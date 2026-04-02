@@ -1,6 +1,6 @@
 import { faCircleUser, faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { useRef, useState } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import type { UserDetails } from "../../server"
 import guestUser from "../../util/guestUser"
 import Button from "../Button"
@@ -13,7 +13,7 @@ type ProfileDropDownProps = {
 	 * The currently logged-in user. If one is not provided, then it is assumed
 	 * that the user is a guest.
 	 */
-	user?: UserDetails
+	user?: UserDetails | null
 }
 
 
@@ -32,7 +32,6 @@ function ProfileDropDown({ user }: ProfileDropDownProps) {
 	const { profilePicture, name } = user ?? guestUser()
 
 	const navigate = useNavigate()
-	const { pathname } = useLocation()
 	const [showProfileMenu, setShowProfileMenu] = useState(false)
 	const profileIcon = useRef<HTMLImageElement | null>(null)
 
@@ -73,11 +72,7 @@ function ProfileDropDown({ user }: ProfileDropDownProps) {
 							onClick={async () => {
 								await server.logOut()
 
-								if (pathname == "/") {
-									navigate(0) // the input to refresh the page
-								} else {
-									navigate("/")
-								}
+								navigate(0)
 							}}
 							className="profileDropDownButton"
 							style="subtle"

@@ -1,5 +1,5 @@
 import { faArrowRightToBracket, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Link } from "react-router-dom"
 import Button from "../components/Button"
 import Form from "../components/forms/Form"
@@ -10,9 +10,11 @@ import validEmail from "../util/validEmail"
 import { useNavigate } from "react-router-dom"
 import "./Login.css"
 import { toast } from "react-toastify"
+import { UserContext } from "../App"
 
 function Login() {
 	const navigate = useNavigate()
+	const [_, setUser] = useContext(UserContext)
 	const [emailErr, setEmailErr] = useState("")
 	const [passwordErr, setPasswordErr] = useState("")
 
@@ -52,6 +54,10 @@ function Login() {
 					if (res.ok) {
 						toast.success("Logged in", { autoClose: 2000 })
 						navigate("/")
+
+						const [user, _] = await server.currentUser()
+						setUser!(user)
+
 						return
 					}
 

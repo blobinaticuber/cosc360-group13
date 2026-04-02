@@ -214,9 +214,10 @@ user.delete(
 
 export const PersonalDetailsSchema =
 	UserDetailsSchema.extend({
-		email: z.email()
+		email: z.string()
 	})
 	.meta({
+		id: "PersonalDetails",
 		description: "The personal (as opposed to public) details about a user"
 	})
 type PersonalDetails = z.infer<typeof PersonalDetailsSchema> 
@@ -236,13 +237,95 @@ user.get(
 			return
 		}
 
-		const parsed = PersonalDetailsSchema.safeParse(user.toObject())
+		const parsed = PersonalDetailsSchema.safeParse({
+			id: userId.toString(),
+			...user.toObject()
+		})
 		if (!parsed.success) {
 			err.server(res, "Error parsing database object")
 			return
 		}
 
 		res.status(Status.OK).json(parsed.data)
+	}
+)
+
+//
+// The endpoint for updating the current user's information.
+//
+
+export const UserUpdateSchema = 
+	z.object({
+		name: z.string().nonempty(),
+		email: z.email().nonempty(),
+		password: z.string().nonempty(),
+		profilePicture: z.string().nonempty()
+	})
+	.partial()
+	.meta({
+		id: "UserUpdate",
+		description: "The fields of a user that need to be updated. Only include the fields that you want changed."
+	})
+type UserUpdate = z.infer<typeof UserUpdateSchema>
+
+user.patch(
+	"/",
+	auth,
+	body(UserUpdateSchema),
+	async (
+		req: Request<{}, {}, UserUpdate>,
+		res: Response
+	) => {
+		const update = req.body
+
+		// Check for conflicts
+
+		const potentialConflicts: Partial<{ name: string, email: string }> = {}
+		if (update.name) {
+			potentialConflicts.name = update.name
+		}
+		if (update.email) {
+			potentialConflicts.email = update.email
+		}
+
+		const conflictingUsers = await db.User.find(potentialConflicts).exec()
+
+		if (conflictingUsers.length > 0) {
+			err.conflict(res, {
+				name: conflictingUsers.some(user => user.name == update.name),
+				email: conflictingUsers.some(user => user.email == update.email)
+			})
+			return
+		}
+
+		// If no conflicts were found, we can update the user.
+
+		const user = await db.User.findById(req.session!.user).exec()
+		if (!user) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		if (update.name) {
+			user.name = update.name
+		}
+
+		if (update.email) {
+			user.email = update.email
+		}
+
+		if (update.password) {
+			user.password = encrypt(update.password)
+		}
+
+		if (update.profilePicture) {
+			user.profilePicture = update.profilePicture
+		}
+
+		// Save the changes
+
+		await user.save()
+		res.status(Status.OK).end()
 	}
 )
 
