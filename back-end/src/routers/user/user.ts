@@ -183,7 +183,7 @@ user.post(
 		});
 		await session.save();
 
-		res.cookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
+		res.cookie(process.env.AUTH_COOKIE!, session.id, COOKIE_SETTINGS)
 			.status(Status.OK)
 			.end();
 	},
