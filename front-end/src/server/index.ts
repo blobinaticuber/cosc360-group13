@@ -1,0 +1,258 @@
+import type { BookDetailData, ListingCreation, ListingDetailData, UserDetails } from "./ServerTypes"
+
+const URL = import.meta.env.VITE_SERVER_BASE_URL as string
+
+export type BookDetails = BookDetailData[number]
+export type ListingDetails = ListingDetailData
+export { type UserDetails } from "./ServerTypes"
+
+type GeneralErrorValue = string
+type ResultWithoutValue<ErrorValue extends GeneralErrorValue> = 
+	Promise<ErrorValue | null>
+type Result<ExpectedValue, ErrorValue extends GeneralErrorValue> = 
+	Promise<[ ExpectedValue, null ] | [ null, ErrorValue ]>
+
+/**
+ * This object wraps some methods and properties used for interacting with the
+ * back-end of the app. 
+ * 
+ * The return values of the functions enclosed here follow the convention of
+ * returning an error as a value. Many of the functions have a set of possible
+ * error strings, each of which denote a specific error. This lets you use
+ * them like so:
+ * 
+ * ```
+ * const err = await server.createListing("some book ID")
+ * 
+ * // Handle the possible errors.
+ * switch (err) {
+ * case "unrecognized user": 
+ * 	// ...
+ * 	return
+ * case "unknown book id":
+ * 	// ...
+ * 	return
+ * case "unknown error":
+ * 	// ...
+ * 	return
+ * }
+ * ```
+ * 
+ * If none of the error strings are matched, or if the `err` result is `null`,
+ * then we know that the request worked without any problems. Additionally, if
+ * you don't actually care about what kind of error occurred, you can just
+ * check `err == null` instead of handling each error type individually.
+ * 
+ * If a function should return a value, then we simply pair the normal return
+ * value with the error value in an array. The expected result always comes
+ * before the error string. E.g.,
+ * 
+ * ```
+ * const [books, err] = server.searchBooks("book title")
+ * 
+ * switch (err) {
+ * case "no matches found":
+ * 	// ...
+ * 	return
+ * case "unknown error":
+ * 	// ...
+ * 	return
+ * }
+ * ```
+ * 
+ * In this case, the expected value (`books`) will be `null` if there was an
+ * error. That is, if `books == null`, then `err != null`, and vice versa.
+ */
+const server = {
+	/**
+	 * Searches the Google Books database for a book based on its title.
+	 * 
+	 * @param title The book title to search for, which will be sent to the
+	 * server.
+	 * @param page A positive integer representing which "page" of results you
+	 * want. Each page will include up to ten books. E.g., if you want the top
+	 * ten results, use `page == 1` (the default); for results 11 through 20,
+	 * use `page == 2`, and so on.
+	 * @returns A list of matching books.
+	 */
+	async searchBooks(
+		title: string, page?: number
+	): Result<BookDetails[], "no matches found"	| "unknown error"> {
+		const query = new URLSearchParams({
+			page: (page ?? 1).toString()
+		})
+
+		const res = await fetch(
+			URL + "/search/book/" + title + "?" + query.toString()
+		)
+
+		switch (res.status) {
+		case 200:
+			const results = await res.json()
+			return [results as BookDetailData, null]
+		case 404:
+			return [null, "no matches found"]
+		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Lists a book under whichever user is currently logged in. If the listing
+	 * was created successfully, this function will return `null`. Otherwise,
+	 * it will return a string describing the reason for the failure.
+	 * 
+	 * @param bookId The Google Books `id` of the book that you are listing.
+	 */
+	async createListing(
+		bookId: string
+	): ResultWithoutValue<
+		"unrecognized user" | "unknown book id" | "unknown error"
+	> {
+		const res = await fetch(
+			URL + "/listing",
+			{
+				method: "POST",
+				headers: [
+					[ "Content-Type", "application/json" ]
+				],
+				body: JSON.stringify({
+					book: bookId
+				} satisfies ListingCreation),
+				credentials: "include"
+			}
+		)
+
+		switch (res.status) {
+		case 201:
+			return null
+		case 401:
+			return "unrecognized user"
+		case 404:
+			return "unknown book id"
+		default:
+			return "unknown error"
+		}
+	},
+
+	/**
+	 * Logs the current user out. 
+	 */
+	async logOut() {
+		await fetch(
+			URL + "/user/session",
+			{
+				method: "DELETE",
+				credentials: "include"
+			}
+		)
+	},
+
+	/**
+	 * Searches for a user by their name. You can also use `name == "*"` to get
+	 * all users.
+	 * 
+	 * @param name
+	 * @param page A positive integer representing which "page" of results you
+	 * want. Each page will include up to ten books. E.g., if you want the top
+	 * ten results, use `page == 1` (the default); for results 11 through 20,
+	 * use `page == 2`, and so on.
+	 * @returns A list of matching users.
+	 */
+	async searchUser(
+		name: string, page?: number
+	): Result<UserDetails[], "no users found" | "unknown error"> {
+		const query = new URLSearchParams({
+			page: (page ?? 1).toString()
+		})
+
+		const res = await fetch(
+			URL + "/search/user/" + name + "?" + query.toString()
+		)
+
+		if (res.ok) {
+			const users = await res.json()
+			return [users as UserDetails[], null]
+		}
+
+		switch (res.status) {
+		case 404:
+			return [null, "no users found"]
+		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Searches for listings by the title of the books they contain. you can
+	 * also use `name == "*"` to get all listings.
+	 * 
+	 * @param name The name of the book to search for related listings.
+	 * @param page A positive integer representing which "page" of results you
+	 * want. Each page will include up to ten books. E.g., if you want the top
+	 * ten results, use `page == 1` (the default); for results 11 through 20,
+	 * use `page == 2`, and so on.
+	 * @returns A list of matching listings.
+	 */
+	async searchListing(
+		name: string, page?: number
+	): Result<ListingDetails[], "unknown error" | "no listings found"> {
+		const query = new URLSearchParams({
+			page: (page ?? 1).toString()
+		})
+
+		const res = await fetch(
+			URL + "/search/listing/" + name + "?" + query.toString()
+		)
+
+		if (res.ok) {
+			const listings = await res.json()
+			return [listings as ListingDetails[], null]
+		}
+
+		switch (res.status) {
+		case 404:
+			return [null, "no listings found"]
+		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Get the details about the currently logged-in user.
+	 */
+	async currentUser(): Result<
+		UserDetails, "not logged in" | "unknown error"
+	> {
+		const res = await fetch(
+			URL + "/user/me",
+			{
+				method: "GET",
+				credentials: "include"
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json()
+			return [body as UserDetails, null]
+		case 401:
+			return [null, "not logged in"]
+		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Contains full URL for certain endpoints. This can be useful if you want
+	 * to set the `url` property of a `<Form>`, for example, or if you just
+	 * want to send a custom `fetch` request rather than using the methods of
+	 * this object.
+	 */
+	paths: {
+		login: URL + "/user/session",
+		register: URL + "/user"
+	}
+}
+
+export default server

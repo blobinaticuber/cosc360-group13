@@ -1,4 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose"
+import type { BookDetails } from "routers/book/book.js"
 
 //
 // This file contains the schema used for the database, and only those types.
@@ -31,7 +32,7 @@ const UserSchema = new Schema<User>({
 	profilePicture: {
 		type: String,
 		default: () => {
-			return process.env.SERVER_URL + "public/default_profile_picture.jpg"
+			return process.env.SERVER_URL + "/public/default_profile_picture.jpg"
 		}
 	},
 })
@@ -59,35 +60,61 @@ const AdminSchema = new Schema<Admin>({
 	profilePicture: {
 		type: String,
 		default: () => {
-			return process.env.SERVER_URL + "public/default_profile_picture.jpg"
+			return process.env.SERVER_URL + "/public/default_profile_picture.jpg"
 		}
 	},
 })
 const Admin = mongoose.model("Admin", AdminSchema)
 
 /**
- * Represents a listing, posted by a user.
+ * Represents a listing posted by a user.
  */
 export type Listing = {
-	title: string
-	description: string
+	book: BookDetails
 	user: Types.ObjectId
-	image: string
+	available: boolean
 }
 const ListingSchema = new Schema<Listing>({
-	title: {
-		type: String,
+	book: {
+		type: new Schema({
+			id: { 
+				type: String, 
+				required: true 
+			},
+			authors: { 
+				type: [String], 
+				default: () => []
+			},
+			rating: { 
+				type: Number, 
+				required: false 
+			},
+			categories: { 
+				type: [String], 
+				default: () => [] 
+			},
+			description: { 
+				type: String, 
+				default: () => "<em>No description available.</em>" 
+			},
+			image: { 
+				type: String, 
+				default: () => {
+					return process.env.SERVER_URL + 
+						"/public/default_listing_picture.jpg"
+				}
+			},
+			title: {
+				type: String,
+				required: true,
+				index: true
+			},
+			publishDate: {
+				type: String,
+				required: false
+			}
+		}),
 		required: true,
-	},
-	description: {
-		type: String,
-		required: true,
-	},
-	image: {
-		type: String,
-		default: () => {
-			return process.env.SERVER_URL + "public/default_listing_picture.png"
-		}
 	},
 	user: {
 		type: Schema.Types.ObjectId,
@@ -95,6 +122,10 @@ const ListingSchema = new Schema<Listing>({
 		index: true,
 		required: true,
 	},
+	available: {
+		type: Boolean,
+		default: () => true
+	}
 })
 const Listing = mongoose.model("Listing", ListingSchema)
 

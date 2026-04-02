@@ -1,31 +1,33 @@
 {
-  "name": "booklend-api",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "dev": "tsx --watch --env-file .env src/index.ts"
-  },
-  "author": "Chad Glazier",
-  "license": "ISC",
-  "description": "The Rest API for Booklend",
-  "type": "module",
-  "dependencies": {
-    "@asteasolutions/zod-to-openapi": "^8.4.3",
-    "bcrypt": "^6.0.0",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "mongoose": "^9.3.0",
-    "zod": "^4.3.6"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cookie-parser": "^1.4.10",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/mongoose": "^5.11.96",
-    "@types/node": "^25.4.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
-  }
+	"name": "booklend-api",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"dev": "tsx --watch --env-file=.env --env-file=.env.local src/index.ts",
+		"generate:books_client": "swagger-typescript-api generate --path \"https://api.apis.guru/v2/specs/googleapis.com/books/v1/openapi.json\" --name GoogleBooks --output src/types --api-class-name=\"GoogleBooks\" --disable-throw-on-error --no-client"
+	},
+	"author": "Chad Glazier",
+	"license": "ISC",
+	"description": "The Rest API for Booklend",
+	"type": "module",
+	"dependencies": {
+		"@asteasolutions/zod-to-openapi": "^8.4.3",
+		"bcrypt": "^6.0.0",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.6",
+		"express": "^5.2.1",
+		"mongoose": "^9.3.0",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"@types/bcrypt": "^6.0.0",
+		"@types/cookie-parser": "^1.4.10",
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.6",
+		"@types/mongoose": "^5.11.96",
+		"@types/node": "^25.4.0",
+		"swagger-typescript-api": "^13.6.5",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
+	}
 }

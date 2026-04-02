@@ -1,5 +1,6 @@
 import "./Button.css"
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core"
+import { faSpinner } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 type ButtonProps = {
@@ -35,26 +36,46 @@ type ButtonProps = {
 	 * Sets the text for the button.
 	 */
 	text?: string
+
+	/**
+	 * If this is set to `true`, then the button's icon will be replaced with
+	 * a spinner and the button will be disabled. 
+	 */
+	spinning?: boolean
+
+	/**
+	 * Set this to `true` to disable the button.
+	 */
+	disable?: boolean
 }
 
-function Button({ className, onClick, style, icon, text }: ButtonProps) {
+function Button({ 
+	className, onClick, style, icon, text, spinning, disable
+}: ButtonProps) {
 	style ??= "normal"
 
 	return (
 		<button
+			disabled={spinning || disable}
 			className={
 				"buttonComponent" + 
 				" " + (className ?? "") +
 				" " + style
 			}
 			onClick={e => {
+				e.stopPropagation()
 				if (onClick) onClick(e)
 			}}
 		>
 			{icon ?
-				<>
-					<FontAwesomeIcon icon={icon} /> {text}
-				</>
+				(spinning ?
+					<>
+					<FontAwesomeIcon icon={faSpinner} className="spinning" key="spinner" /> {text}</>
+					:
+					<>
+					<FontAwesomeIcon icon={icon} key="icon" /> {text}
+					</>
+				)
 				:
 				text
 			}

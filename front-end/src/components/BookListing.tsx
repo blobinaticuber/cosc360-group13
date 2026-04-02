@@ -6,7 +6,7 @@ import "./BookListing.css"
 function BookListing() {
     return (
         <div className="card">
-            <img className="book-thumbnail" src="../../public/book_background.jpg"/>
+            <img className="book-thumbnail" src="../../book_background.jpg"/>
             <h2>Book Title</h2>
             <p>(Description) Lorem ipsum dolar sit amet</p>
         </div>

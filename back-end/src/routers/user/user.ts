@@ -1,64 +1,71 @@
 import db from "database/db.js"
-import type { Request, Response } from "express"
+import type { CookieOptions, Request, Response } from "express"
 import { Router } from "express"
-import body from "middleware/body.js"
-import Status from "util/Status.js"
-import err from "util/err.js"
-import { ErrConflictSchema, ErrInvalidBodySchema, type ErrServer } from "util/errSchema.js"
-import { compare, encrypt } from "util/encryption.js"
 import auth from "middleware/auth.js"
+import body from "middleware/body.js"
+import Status from "types/Status.js"
+import { compare, encrypt } from "util/encryption.js"
+import err from "util/err.js"
+import { type ErrServer } from "util/errSchema.js"
 import z from "zod"
 
-const user = Router()
+const user = Router();
+
+const COOKIE_SETTINGS: CookieOptions = {
+	httpOnly: true,
+	sameSite: "lax",
+	secure: process.env.MODE == "production" 
+		? true
+		: false, 
+}
 
 //
 // The endpoint for creating a new user.
 //
 
-export const RegistrationDetailsSchema = 
-	z.object({
-		name: z.string(),
-		email: z.email(),
-		password: z.string(),
-		profilePicture: z.string().optional(),
-	}).meta({ 
-		id: "RegistrationDetails",
-		description: "The details used to register a new user."
-	})
-export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>
+export const RegistrationDetailsSchema = z.object({
+	name: z.string(),
+	email: z.email(),
+	password: z.string(),
+	profilePicture: z.string().optional(),
+}).meta({
+	id: "RegistrationDetails",
+	description: "The details used to register a new user.",
+});
+export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>;
 
 user.post(
 	"/",
 	body(RegistrationDetailsSchema),
 	async (
-		req: Request<{}, {}, RegistrationDetails>, 
-		res: Response
+		req: Request<{}, {}, RegistrationDetails>,
+		res: Response,
 	) => {
 		const existingUser = await db.User.findOne({
 			$or: [
 				{ email: req.body.email },
 				{ name: req.body.name },
 			],
-		}).exec()
+		}).exec();
 
 		if (existingUser != null) {
 			return err.conflict(res, {
 				email: req.body.email == existingUser.email,
 				name: req.body.name == existingUser.name,
-			})
+			});
 		}
 
 		try {
-			req.body.password = encrypt(req.body.password)
-			const newUser = new db.User(req.body)
-			await newUser.save()
+			req.body.password = encrypt(req.body.password);
+			const newUser = new db.User(req.body);
+			await newUser.save();
 		} catch (e) {
-			return err.server(res)
+			return err.server(res);
 		}
 
-		res.status(Status.Created).end()
+		res.status(Status.Created).end();
 	},
-)
+);
 
 //
 // The endpoint for retrieving a user's details.
@@ -74,43 +81,43 @@ export const UserDetailsSchema =
 		id: "UserDetails",
 		description: "The public information about a user.",
 	})
-export type UserDetails = z.infer<typeof UserDetailsSchema>
+export type UserDetails = z.infer<typeof UserDetailsSchema>;
 
 user.get(
-	"/", 
+	"/",
 	async (
-		req: Request, 
-		res: Response<UserDetails | ErrServer | undefined>
+		req: Request,
+		res: Response<UserDetails | ErrServer | undefined>,
 	) => {
-		const { name, id } = req.query
+		const { name, id } = req.query;
 
-		let user = null
+		let user = null;
 
 		if (typeof name == "string") {
 			user = await db.User.findOne({
 				name: name,
-			}).exec()
+			}).exec();
 		} else if (typeof id == "string") {
 			try {
-				user = await db.User.findById(id)
+				user = await db.User.findById(id);
 			} catch {
-				user = null
+				user = null;
 			}
 		}
 
 		if (user == null) {
-			return res.status(Status.NotFound).end()
+			return res.status(Status.NotFound).end();
 		}
 
-		user.id = user._id.toString()
-		const parsed = UserDetailsSchema.safeParse(user)
+		user.id = user._id.toString();
+		const parsed = UserDetailsSchema.safeParse(user);
 		if (!parsed.success) {
-			return err.server(res)
+			return err.server(res);
 		}
 
-		return res.status(Status.OK).json(parsed.data)
-	}
-)
+		return res.status(Status.OK).json(parsed.data);
+	},
+);
 
 //
 // The endpoint for deleting a user account.
@@ -121,73 +128,66 @@ user.delete(
 	auth,
 	async (
 		req: Request,
-		res: Response<undefined>
+		res: Response<undefined>,
 	) => {
-		const userId = req.session!.user
+		const userId = req.session!.user;
 
-		await db.User.findByIdAndDelete(userId)
+		await db.User.findByIdAndDelete(userId);
 		await db.Session.deleteMany({
-			user: userId
-		})
+			user: userId,
+		});
 		await db.Listing.deleteMany({
-			user: userId
-		})
+			user: userId,
+		});
 
-		res.clearCookie(process.env.AUTH_COOKIE!, {
-				httpOnly: true,
-				sameSite: "lax"
-			})
+		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
-			.end()	
-	}
-)
+			.end();
+	},
+);
 
 //
 // The endpoint for creating a session i.e., logging in.
 //
 
-export const UserCredentialsSchema = 
-	z.object({
-		email: z.email(),
-		password: z.string()
-	})
+export const UserCredentialsSchema = z.object({
+	email: z.email(),
+	password: z.string(),
+})
 	.meta({
 		id: "UserCredentials",
-		description: "The credentials used to log a user in."
-	})
-export type UserCredentials = z.infer<typeof UserCredentialsSchema>
+		description: "The credentials used to log a user in.",
+	});
+export type UserCredentials = z.infer<typeof UserCredentialsSchema>;
 
 user.post(
-	"/session", 
+	"/session",
 	body(UserCredentialsSchema),
 	async (
-		req: Request<{}, {}, UserCredentials>, 
-		res: Response<undefined>
+		req: Request<{}, {}, UserCredentials>,
+		res: Response<undefined>,
 	) => {
 		const user = await db.User.findOne({
-			email: req.body.email
-		}).exec()
+			email: req.body.email,
+		}).exec();
 		if (user == null) {
-			return res.status(Status.NotFound).end()
+			return res.status(Status.NotFound).end();
 		}
 
 		if (!compare(req.body.password, user.password)) {
-			return res.status(Status.Unauthorized).end()
+			return res.status(Status.Unauthorized).end();
 		}
 
 		const session = new db.Session({
-			user: user._id
-		})
-		await session.save()
+			user: user._id,
+		});
+		await session.save();
 
-		res.cookie(process.env.AUTH_COOKIE!, session._id.toString(), {
-				httpOnly: true,
-				sameSite: "lax"
-			})
+		res.cookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
-			.end()
-	}
-)
+			.end();
+	},
+);
 
 //
 // The endpoint for deleting a session i.e., logging out.
@@ -198,17 +198,52 @@ user.delete(
 	auth,
 	async (
 		req: Request,
-		res: Response
+		res: Response,
 	) => {
-		await req.session!.deleteOne()
-	
-		res.clearCookie(process.env.AUTH_COOKIE!, {
-				httpOnly: true,
-				sameSite: "lax"
-			})
+		await req.session!.deleteOne();
+
+		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
-			.end()
+			.end();
+	},
+);
+
+//
+// The endpoint for getting information about the currently logged-in user.
+//
+
+export const PersonalDetailsSchema =
+	UserDetailsSchema.extend({
+		email: z.email()
+	})
+	.meta({
+		description: "The personal (as opposed to public) details about a user"
+	})
+type PersonalDetails = z.infer<typeof PersonalDetailsSchema> 
+
+user.get(
+	"/me",
+	auth,
+	async (
+		req: Request,
+		res: Response<PersonalDetails>
+	) => {
+		const userId = req.session!.user
+
+		const user = await db.User.findById(userId).exec()
+		if (user == null) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		const parsed = PersonalDetailsSchema.safeParse(user.toObject())
+		if (!parsed.success) {
+			err.server(res, "Error parsing database object")
+			return
+		}
+
+		res.status(Status.OK).json(parsed.data)
 	}
 )
 
-export default user
+export default user;

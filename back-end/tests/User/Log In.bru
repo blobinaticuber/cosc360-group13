@@ -1,0 +1,156 @@
+meta {
+  name: Log In
+  type: http
+  seq: 4
+  tags: [
+    User
+  ]
+}
+
+post {
+  url: {{baseUrl}}/user/session
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "",
+    "password": ""
+  }
+}
+
+docs {
+  Log in (create a session).
+}
+
+example {
+  name: 200 Response
+  description: The user is now logged in (and a cookie is set).
+  
+  request: {
+    url: {{baseUrl}}/user/session
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "email": "",
+        "password": ""
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: 400 Response
+  description: The request body is invalid.
+  
+  request: {
+    url: {{baseUrl}}/user/session
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "email": "",
+        "password": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 400
+      text: Bad Request
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "email": "",
+          "password": ""
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 401 Response
+  description: The email is recognized, but the password is wrong.
+  
+  request: {
+    url: {{baseUrl}}/user/session
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "email": "",
+        "password": ""
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 401
+      text: Unauthorized
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: 404 Response
+  description: The email isn't recognized.
+  
+  request: {
+    url: {{baseUrl}}/user/session
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "email": "",
+        "password": ""
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 404
+      text: Not Found
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}

@@ -1,5 +1,15 @@
+.homeMain {
+	width: min(100%, 800px);
+	display: flex;
+	flex-direction: column;
+	margin: 2rem auto;
+}
 
-.book-listings-container {
-    display: flex;
-    flex-grow: auto;
+.homeMain .searchResultsContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+
+	padding: 1rem;
+	width: 100%;
 }

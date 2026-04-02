@@ -1,9 +1,9 @@
-.formComponent {
+.formComponent fieldset {
 	display: flex;
 	flex-direction: column;
 	padding: 2rem;
 
-	width: 440px;
+	width: 500px;
 	max-width: 90%;
 
 	height: fit-content;

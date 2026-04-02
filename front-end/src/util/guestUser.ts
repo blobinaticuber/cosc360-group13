@@ -1,12 +1,12 @@
-import type { User } from "../types"
+import type { UserDetails } from "../server"
 
 /**
- * Creates a default instance of {@link User}.
+ * Creates a default instance of {@link UserDetails}.
  */
-function guestUser(): User {
+function guestUser(): UserDetails {
 	return {
 		profilePicture: "/default_user_profile_picture.png",
-		username: "Guest User",
+		name: "Guest User",
 		id: "guest"
 	}
 }

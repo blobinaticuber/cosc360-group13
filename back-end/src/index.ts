@@ -20,12 +20,13 @@ async function main() {
 	server.use(cors({
 		origin: process.env.CLIENT_URL!,
 		credentials: true,
+		exposedHeaders: [ "Set-Cookie" ]
 	}))
 	server.use(express.json())
 	server.use(cookieParser())
 
 	if (process.env.MODE == "development") {
-		server.set("json spaces", 2)
+		server.set("json spaces", 4)
 	}
 
 	//

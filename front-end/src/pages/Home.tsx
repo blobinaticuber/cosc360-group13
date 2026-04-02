@@ -1,18 +1,31 @@
-import BookListing from "../components/BookListing"
-import Header from "../components/Header"
-import guestUser from "../util/guestUser"
+import { useState } from "react"
+import Header from "../components/layout/Header"
+import SearchBar from "../components/SearchBar"
+import server, { type ListingDetails } from "../server"
 import "./Home.css"
+import BookCard from "../components/book_search/BookCard"
 
 function Home() {
-	return (<>
-		<Header currentPage="/" user={guestUser()} />
-		<p>This will be the user's home page. This page should be functional even if the user isn't logged in.</p>
-		<div className="book-listings-container">
-			<BookListing/>
-			<BookListing/>
-		</div>
-		
-	</>)
+
+	const [listings, setListings] = useState<ListingDetails[]>([])
+
+	return <>
+		<Header currentPage="/" />
+		<main className="homeMain">
+			<SearchBar 
+				search={async (term) => {
+					const [listings, _] = await server.searchListing(term)
+					return listings ?? []
+				}} 
+				onResults={listings => {
+					setListings([...listings])
+				}}
+			/>
+			<div className="searchResultsContainer">
+				{listings.map(listing => <BookCard book={listing.book} />)}
+			</div>
+		</main>
+	</>
 }
 
 export default Home

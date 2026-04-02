@@ -1,19 +1,22 @@
 import { faArrowRightToBracket, faEnvelope, faLock, faUser } from "@fortawesome/free-solid-svg-icons"
-import Button from "../components/Button"
-import "./Register.css"
-import { Link } from "react-router-dom"
-import server from "../util/server"
-import Form from "../components/Form"
 import { useState } from "react"
-import TextInput from "../components/TextInput"
+import { Link, useNavigate } from "react-router-dom"
+import Button from "../components/Button"
+import Form from "../components/forms/Form"
+import TextInput from "../components/forms/TextInput"
+import Header from "../components/layout/Header"
+import server from "../server"
 import validEmail from "../util/validEmail"
-import Header from "../components/Header"
+import { toast } from "react-toastify"
+import "./Register.css"
 
 function Register() {
-	const [emailErr, setEmailErr] = useState("")
-	const [displayNameErr, setDisplayNameErr] = useState("")
-	const [passwordErr, setPasswordErr] = useState("")
-	const [confirmPasswordErr, setConfirmPasswordErr] = useState("")
+	const navigate = useNavigate()
+	const [ emailErr, setEmailErr ] = useState("")
+	const [ nameErr, setNameErr ] = useState("")
+	const [ passwordErr, setPasswordErr ] = useState("")
+	const [ confirmPasswordErr, setConfirmPasswordErr ] = useState("")
+	const [ loading, setLoading ] = useState(false)
 
 	return (<>
 		<Header
@@ -24,29 +27,29 @@ function Register() {
 		<main className="registerContainer">
 			<Form
 				method="POST"
-				url={server.routes.register.url}
+				url={server.paths.register}
 				validator={(data) => {
 					let errorMarked = false
 
 					setEmailErr("")
-					setDisplayNameErr("")
+					setNameErr("")
 					setPasswordErr("")
 					setConfirmPasswordErr("")
 
 					if (!data["email"]) {
-						setEmailErr("This field is required.") 
+						setEmailErr("This field is required.")
 						errorMarked = true
 					}
-					if (!data["displayName"]) {
-						setDisplayNameErr("This field is required.") 
+					if (!data["name"]) {
+						setNameErr("This field is required.")
 						errorMarked = true
 					}
 					if (!data["password"]) {
-						setPasswordErr("This field is required.") 
+						setPasswordErr("This field is required.")
 						errorMarked = true
 					}
 					if (!data["confirmPassword"]) {
-						setConfirmPasswordErr("This field is required.") 
+						setConfirmPasswordErr("This field is required.")
 						errorMarked = true
 					}
 					if (data["confirmPassword"] != data["password"]) {
@@ -61,23 +64,41 @@ function Register() {
 					return !errorMarked
 				}}
 				onResponse={async (res) => {
-					// This is a placeholder which just logs the server 
-					// response.
-					const body = await (await res).json()
-					console.log(body)
+					
+					if (res.ok) {
+						toast.success("Account created", { autoClose: 2000 })
+						navigate("/login")
+						return
+					}
+					
+					// Handle errors
+					switch (res.status) {
+					case 409: // Conflict error
+						const { conflicts } = await res.json()
+						if ("name" in conflicts && conflicts.name) {
+							setNameErr("This name is taken")
+						}
+						if ("email" in conflicts && conflicts.email) {
+							setEmailErr("This email is already in use")
+						}
+						return
+					default:  // Unknown error
+						alert("Unexpected server error.")
+					}
 				}}
+				onLoading={setLoading}
 			>
 				<h1>Create an Account</h1>
-			
+
 				<TextInput
 					name="email"
 					error={emailErr}
 					icon={faEnvelope}
 				/>
 				<TextInput
-					name="displayName"
+					name="name"
 					label="Display Name"
-					error={displayNameErr}
+					error={nameErr}
 					icon={faUser}
 				/>
 				<TextInput
@@ -86,7 +107,7 @@ function Register() {
 					icon={faLock}
 					type="password"
 				/>
-				<TextInput 
+				<TextInput
 					name="confirmPassword"
 					label="Confirm Password"
 					error={confirmPasswordErr}
@@ -96,6 +117,8 @@ function Register() {
 				<Button
 					icon={faArrowRightToBracket}
 					text="Register"
+					key="register"
+					spinning={loading}
 				/>
 				<p>
 					Already have an account? <Link to="/login">Log in</Link>.

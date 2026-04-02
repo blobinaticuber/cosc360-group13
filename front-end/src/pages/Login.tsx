@@ -1,28 +1,31 @@
-import { Link } from "react-router-dom"
-import Form from "../components/Form"
-import server from "../util/server"
-import "./Login.css"
-import Button from "../components/Button"
 import { faArrowRightToBracket, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
+import { Link } from "react-router-dom"
+import Button from "../components/Button"
+import Form from "../components/forms/Form"
+import TextInput from "../components/forms/TextInput"
+import Header from "../components/layout/Header"
+import server from "../server"
 import validEmail from "../util/validEmail"
-import TextInput from "../components/TextInput"
-import Header from "../components/Header"
+import { useNavigate } from "react-router-dom"
+import "./Login.css"
+import { toast } from "react-toastify"
 
 function Login() {
+	const navigate = useNavigate()
 	const [emailErr, setEmailErr] = useState("")
 	const [passwordErr, setPasswordErr] = useState("")
 
 	return (<>
-		<Header 
-			currentPage="/login" 
-			hideProfileMenu 
+		<Header
+			currentPage="/login"
+			hideProfileMenu
 			hidePageTitle
 		/>
 		<main className="loginContainer">
 			<Form
 				method="POST"
-				url={server.routes.login.url}
+				url={server.paths.login}
 				validator={(data) => {
 					let errorMarked = false
 
@@ -30,11 +33,11 @@ function Login() {
 					setPasswordErr("")
 
 					if (!data["email"]) {
-						setEmailErr("This field is required.") 
+						setEmailErr("This field is required.")
 						errorMarked = true
 					}
 					if (!data["password"]) {
-						setPasswordErr("This field is required.") 
+						setPasswordErr("This field is required.")
 						errorMarked = true
 					}
 					if (!validEmail(data["email"])) {
@@ -45,10 +48,24 @@ function Login() {
 					return !errorMarked
 				}}
 				onResponse={async (res) => {
-					// This is a placeholder which just logs the server 
-					// response.
-					const body = await (await res).json()
-					console.log(body)
+
+					if (res.ok) {
+						toast.success("Logged in", { autoClose: 2000 })
+						navigate("/")
+						return
+					}
+
+					// Handle errors
+					switch (res.status) {
+					case 404: // Bad email
+						setEmailErr("Unrecognized email")
+						return
+					case 401: // Good email; bad password
+						setPasswordErr("Incorrect password")
+						return
+					default:  // Unknown error
+						alert("Unexpected server error.")
+					}
 				}}
 			>
 				<h1>Log In</h1>
