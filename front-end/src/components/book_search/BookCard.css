@@ -18,8 +18,8 @@
 }
 
 .bookCard.clickable:hover {
-	border-color: #66D575;
-	background-color: rgb(147, 255, 147);
+	border-color: var(--ui-green);
+	background-color: var(--ui-green);
 	cursor: pointer;
 }
 
@@ -56,7 +56,7 @@
 
 .bookCard h1 {
 	font-size: 1.1rem;
-	color: black;
+	color: var(--text-colour);
 	max-height: 2lh;
 	text-overflow: ellipsis;
 	overflow: hidden;

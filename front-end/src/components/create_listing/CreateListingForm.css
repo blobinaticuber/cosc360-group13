@@ -23,7 +23,7 @@
 .createListingForm>p {
 	max-width: 30ch;
 	margin: 0 auto;
-	color: #555;
+	color: var(--text-colour);
 	font-size: 0.9rem;
 	font-style: italic;
 	text-align: center;

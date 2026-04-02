@@ -168,7 +168,7 @@ function Account() {
 				</>}
 			</section>
 			<section className="listings">
-				asdfasd
+				Your listings:
 			</section>
 		</main>
 	</>)

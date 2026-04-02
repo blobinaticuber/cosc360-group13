@@ -29,18 +29,20 @@ function Header({
 
 	return (
 		<>
-			<Nav
-				currentPage={currentPage}
-			/>
+			
 			<header id="header">
+				
 				<div className="headerInner">
-					<h1>{hidePageTitle ?
-						<>&nbsp;</>
-						:
-						pageTitle[currentPage]
+					<h1>{
+					// hidePageTitle ?
+						// <>&nbsp;</>
+						// :
+						<>Booklend</>
+						// pageTitle[currentPage]
 					}</h1>
 					{!hideProfileMenu && <ProfileDropDown user={user} />}
 				</div>
+				<Nav currentPage={currentPage}/>
 			</header>
 		</>
 	)

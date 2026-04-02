@@ -2,13 +2,15 @@
 	--text-colour: #000000;
 	--background-colour: #ffffff;
     --ui-green: #66D575;
+	--input-bg-colour: #eeeeee;
 }
-/* 
+
 @media (prefers-color-scheme: dark) {
 	:root {
 		--text-colour: #ffffff;
-		--background-colour: #000000;
+		--background-colour: #070e06;
         --ui-green: #204325;
+		--input-bg-colour: #232323;
 	}
 
 }
@@ -20,4 +22,4 @@
 body {
     height: 100vh;
     background-color: var(--background-colour);
-} */
+}

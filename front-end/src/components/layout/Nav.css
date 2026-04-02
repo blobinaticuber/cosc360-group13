@@ -1,7 +1,7 @@
 .navComponent {
 	width: 100%;
 	padding: 1rem;
-	background-color: var(--background-colour);
+	/* background-color: var(--background-colour); */
 	color: var(--text-colour);
 	z-index: -3;
 }
@@ -13,7 +13,7 @@
 
 	display: flex;
 	flex-direction: row;
-	justify-content: end;
+	justify-content: start;
 	align-items: center;
 	gap: 2rem;
 
@@ -21,9 +21,12 @@
 }
 
 .navLink {
+	border: 2px solid var(--text-colour);
+	border-radius: 1em 0 1em 0;
 	font-size: 1rem;
 	display: block;
 	color: var(--text-colour);
+	background-color: var(--ui-green);
 	transition: all 200ms;
 	position: relative;
 	min-width: 100px;
@@ -35,23 +38,7 @@
 }
 
 .navLink:hover, .navLink.activeNavLink {
-	color: #fff;
-}
-
-.navLink::after {
-	content: '';
-	height: 2px;
-	width: 100%;
-	position: absolute;
-	bottom: 0px;
-	left: 0;
-	transition: all 200ms;
-	background-color: var(--ui-green);
-	z-index: -2;
-}
-
-.navLink:hover::after, .navLink.activeNavLink::after {
-	height: calc(100%);
+	background-color: var(--background-colour);
 }
 
 .navLinkText {
@@ -65,12 +52,15 @@
 
 
 @media screen and (max-width: 600px) {
+	.navInner {
+		gap: 1rem;
+	}
 	.navLinkText {
 		display: none;
 	}
 
 	.navLink svg {
-		height: 2em;
-		width: 2em;
+		height: 1.5em;
+		width: 1.5em;
 	}
 }
