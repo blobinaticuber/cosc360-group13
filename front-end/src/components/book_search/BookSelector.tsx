@@ -5,8 +5,24 @@ import BookSelect from "./BookSelectDialog"
 import type { BookDetails } from "../../server"
 
 type BookSelectorProps = {
+	/**
+	 * This callback will be invoked when the user selects a book.
+	 * 
+	 * @param book The book that was selected.
+	 */
 	onSelect: (book: BookDetails) => void
+
+	/**
+	 * You can set this property to define the text in the button. By default,
+	 * it's "Select a Book"
+	 */
 	text?: string
+
+	/**
+	 * If you need to change the default styles of the button, you can pass
+	 * a CSS class name. This will be passed down to the underlying `<button>`
+	 * component.
+	 */
 	buttonClass?: string
 }
 
