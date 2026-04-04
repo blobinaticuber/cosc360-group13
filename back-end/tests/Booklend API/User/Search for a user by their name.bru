@@ -1,0 +1,19 @@
+meta {
+  name: Search for a user by their name
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/search/user/:name
+  body: none
+  auth: none
+}
+
+params:query {
+  ~page: 
+}
+
+params:path {
+  name: 
+}

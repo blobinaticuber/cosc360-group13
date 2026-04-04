@@ -1,0 +1,15 @@
+meta {
+  name: Search for listings by user
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/search/:userId/listings
+  body: none
+  auth: none
+}
+
+params:path {
+  userId: 
+}

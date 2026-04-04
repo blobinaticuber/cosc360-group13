@@ -1,0 +1,20 @@
+meta {
+  name: Update Personal Information
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "",
+    "email": "",
+    "password": "",
+    "profilePicture": ""
+  }
+}

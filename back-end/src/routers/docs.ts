@@ -38,37 +38,18 @@ docs.get("/openapi.json", (_, res) => {
 
 docs.get("/docs", (_, res) => {
 	res.send(`
+	<!DOCTYPE html>
     <html>
+	  <head>
+	    <title>Booklend API</title>
+		<link rel="apple-touch-icon" sizes="180x180" href="/public/icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/public/icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/public/icons/favicon-16x16.png">
+		<link rel="manifest" href="/public/icons/site.webmanifest">
+	  </head>
       <body>
         <elements-api 
 			apiDescriptionUrl="/openapi.json" 
-			layout="sidebar"
-			router="memory"
-			tryItCredentialsPolicy="include"
-		/>
-        <script src="https://unpkg.com/@stoplight/elements/web-components.min.js"></script>
-        <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css" />
-      </body>
-    </html>
-	`);
-});
-
-//
-// Below, for the sake of convenience, we also include documentation for the
-// Google Books API, which is used by the frontend. Google's regular
-// documentation is kind of a pain to navigate. Fortunately, someone with
-// way too much free time already painstakingly converted the Books API to
-// OpenAPI format, which we can use to generate docs.
-//
-
-docs.get("/docs/google_books", async (_, res) => {
-	const googleBooksSpec =
-		"https://api.apis.guru/v2/specs/googleapis.com/books/v1/openapi.json";
-	res.send(`
-    <html>
-      <body>
-        <elements-api 
-			apiDescriptionUrl="${googleBooksSpec}" 
 			layout="sidebar"
 			router="memory"
 			tryItCredentialsPolicy="include"

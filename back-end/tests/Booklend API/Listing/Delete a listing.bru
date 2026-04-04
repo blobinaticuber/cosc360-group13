@@ -1,0 +1,15 @@
+meta {
+  name: Delete a listing
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/listing/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+}

@@ -1,0 +1,11 @@
+meta {
+  name: Log Out
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/user/session
+  body: none
+  auth: none
+}
