@@ -1,0 +1,26 @@
+meta {
+  name: Get User Listings - 200
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/search/:userId/listings
+  body: none
+  auth: inherit
+}
+
+params:path {
+  userId: {{testUserId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body[0].book.title: eq {{testBookTitle}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Create a Listing - 404
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/listing
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "book": "{{testBookId}}asdfjasd"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

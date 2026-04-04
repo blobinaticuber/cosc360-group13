@@ -61,4 +61,8 @@ docs.get("/docs", (_, res) => {
 	`);
 });
 
+docs.get("/test", (_, res) => {
+	res.redirect("/public/test_report.html")
+})
+
 export default docs;

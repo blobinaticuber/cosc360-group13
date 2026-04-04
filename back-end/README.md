@@ -73,13 +73,15 @@ To stop the server, just use `Ctrl+C` or close the terminal window.
 
 ## Tests
 
-Integration tests for the API will be implemented with [Bruno](https://www.usebruno.com/). All Bruno tests can be found in [tests/](./tests/). You can run these tests from the CLI with:
+Integration tests for the API will be implemented with [Bruno](https://www.usebruno.com/). All Bruno tests can be found in [tests/](./tests/). If you have Bruno's CLI tool installed, you can run these tests with:
 
 ```
-npm run test
+bru run --env-file .\environments\dev.bru
 ```
 
-At the time of writing, the vast majority of the tests have yet to be implemented.
+If you're on Windows/Powershell, you can also just run `.\run_tests.ps1`.
+
+
 
 ## Code Structure
 

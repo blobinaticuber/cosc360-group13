@@ -1,0 +1,31 @@
+meta {
+  name: Setup
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/user/me
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:pre-request {
+  await bru.runRequest("User/Register - 201")
+  await bru.runRequest("User/Log In - 200")
+  
+}
+
+script:post-response {
+  bru.setVar("testUserId", res.body.id)
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

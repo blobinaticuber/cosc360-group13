@@ -1,14 +1,3 @@
 meta {
   name: Listing
 }
-
-script:pre-request {
-  await bru.runRequest("User/Register - 201")
-  await bru.runRequest("User/Log In - 200")
-  
-}
-
-script:post-response {
-  await bru.runRequest("User/Delete User - 200")
-  
-}

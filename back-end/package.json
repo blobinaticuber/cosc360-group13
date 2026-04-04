@@ -7,7 +7,7 @@
 		"test": "bru run \"./tests/Booklend API/\" --env-file \"./tests/Booklend API/environments/dev.bru\""
 	},
 	"author": "Chad Glazier",
-	"license": "ISC",
+	"license": "MIT",
 	"description": "The Rest API for Booklend",
 	"type": "module",
 	"dependencies": {
@@ -26,7 +26,6 @@
 		"@types/express": "^5.0.6",
 		"@types/mongoose": "^5.11.96",
 		"@types/node": "^25.4.0",
-		"@usebruno/cli": "^3.2.2",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"
 	}
