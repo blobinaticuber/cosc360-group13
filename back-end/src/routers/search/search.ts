@@ -62,7 +62,7 @@ search.get(
 
 		const promisedUsers = []
 		for (const result of results) {
-			promisedUsers.push(db.User.findById(result.user))
+			promisedUsers.push(db.User.findById(result.user).exec())
 		}
 		const users = (await Promise.all(promisedUsers))
 			.map(userResult => {

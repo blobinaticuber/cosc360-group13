@@ -1,0 +1,30 @@
+meta {
+  name: Search for Listing - 200
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/search/listing/:title
+  body: none
+  auth: inherit
+}
+
+params:path {
+  title: {{testBookTitle}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+script:post-response {
+  bru.setVar("testListingId", res.body[0].id)
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -73,9 +73,21 @@ To stop the server, just use `Ctrl+C` or close the terminal window.
 
 ## Tests
 
-Integration tests for the API will be implemented with [Bruno](https://www.usebruno.com/), which allows us to define tests in a manner similar to Postman or Insomnia, but which stores all of the files inside of our repository (as opposed to using restrictive cloud services). All Bruno tests can be found in [tests/](./tests/). 
+Integration tests for the API will be implemented with [Bruno](https://www.usebruno.com/). You can install Bruno's CLI tool from NPM:
 
-At the time of writing, the vast majority of the tests have yet to be implemented.
+```sh
+npm install -g @usebruno/cli
+```
+
+Alternatively, you can install their desktop GUI from [here](https://www.usebruno.com/downloads).
+
+All Bruno tests can be found in [tests/](./tests/). If you have Bruno's CLI tool installed, you can run these tests with:
+
+```
+bru run --env-file .\environments\dev.bru
+```
+
+If you're on Windows/Powershell, you can instead just run `.\run_tests.ps1` (this script will also generate an HTML report).
 
 ## Code Structure
 

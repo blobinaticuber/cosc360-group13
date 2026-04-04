@@ -1,0 +1,24 @@
+meta {
+  name: Search for User - 200
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/search/user/:name
+  body: none
+  auth: none
+}
+
+params:query {
+  ~page: 
+}
+
+params:path {
+  name: {{testUserName}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

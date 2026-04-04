@@ -1,0 +1,20 @@
+meta {
+  name: Delete User - 200
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{baseUrl}}/user
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:pre-request {
+  const resp = await bru.runRequest("User/Log In - 200")
+  
+}

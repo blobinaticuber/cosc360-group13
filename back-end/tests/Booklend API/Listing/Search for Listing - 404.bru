@@ -1,0 +1,24 @@
+meta {
+  name: Search for Listing - 404
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/search/listing/:title
+  body: none
+  auth: inherit
+}
+
+params:path {
+  title: {{testBookTitle}}
+}
+
+assert {
+  res.status: eq 404
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

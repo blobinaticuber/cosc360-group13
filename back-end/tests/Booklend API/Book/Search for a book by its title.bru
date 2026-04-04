@@ -1,0 +1,24 @@
+meta {
+  name: Search for a book by its title
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/search/book/:title
+  body: none
+  auth: none
+}
+
+params:query {
+  ~page: 
+}
+
+params:path {
+  title: harry pothead
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

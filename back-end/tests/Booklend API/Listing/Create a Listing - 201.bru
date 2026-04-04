@@ -1,0 +1,21 @@
+meta {
+  name: Create a Listing - 201
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/listing
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "book": "{{testBookId}}"
+  }
+}
+
+assert {
+  res.status: eq 201
+}

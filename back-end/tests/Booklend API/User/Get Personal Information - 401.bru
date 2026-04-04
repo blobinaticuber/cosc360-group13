@@ -1,0 +1,16 @@
+meta {
+  name: Get Personal Information - 401
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/user/me
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+  : eq
+}

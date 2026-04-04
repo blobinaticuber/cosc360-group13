@@ -99,7 +99,7 @@ user.get(
 			}).exec();
 		} else if (typeof id == "string") {
 			try {
-				user = await db.User.findById(id);
+				user = await db.User.findById(id).exec();
 			} catch {
 				user = null;
 			}
@@ -132,13 +132,13 @@ user.delete(
 	) => {
 		const userId = req.session!.user;
 
-		await db.User.findByIdAndDelete(userId);
+		await db.User.findByIdAndDelete(userId).exec();
 		await db.Session.deleteMany({
 			user: userId,
-		});
+		}).exec();
 		await db.Listing.deleteMany({
 			user: userId,
-		});
+		}).exec();
 
 		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)

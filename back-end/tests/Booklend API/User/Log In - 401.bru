@@ -1,0 +1,22 @@
+meta {
+  name: Log In - 401
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/user/session
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{testUserEmail}}",
+    "password": "{{testUserPassword}}asdfkasmnkdf"
+  }
+}
+
+assert {
+  res.status: eq 401
+}

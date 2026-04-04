@@ -1,0 +1,23 @@
+meta {
+  name: Search for User - 404
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/search/user/:name
+  body: none
+  auth: none
+}
+
+params:query {
+  ~page: 
+}
+
+params:path {
+  name: {{testUserName}}
+}
+
+assert {
+  res.status: eq 404
+}
