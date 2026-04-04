@@ -99,7 +99,7 @@ user.get(
 			}).exec();
 		} else if (typeof id == "string") {
 			try {
-				user = await db.User.findById(id);
+				user = await db.User.findById(id).exec();
 			} catch {
 				user = null;
 			}

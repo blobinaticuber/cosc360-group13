@@ -1,7 +1,7 @@
 meta {
-  name: Search for a user by their name
+  name: Search for User - 404
   type: http
-  seq: 8
+  seq: 13
 }
 
 get {
@@ -15,5 +15,9 @@ params:query {
 }
 
 params:path {
-  name: 
+  name: {{testUserName}}
+}
+
+assert {
+  res.status: eq 404
 }

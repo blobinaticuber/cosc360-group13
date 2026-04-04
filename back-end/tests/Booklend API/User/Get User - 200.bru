@@ -1,0 +1,23 @@
+meta {
+  name: Get User - 200
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/user?name={{testUserName}}
+  body: none
+  auth: none
+}
+
+params:query {
+  name: {{testUserName}}
+  ~id: 
+}
+
+assert {
+  res.status: eq 200
+  res("id"): isDefined
+  res("name"): isDefined
+  res("profilePicture"): isDefined
+}
