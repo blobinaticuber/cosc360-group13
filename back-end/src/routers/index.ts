@@ -13,6 +13,7 @@ import adminUser from "./admin/adminUser.js"
 import adminUserSpec from "./admin/adminUserSchema.js"
 import analyticsSpec from "./analytics/schema.js"
 import analytics from "./analytics/analytics.js"
+import testing from "./testing.js"
 
 const routers: { path: string, router: Router, spec?: OpenAPIRegistry }[] = [
 	{ path: "/public", router: publicRouter },
@@ -23,5 +24,9 @@ const routers: { path: string, router: Router, spec?: OpenAPIRegistry }[] = [
 	{ path: "/admin/user", router: adminUser, spec: adminUserSpec },
 	{ path: "/analytics", router: analytics, spec: analyticsSpec}
 ]
+
+if (process.env.MODE == "development") {
+	routers.push({ path: "/testing", router: testing })
+}
 
 export default routers

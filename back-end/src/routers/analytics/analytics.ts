@@ -78,8 +78,4 @@ analytics.get(
 	}
 )
 
-//
-// Endpoint for getting the 
-//
-
 export default analytics
