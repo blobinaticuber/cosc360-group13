@@ -25,7 +25,7 @@ search.get(
 		res: Response<ListingDetails[]>,
 	) => {
 		let pageIdx = 0;
-		const { page } = req.query;
+		const { page, showUnavailable } = req.query;
 		if (page) {
 			try {
 				pageIdx = Number.parseInt(page as string) - 1;
@@ -37,13 +37,19 @@ search.get(
 
 		let results;
 		if (req.params.title === "*") {
-			results = await db.Listing.find({}, {}, {
+			results = await db.Listing.find({
+				// I know its weird
+				...(!showUnavailable && { available: true })
+			}, {}, {
 				limit: RESULTS_PER_PAGE,
 				skip: pageIdx * RESULTS_PER_PAGE,
 			}).exec();
 		} else {
 			results = await db.Listing.find(
-				{ "book.title": new RegExp(req.params.title, "i") },
+				{ 
+					"book.title": new RegExp(req.params.title, "i"),
+					...(!showUnavailable && { available: true })
+				},
 				{},
 				{
 					limit: RESULTS_PER_PAGE,

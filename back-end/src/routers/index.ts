@@ -11,6 +11,8 @@ import report from "./report/report.js"
 import reportSpec from "./report/schema.js"
 import adminUser from "./admin/adminUser.js"
 import adminUserSpec from "./admin/adminUserSchema.js"
+import analyticsSpec from "./analytics/schema.js"
+import analytics from "./analytics/analytics.js"
 
 const routers: { path: string, router: Router, spec?: OpenAPIRegistry }[] = [
 	{ path: "/public", router: publicRouter },
@@ -18,7 +20,8 @@ const routers: { path: string, router: Router, spec?: OpenAPIRegistry }[] = [
 	{ path: "/listing", router: listing, spec: listingSpec },
 	{ path: "/search", router: search, spec: searchSpec },
 	{ path: "/report", router: report, spec: reportSpec },
-	{ path: "/admin/user", router: adminUser, spec: adminUserSpec }
+	{ path: "/admin/user", router: adminUser, spec: adminUserSpec },
+	{ path: "/analytics", router: analytics, spec: analyticsSpec}
 ]
 
 export default routers

@@ -49,4 +49,35 @@ reportSpec.registerPath({
 	}
 })
 
+reportSpec.registerPath({
+	method: "delete",
+	path: "/report/{userId}",
+	summary: "Delete a Report",
+	description: "Deletes a user-submitted report. This can only be done by an admin user.",
+	tags: [ "Report", "Admin" ],
+	request: {
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login."
+			})
+		}),
+		params: z.object({
+			id: z.string().meta({
+				description: "The ID of the report to delete."
+			})
+		})
+	},
+	responses: {
+		200: {
+			description: "The report was successfully deleted."
+		},
+		401: {
+			description: "The request was made by a non-admin user."
+		},
+		404: {
+			description: "The report could not be found."
+		}
+	}
+})
+
 export default reportSpec

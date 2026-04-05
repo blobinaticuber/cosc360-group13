@@ -1,7 +1,7 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import { ErrInvalidBodySchema } from "util/errSchema.js"
 import z from "zod"
-import { ListingCreationSchema, ListingDetailsSchema } from "./listing.js"
+import { ListingCreationSchema, ListingDetailsSchema, ListingUpdateSchema } from "./listing.js"
 
 const listingSpec = new OpenAPIRegistry()
 
@@ -51,7 +51,7 @@ listingSpec.registerPath({
 	path: "/listing/{id}",
 	summary: "Get a listing by its ID",
 	description: "Get the details about a listing from its ID.",
-	tags: [ "listing" ],
+	tags: [ "Listing" ],
 	request: {
 		params: z.object({ 
 			id: z.string().meta({
@@ -79,10 +79,12 @@ listingSpec.registerPath({
 	path: "/listing/{id}",
 	summary: "Delete a listing",
 	description: "Deletes the specified listing if the currently logged-in user is the one who posted it.",
-	tags: [ "listing" ],
+	tags: [ "Listing" ],
 	request: {
 		params: z.object({ 
-			id: z.string() 
+			id: z.string().meta({
+				description: "The ID of the listing to delete."
+			})
 		}),
 		cookies: z.object({
 			[process.env.AUTH_COOKIE!]: z.string().meta({
@@ -93,6 +95,52 @@ listingSpec.registerPath({
 	responses: {
 		200: {
 			description: "The listing has been deleted."
+		},
+		401: {
+			description: "Request was made by a user that doesn't own the listing."
+		},
+		404: {
+			description: "No listing with the ID could be found."
+		},
+	}
+})
+
+listingSpec.registerPath({
+	method: "patch",
+	path: "/listing/{id}",
+	summary: "Update Listing Availability",
+	description: "Updates the `availability` of a listing.",
+	tags: [ "Listing" ],
+	request: {
+		params: z.object({ 
+			id: z.string().meta({
+				description: "The ID of the listing to update."
+			})
+		}),
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
+		}),
+		body: {
+			content: {
+				"application/json": {
+					schema: ListingUpdateSchema
+				}
+			}
+		}
+	},
+	responses: {
+		200: {
+			description: "The listing has been updated."
+		},
+		400: {
+			description: "The request body did not match the expected form.",
+			content: {
+				"application/json": {
+					schema: ErrInvalidBodySchema
+				}
+			}
 		},
 		401: {
 			description: "Request was made by a user that doesn't own the listing."

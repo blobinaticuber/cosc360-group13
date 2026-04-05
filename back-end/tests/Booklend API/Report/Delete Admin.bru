@@ -1,11 +1,11 @@
 meta {
-  name: Delete User A
+  name: Delete Admin
   type: http
-  seq: 10
+  seq: 14
 }
 
 delete {
-  url: {{baseUrl}}/user
+  url: {{baseUrl}}/admin/user
   body: none
   auth: none
 }
@@ -15,6 +15,6 @@ assert {
 }
 
 script:pre-request {
-  const resp = await bru.runRequest("Report/Log In A")
+  const resp = await bru.runRequest("Report/Log In Admin")
   
 }

@@ -2,6 +2,10 @@
 
 This is the back-end Rest API for Booklend.
 
+TODO: 
+- filter listings by availability when searching
+- update readme for admin key stuff
+
 ## Running the Development Server
 
 To run the local development server, you need to start up two things:

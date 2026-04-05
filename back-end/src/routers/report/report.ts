@@ -5,6 +5,8 @@ import db from "../../database/db.js"
 import Status from "types/Status.js"
 import z from "zod"
 import body from "middleware/body.js"
+import adminAuth from "middleware/adminAuth.js"
+import err from "util/err.js"
 
 const report = Router()
 
@@ -61,6 +63,34 @@ report.put(
 		})
 		await newReport.save()
 		res.status(Status.Created).end()
+	}
+)
+
+//
+// Admin endpoint for deleting a report.
+//
+
+report.delete(
+	"/:id",
+	adminAuth,
+	async (
+		req: Request<{ id: string }>, 
+		res: Response
+	) => {
+		const report = await db.Report.findById(req.params.id).exec()
+
+		if (report == null) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		try {
+			await report.deleteOne().exec()
+		} catch (e) {
+			err.server(res)
+		}
+
+		res.status(Status.OK).end()
 	}
 )
 
