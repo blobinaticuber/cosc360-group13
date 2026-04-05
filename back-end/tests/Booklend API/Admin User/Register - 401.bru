@@ -1,0 +1,25 @@
+meta {
+  name: Register - 401
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/admin/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{testUserName}}",
+    "email": "{{testUserEmail}}",
+    "password": "{{testUserPassword}}",
+    "adminKey": "bad key"
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}

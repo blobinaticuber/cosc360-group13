@@ -1,0 +1,22 @@
+meta {
+  name: Log In - 404
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/admin/user/session
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{testUserEmail}}asdjfbnasdf",
+    "password": "{{testUserPassword}}"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

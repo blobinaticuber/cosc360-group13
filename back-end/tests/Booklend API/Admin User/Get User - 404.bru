@@ -1,0 +1,20 @@
+meta {
+  name: Get User - 404
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/admin/user?name={{testUserName}}asdfasdf
+  body: none
+  auth: none
+}
+
+params:query {
+  name: {{testUserName}}asdfasdf
+  ~id: 
+}
+
+assert {
+  res.status: eq 404
+}

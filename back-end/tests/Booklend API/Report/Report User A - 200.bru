@@ -1,0 +1,26 @@
+meta {
+  name: Report User A - 200
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/report/{{aId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "explanation": "smells reallyyy bad"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

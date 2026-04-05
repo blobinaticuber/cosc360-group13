@@ -1,0 +1,22 @@
+meta {
+  name: Log In - 200
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/admin/user/session
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{testUserEmail}}",
+    "password": "{{testUserPassword}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

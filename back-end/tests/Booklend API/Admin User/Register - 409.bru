@@ -1,0 +1,27 @@
+meta {
+  name: Register - 409
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/admin/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{testUserName}}",
+    "email": "{{testUserEmail}}",
+    "password": "{{testUserPassword}}",
+    "adminKey": "{{adminKey}}"
+  }
+  
+}
+
+assert {
+  res.status: eq 409
+  res("conflicts.name"): eq true
+  res("conflicts.email"): eq true
+}

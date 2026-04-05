@@ -1,0 +1,18 @@
+meta {
+  name: Get Personal Information - 200
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/admin/user/me
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res("id"): isDefined
+  res("email"): isDefined
+  : eq
+}

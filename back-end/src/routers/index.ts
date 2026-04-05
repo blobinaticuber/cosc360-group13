@@ -7,12 +7,18 @@ import listing from "./listing/listing.js"
 import listingSpec from "./listing/schema.js"
 import searchSpec from "./search/schema.js"
 import search from "./search/search.js"
+import report from "./report/report.js"
+import reportSpec from "./report/schema.js"
+import adminUser from "./admin/adminUser.js"
+import adminUserSpec from "./admin/adminUserSchema.js"
 
 const routers: { path: string, router: Router, spec?: OpenAPIRegistry }[] = [
 	{ path: "/public", router: publicRouter },
 	{ path: "/user", router: user, spec: userSpec },
 	{ path: "/listing", router: listing, spec: listingSpec },
-	{ path: "/search", router: search, spec: searchSpec}
+	{ path: "/search", router: search, spec: searchSpec },
+	{ path: "/report", router: report, spec: reportSpec },
+	{ path: "/admin/user", router: adminUser, spec: adminUserSpec }
 ]
 
 export default routers

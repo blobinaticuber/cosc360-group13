@@ -7,41 +7,60 @@ import Status from "types/Status.js"
 import { compare, encrypt } from "util/encryption.js"
 import err from "util/err.js"
 import { type ErrServer } from "util/errSchema.js"
+import { COOKIE_SETTINGS } from "routers/user/user.js"
 import z from "zod"
+import adminAuth from "middleware/adminAuth.js"
 
-const user = Router();
+const adminUser = Router();
 
-export const COOKIE_SETTINGS: CookieOptions = {
-	httpOnly: true,
-	sameSite: "lax",
-	secure: process.env.MODE == "production" 
-		? true
-		: false, 
+if (process.env.ADMIN_KEY! == "dummy key" && 
+	process.env.MODE != "development"
+) {
+	throw new Error(`
+    The \`ADMIN_KEY\` is not defined in the current environment. Try the
+    following steps:
+		
+      1) Create or update a file named \`.env.local\` inside of the 
+         \`back-end\` directory. In that file, make sure you have the following
+         line: 
+
+         ADMIN_KEY="<some_secret_admin_key_here>"
+	
+      2) Restart the server. You shouldn't receive this error again.
+	`)
 }
 
 //
-// The endpoint for creating a new user.
+// The endpoint for creating a new admin user.
 //
 
-export const RegistrationDetailsSchema = z.object({
-	name: z.string(),
-	email: z.email(),
-	password: z.string(),
-	profilePicture: z.string().optional(),
-}).meta({
-	id: "RegistrationDetails",
-	description: "The details used to register a new user.",
-});
-export type RegistrationDetails = z.infer<typeof RegistrationDetailsSchema>;
+export const AdminRegistrationSchema = 
+	z.object({
+		name: z.string(),
+		email: z.email(),
+		password: z.string(),
+		profilePicture: z.string().optional(),
+		adminKey: z.string()
+	}).meta({
+		id: "AdminRegistration",
+		description: "The details used to register a new admin user.",
+	})
+type AdminRegistration = z.infer<typeof AdminRegistrationSchema>
 
-user.post(
+adminUser.post(
 	"/",
-	body(RegistrationDetailsSchema),
+	body(AdminRegistrationSchema),
 	async (
-		req: Request<{}, {}, RegistrationDetails>,
+		req: Request<{}, {}, AdminRegistration>,
 		res: Response,
 	) => {
-		const existingUser = await db.User.findOne({
+
+		if (req.body.adminKey != process.env.ADMIN_KEY!) {
+			res.status(Status.Unauthorized).end()
+			return
+		}
+
+		const existingUser = await db.Admin.findOne({
 			$or: [
 				{ email: req.body.email },
 				{ name: req.body.name },
@@ -57,7 +76,7 @@ user.post(
 
 		try {
 			req.body.password = encrypt(req.body.password);
-			const newUser = new db.User(req.body);
+			const newUser = new db.Admin(req.body);
 			await newUser.save();
 			res.status(Status.Created).json({
 				id: newUser._id.toString()
@@ -69,38 +88,38 @@ user.post(
 );
 
 //
-// The endpoint for retrieving a user's details.
+// The endpoint for retrieving an admin user's details.
 //
 
-export const UserDetailsSchema = 
+export const AdminDetailsSchema = 
 	z.object({
 		id: z.string(),
 		name: z.string(),
 		profilePicture: z.string(),
 	})
 	.meta({
-		id: "UserDetails",
-		description: "The public information about a user.",
+		id: "AdminDetails",
+		description: "The public information about an admin user.",
 	})
-export type UserDetails = z.infer<typeof UserDetailsSchema>;
+export type AdminDetails = z.infer<typeof AdminDetailsSchema>;
 
-user.get(
+adminUser.get(
 	"/",
 	async (
 		req: Request,
-		res: Response<UserDetails | ErrServer | undefined>,
+		res: Response<AdminDetails | ErrServer | undefined>,
 	) => {
 		const { name, id } = req.query;
 
 		let user = null;
 
 		if (typeof name == "string") {
-			user = await db.User.findOne({
+			user = await db.Admin.findOne({
 				name: name,
 			}).exec();
 		} else if (typeof id == "string") {
 			try {
-				user = await db.User.findById(id).exec();
+				user = await db.Admin.findById(id).exec();
 			} catch {
 				user = null;
 			}
@@ -111,7 +130,7 @@ user.get(
 		}
 
 		user.id = user._id.toString();
-		const parsed = UserDetailsSchema.safeParse(user);
+		const parsed = AdminDetailsSchema.safeParse(user);
 		if (!parsed.success) {
 			return err.server(res);
 		}
@@ -121,31 +140,22 @@ user.get(
 );
 
 //
-// The endpoint for deleting a user account.
+// The endpoint for deleting an admin account.
 //
 
-user.delete(
+adminUser.delete(
 	"/",
-	auth,
+	adminAuth,
 	async (
 		req: Request,
 		res: Response<undefined>,
 	) => {
 		const userId = req.session!.user;
 
-		await db.User.findByIdAndDelete(userId).exec();
-		await db.Session.deleteMany({
+		await db.Admin.findByIdAndDelete(userId).exec();
+		await db.AdminSession.deleteMany({
 			user: userId,
 		}).exec();
-		await db.Listing.deleteMany({
-			user: userId,
-		}).exec();
-		await db.Report.deleteMany({
-			$or: [
-				{ user: userId },
-				{ submittedBy: userId }
-			]
-		})
 
 		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
@@ -157,7 +167,7 @@ user.delete(
 // The endpoint for creating a session i.e., logging in.
 //
 
-export const UserCredentialsSchema = 
+export const AdminCredentialsSchema = 
 	z.object({
 		email: z.email(),
 		password: z.string(),
@@ -166,16 +176,16 @@ export const UserCredentialsSchema =
 		id: "UserCredentials",
 		description: "The credentials used to log a user in.",
 	});
-export type UserCredentials = z.infer<typeof UserCredentialsSchema>;
+export type AdminCredentials = z.infer<typeof AdminCredentialsSchema>;
 
-user.post(
+adminUser.post(
 	"/session",
-	body(UserCredentialsSchema),
+	body(AdminCredentialsSchema),
 	async (
-		req: Request<{}, {}, UserCredentials>,
+		req: Request<{}, {}, AdminCredentials>,
 		res: Response<undefined>,
 	) => {
-		const user = await db.User.findOne({
+		const user = await db.Admin.findOne({
 			email: req.body.email,
 		}).exec();
 		if (user == null) {
@@ -186,7 +196,7 @@ user.post(
 			return res.status(Status.Unauthorized).end();
 		}
 
-		const session = new db.Session({
+		const session = new db.AdminSession({
 			user: user._id,
 		});
 		await session.save();
@@ -201,9 +211,9 @@ user.post(
 // The endpoint for deleting a session i.e., logging out.
 //
 
-user.delete(
+adminUser.delete(
 	"/session",
-	auth,
+	adminAuth,
 	async (
 		req: Request,
 		res: Response,
@@ -217,35 +227,36 @@ user.delete(
 );
 
 //
-// The endpoint for getting information about the currently logged-in user.
+// The endpoint for getting information about the currently logged-in admin 
+// user.
 //
 
-export const PersonalDetailsSchema =
-	UserDetailsSchema.extend({
+export const AdminPersonalDetailsSchema =
+	AdminDetailsSchema.extend({
 		email: z.string()
 	})
 	.meta({
-		id: "PersonalDetails",
-		description: "The personal (as opposed to public) details about a user"
+		id: "AdminPersonalDetails",
+		description: "The personal (as opposed to public) details about an admin user"
 	})
-type PersonalDetails = z.infer<typeof PersonalDetailsSchema> 
+type AdminPersonalDetails = z.infer<typeof AdminPersonalDetailsSchema> 
 
-user.get(
+adminUser.get(
 	"/me",
-	auth,
+	adminAuth,
 	async (
 		req: Request,
-		res: Response<PersonalDetails>
+		res: Response<AdminPersonalDetails>
 	) => {
 		const userId = req.session!.user
 
-		const user = await db.User.findById(userId).exec()
+		const user = await db.Admin.findById(userId).exec()
 		if (user == null) {
 			res.status(Status.NotFound).end()
 			return
 		}
 
-		const parsed = PersonalDetailsSchema.safeParse({
+		const parsed = AdminPersonalDetailsSchema.safeParse({
 			id: userId.toString(),
 			...user.toObject()
 		})
@@ -259,10 +270,10 @@ user.get(
 )
 
 //
-// The endpoint for updating the current user's information.
+// The endpoint for updating the current admin user's information.
 //
 
-export const UserUpdateSchema = 
+export const AdminUserUpdateSchema = 
 	z.object({
 		name: z.string().nonempty(),
 		email: z.email().nonempty(),
@@ -271,17 +282,17 @@ export const UserUpdateSchema =
 	})
 	.partial()
 	.meta({
-		id: "UserUpdate",
-		description: "The fields of a user that need to be updated. Only include the fields that you want changed."
+		id: "AdminUserUpdate",
+		description: "The fields of an admin user that need to be updated. Only include the fields that you want changed."
 	})
-type UserUpdate = z.infer<typeof UserUpdateSchema>
+type AdminUserUpdate = z.infer<typeof AdminUserUpdateSchema>
 
-user.patch(
+adminUser.patch(
 	"/",
-	auth,
-	body(UserUpdateSchema),
+	adminAuth,
+	body(AdminUserUpdateSchema),
 	async (
-		req: Request<{}, {}, UserUpdate>,
+		req: Request<{}, {}, AdminUserUpdate>,
 		res: Response
 	) => {
 		const update = req.body
@@ -316,7 +327,7 @@ user.patch(
 
 		// If no conflicts were found, we can update the user.
 
-		const user = await db.User.findById(req.session!.user).exec()
+		const user = await db.Admin.findById(req.session!.user).exec()
 		if (!user) {
 			res.status(Status.NotFound).end()
 			return
@@ -345,4 +356,4 @@ user.patch(
 	}
 )
 
-export default user;
+export default adminUser;
