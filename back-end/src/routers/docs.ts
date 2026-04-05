@@ -25,7 +25,7 @@ const spec = generator.generateDocument({
 		title: "Booklend API",
 		version: "0.0.1",
 		description:
-			`This Restful API is meant to serve as the back-end for the Booklend web app.\n\nThe code can be found in [a public GitHub repository](https://github.com/blobinaticuber/cosc360-group13/tree/main/back-end).`,
+			`This Restful API is meant to serve as the back-end for the Booklend web app.\n\nThe code can be found in [a public GitHub repository](https://github.com/blobinaticuber/cosc360-group13/tree/main/back-end).\n\nThe most recent test report can be viewed [here](/test).`,
 	},
 	servers: [
 		{ url: process.env.SERVER_URL! },
@@ -42,10 +42,8 @@ docs.get("/docs", (_, res) => {
     <html>
 	  <head>
 	    <title>Booklend API</title>
-		<link rel="apple-touch-icon" sizes="180x180" href="/public/icons/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/public/icons/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/public/icons/favicon-16x16.png">
-		<link rel="manifest" href="/public/icons/site.webmanifest">
 	  </head>
       <body>
         <elements-api 
@@ -56,6 +54,11 @@ docs.get("/docs", (_, res) => {
 		/>
         <script src="https://unpkg.com/@stoplight/elements/web-components.min.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css" />
+		<style>
+			body>elements-api>div {
+				height: 100vh !important;
+			}
+		</style>
       </body>
     </html>
 	`);
