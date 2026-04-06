@@ -38,6 +38,9 @@ adminSpec.registerPath({
 				},
 			},
 		},
+		401: {
+			description: "Incorrect `adminKey`.",
+		},
 		409: {
 			description: "Conflicting field (email or password).",
 			content: {
