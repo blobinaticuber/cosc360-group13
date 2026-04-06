@@ -1,7 +1,7 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import { ReportSubmissionSchema } from "./report.js"
 import z from "zod"
-import { ErrInvalidBodySchema } from "util/errSchema.js"
+import { ErrInvalidBodySchema } from "../../util/errSchema.js"
 
 const reportSpec = new OpenAPIRegistry()
 

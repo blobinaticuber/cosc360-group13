@@ -1,6 +1,6 @@
 import type { Types, Document, DefaultSchemaOptions } from "mongoose"
 import type auth from "../middleware/auth.ts"
-import type { Session } from "database/db.ts"
+import type { Session } from "../database/db.ts"
 
 declare global {
 	namespace Express {

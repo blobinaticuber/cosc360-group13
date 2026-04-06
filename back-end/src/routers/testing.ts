@@ -1,7 +1,7 @@
-import db, { type Admin, type Listing, type Report, type User } from "database/db.js"
+import db, { type Admin, type Listing, type Report, type User } from "../database/db.js"
 import { Router } from "express"
-import Status from "types/Status.js"
-import { encrypt } from "util/encryption.js"
+import Status from "../types/Status.js"
+import { encrypt } from "../util/encryption.js"
 import type { BookDetails } from "./book/book.js"
 import type { Types } from "mongoose"
 

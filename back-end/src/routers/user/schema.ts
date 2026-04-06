@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import { PersonalDetailsSchema, RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema, UserUpdateSchema } from "./user.js"
-import { ErrConflictSchema, ErrInvalidBodySchema } from "util/errSchema.js"
+import { ErrConflictSchema, ErrInvalidBodySchema } from "../../util/errSchema.js"
 import z from "zod"
 
 const userSpec = new OpenAPIRegistry()

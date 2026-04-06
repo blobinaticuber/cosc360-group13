@@ -1,6 +1,6 @@
-import { BookDetailsSchema, type BookDetails } from "routers/book/book.js"
+import { BookDetailsSchema, type BookDetails } from "../routers/book/book.js"
 import type { Volume } from "../types/GoogleBooks.js"
-import type Method from "types/Method.js"
+import type Method from "../types/Method.js"
 
 const API_URL = "https://www.googleapis.com/books/v1"
 const RESULTS_PER_SEARCH = 10

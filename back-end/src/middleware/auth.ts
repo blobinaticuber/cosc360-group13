@@ -1,6 +1,6 @@
-import db from "database/db.js";
+import db from "../database/db.js";
 import type { RequestHandler } from "express";
-import Status from "types/Status.js";
+import Status from "../types/Status.js";
 
 const maxLifeMs = Number.parseInt(process.env.AUTH_COOKIE_MAX_DAYS!) *
 	24 * 60 * 60 * 1000;

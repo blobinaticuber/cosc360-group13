@@ -1,10 +1,10 @@
-import db from "database/db.js"
+import db from "../../database/db.js"
 import { Router } from "express"
 import type { Request, Response } from "express"
-import adminAuth from "middleware/adminAuth.js"
-import { UserDetailsSchema } from "routers/user/user.js"
-import Status from "types/Status.js"
-import err from "util/err.js"
+import adminAuth from "../../middleware/adminAuth.js"
+import { UserDetailsSchema } from "../user/user.js"
+import Status from "../../types/Status.js"
+import err from "../../util/err.js"
 import z from "zod"
 
 const analytics = Router()

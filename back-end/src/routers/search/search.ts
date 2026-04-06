@@ -1,17 +1,17 @@
-import db from "database/db.js";
-import type { Request, Response } from "express";
-import { Router } from "express";
-import type { BookDetails } from "routers/book/book.js";
-import { ListingDetailsSchema, type ListingDetails } from "routers/listing/listing.js";
-import { UserDetailsSchema } from "routers/user/user.js";
-import Status from "types/Status.js";
-import err from "util/err.js";
-import googleBooks from "util/google.js";
-import z from "zod";
+import db from "../../database/db.js"
+import type { Request, Response } from "express"
+import { Router } from "express"
+import type { BookDetails } from "../book/book.js"
+import { ListingDetailsSchema, type ListingDetails } from "../listing/listing.js"
+import { UserDetailsSchema } from "../user/user.js"
+import Status from "../../types/Status.js"
+import err from "../../util/err.js"
+import googleBooks from "../../util/google.js"
+import z from "zod"
 
-const search = Router();
+const search = Router()
 
-const RESULTS_PER_PAGE = 10;
+const RESULTS_PER_PAGE = 10
 
 //
 // The endpoint for searching for a listing by the title of the associated 
@@ -24,18 +24,18 @@ search.get(
 		req: Request<{ title: string }, {}, {}>,
 		res: Response<ListingDetails[]>,
 	) => {
-		let pageIdx = 0;
-		const { page, showUnavailable } = req.query;
+		let pageIdx = 0
+		const { page, showUnavailable } = req.query
 		if (page) {
 			try {
-				pageIdx = Number.parseInt(page as string) - 1;
-				pageIdx = Math.max(0, pageIdx);
+				pageIdx = Number.parseInt(page as string) - 1
+				pageIdx = Math.max(0, pageIdx)
 			} catch (e) {
-				return res.status(Status.BadRequest).end();
+				return res.status(Status.BadRequest).end()
 			}
 		}
 
-		let results;
+		let results
 		if (req.params.title === "*") {
 			results = await db.Listing.find({
 				// I know its weird
@@ -43,7 +43,7 @@ search.get(
 			}, {}, {
 				limit: RESULTS_PER_PAGE,
 				skip: pageIdx * RESULTS_PER_PAGE,
-			}).exec();
+			}).exec()
 		} else {
 			results = await db.Listing.find(
 				{ 
@@ -55,7 +55,7 @@ search.get(
 					limit: RESULTS_PER_PAGE,
 					skip: pageIdx * RESULTS_PER_PAGE,
 				},
-			).exec();
+			).exec()
 		}
 
 		if (results.length == 0) {
@@ -97,14 +97,14 @@ search.get(
 
 		res.status(Status.OK).json(data.data)
 	},
-);
+)
 
 //
 // Endpoint for searching for a user by name.
 //
 
-export const UserResultsSchema = z.array(UserDetailsSchema);
-type UserResults = z.infer<typeof UserResultsSchema>;
+export const UserResultsSchema = z.array(UserDetailsSchema)
+type UserResults = z.infer<typeof UserResultsSchema>
 
 search.get(
 	"/user/:name",
@@ -112,23 +112,23 @@ search.get(
 		req: Request<{ name: string }, {}, {}>,
 		res: Response<UserResults>,
 	) => {
-		let pageIdx = 0;
-		const { page } = req.query;
+		let pageIdx = 0
+		const { page } = req.query
 		if (page) {
 			try {
-				pageIdx = Number.parseInt(page as string) - 1;
-				pageIdx = Math.max(0, pageIdx);
+				pageIdx = Number.parseInt(page as string) - 1
+				pageIdx = Math.max(0, pageIdx)
 			} catch (e) {
-				return res.status(Status.BadRequest).end();
+				return res.status(Status.BadRequest).end()
 			}
 		}
 
-		let results;
+		let results
 		if (req.params.name === "*") {
 			results = await db.User.find({}, {}, {
 				limit: RESULTS_PER_PAGE,
 				skip: pageIdx * RESULTS_PER_PAGE,
-			}).exec();
+			}).exec()
 		} else {
 			results = await db.User.find(
 				{ name: new RegExp(req.params.name, "i") },
@@ -137,26 +137,26 @@ search.get(
 					limit: RESULTS_PER_PAGE,
 					skip: pageIdx * RESULTS_PER_PAGE,
 				},
-			).exec();
+			).exec()
 		}
 
 		const parsed = UserResultsSchema.safeParse(
 			results.map((user) => {
-				user.id = user._id.toString();
-				return user;
+				user.id = user._id.toString()
+				return user
 			}),
-		);
+		)
 		if (!parsed.success) {
-			return err.server(res);
+			return err.server(res)
 		}
 
 		if (parsed.data.length == 0) {
-			return res.status(Status.NotFound).end();
+			return res.status(Status.NotFound).end()
 		}
 
-		res.status(Status.OK).json(parsed.data);
+		res.status(Status.OK).json(parsed.data)
 	},
-);
+)
 
 //
 // Search for a book from the Google Books API.
@@ -168,29 +168,29 @@ search.get(
 		req: Request<{ title: string }, {}, {}>,
 		res: Response<BookDetails[]>,
 	) => {
-		let pageIdx = 0;
-		const { page } = req.query;
+		let pageIdx = 0
+		const { page } = req.query
 		if (page) {
 			try {
-				pageIdx = Number.parseInt(page as string) - 1;
-				pageIdx = Math.max(0, pageIdx);
+				pageIdx = Number.parseInt(page as string) - 1
+				pageIdx = Math.max(0, pageIdx)
 			} catch (e) {
-				return res.status(Status.BadRequest).end();
+				return res.status(Status.BadRequest).end()
 			}
 		}
 
-		const { title } = req.params;
+		const { title } = req.params
 
-		const books = await googleBooks.searchByTitle(title, pageIdx);
+		const books = await googleBooks.searchByTitle(title, pageIdx)
 
 		if (books.length == 0) {
-			res.status(Status.NotFound).end();
-			return;
+			res.status(Status.NotFound).end()
+			return
 		}
 
-		res.status(Status.OK).json(books);
+		res.status(Status.OK).json(books)
 	},
-);
+)
 
 //
 // Get all listings posted by a user.
@@ -233,4 +233,4 @@ search.get(
 	}
 )
 
-export default search;
+export default search
