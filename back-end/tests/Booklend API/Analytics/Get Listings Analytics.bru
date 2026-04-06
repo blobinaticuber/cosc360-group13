@@ -1,0 +1,20 @@
+meta {
+  name: Get Listings Analytics
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/analytics/listings
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -119,12 +119,7 @@ userSpec.registerPath({
 			description: "The email is recognized, but the password is wrong."
 		},
 		400: {
-			description: "The request body is invalid.",
-			content: {
-				"application/json": {
-					schema: UserCredentialsSchema
-				}
-			}
+			description: "The request body is invalid."
 		}
 	}
 })

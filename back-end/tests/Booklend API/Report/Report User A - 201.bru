@@ -1,0 +1,24 @@
+meta {
+  name: Report User A - 201
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/report/{{aId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {}
+}
+
+assert {
+  res.status: eq 201
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

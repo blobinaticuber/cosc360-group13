@@ -15,7 +15,10 @@ searchSpec.registerPath({
 	tags: [ "Listing", "Search" ],
 	request: {
 		query: z.object({
-			page: z.int().positive().optional()
+			page: z.int().positive().optional(),
+			showUnavailable: z.boolean().optional().meta({
+				description: "Set this to any value if you want to include the currently-unavailable listings in the results. If you don't want such results included, then omit this query parameter."
+			})
 		}),
 		params: z.object({ 
 			title: z.string(),

@@ -74,6 +74,9 @@ export const ListingDetailsSchema = z.object({
 	user: UserDetailsSchema.meta({
 		description: "The user who posted the listing.",
 	}),
+	available: z.boolean().meta({
+		description: "The availability of the listing."
+	})
 });
 export type ListingDetails = z.infer<typeof ListingDetailsSchema>;
 
@@ -93,7 +96,8 @@ listing.get(
 		const data = ListingDetailsSchema.safeParse({
 			id: listing._id.toString(),
 			book: listing.book,
-			user: user?.toObject()
+			user: user?.toObject(),
+			available: listing.available
 		})
 		if (!data.success) {
 			err.server(
@@ -120,21 +124,67 @@ listing.delete(
 		const listing = await db.Listing.findById(req.params.id).exec();
 
 		if (listing == null) {
-			return res.status(Status.NotFound).end();
+			return res.status(Status.NotFound).end()
 		}
 
 		if (!listing.user.equals(req.session!.user)) {
-			return res.status(Status.Unauthorized).end();
+			return res.status(Status.Unauthorized).end()
 		}
 
 		try {
-			await listing.deleteOne().exec();
+			await listing.deleteOne().exec()
 		} catch (e) {
-			err.server(res);
+			err.server(res)
 		}
 
-		res.status(Status.OK).end();
+		res.status(Status.OK).end()
 	},
-);
+)
+
+//
+// The endpoint for marking a listing as (un)available.
+//
+
+export const ListingUpdateSchema = 
+	z.object({
+		available: z.boolean().meta({
+			description: "Set this to `true` if you want to mark the listing as available, and `false` if you want to mark it as unavailable."
+		})
+	}).meta({
+		id: "ListingUpdate",
+		description: "Specifies the fields to update for a listing."
+	})
+type ListingUpdate = z.infer<typeof ListingUpdateSchema>
+
+listing.patch(
+	"/:id",
+	auth,
+	body(ListingUpdateSchema),
+	async (
+		req: Request<{ id: string }, {}, ListingUpdate>,
+		res: Response
+	) => {
+		const { id } = req.params
+
+		const listing = await db.Listing.findById(id).exec()
+		if (listing == null) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		if (!listing.user.equals(req.session!.user)) {
+			return res.status(Status.Unauthorized).end()
+		}
+
+		try {
+			listing.available = req.body.available
+			await listing.save()
+		} catch (e) {
+			err.server(res, "Error updating database record.")
+		}
+
+		res.status(Status.OK).end()
+	}
+)
 
 export default listing;

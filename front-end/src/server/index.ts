@@ -1,16 +1,17 @@
-import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate } from "./ServerTypes"
+import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate, ListingUpdate } from "./ServerTypes"
+import admin from "./admin"
 
-const URL = import.meta.env.VITE_SERVER_BASE_URL as string
+export const URL = import.meta.env.VITE_SERVER_BASE_URL as string
 
 export type BookDetails = BookDetailData[number]
 export type ListingDetails = ListingDetailData
 export { type UserDetails } from "./ServerTypes"
 export type PersonalDetails = GetUserData
 
-type GeneralErrorValue = string
-type ResultWithoutValue<ErrorValue extends GeneralErrorValue> = 
+export type GeneralErrorValue = string
+export type ResultWithoutValue<ErrorValue extends GeneralErrorValue> = 
 	Promise<ErrorValue | null>
-type Result<ExpectedValue, ErrorValue extends GeneralErrorValue> = 
+export type Result<ExpectedValue, ErrorValue extends GeneralErrorValue> = 
 	Promise<[ ExpectedValue, null ] | [ null, ErrorValue ]>
 
 /**
@@ -65,6 +66,11 @@ type Result<ExpectedValue, ErrorValue extends GeneralErrorValue> =
  * error. That is, if `books == null`, then `err != null`, and vice versa.
  */
 const server = {
+	/**
+	 * Contains a set of methods that can only be used by administrative users.
+	 */
+	admin: admin,
+
 	/**
 	 * Searches the Google Books database for a book based on its title.
 	 * 
@@ -189,6 +195,8 @@ const server = {
 	 * also use `name == "*"` to get all listings.
 	 * 
 	 * @param name The name of the book to search for related listings.
+	 * @param showUnavailable If set to `true`, then the search results will 
+	 * include listings that are currently marked as unavailable.
 	 * @param page A positive integer representing which "page" of results you
 	 * want. Each page will include up to ten books. E.g., if you want the top
 	 * ten results, use `page == 1` (the default); for results 11 through 20,
@@ -196,10 +204,11 @@ const server = {
 	 * @returns A list of matching listings.
 	 */
 	async searchListing(
-		name: string, page?: number
+		name: string, showUnavailable?: boolean, page?: number
 	): Result<ListingDetails[], "unknown error" | "no listings found"> {
 		const query = new URLSearchParams({
-			page: (page ?? 1).toString()
+			page: (page ?? 1).toString(),
+			...(showUnavailable && { showUnavailable: "true" })
 		})
 
 		const res = await fetch(
@@ -216,6 +225,47 @@ const server = {
 			return [null, "no listings found"]
 		default:
 			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Marks a listing as (un)available. Note that you have to be logged in
+	 * as the owner of the listing in order to use this.
+	 *  
+	 * @param listingId The ID of the listing to be marked as (un)available.
+	 * @param available `true` if the listing should be made available, and
+	 * `false` if it should be made unavailable.
+	 */
+	async setAvailability(
+		listingId: string, available: boolean
+	): ResultWithoutValue<
+		  "unauthorized user" 
+		| "listing not found"
+		| "unknown error"	
+	> {
+		const res = await fetch(
+			URL + "/listing/" + listingId,
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: [
+					[ "Content-Type", "application/json" ]
+				],
+				body: JSON.stringify({
+					available
+				} satisfies ListingUpdate)
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+			return null
+		case 401:
+			return "unauthorized user"
+		case 404:
+			return "listing not found"
+		default:
+			return "unknown error"
 		}
 	},
 

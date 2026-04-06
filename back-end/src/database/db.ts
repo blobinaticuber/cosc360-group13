@@ -135,7 +135,7 @@ const Listing = mongoose.model("Listing", ListingSchema)
 export type Session = {
 	user: Types.ObjectId
 	/**
-	 * Represents a timestamp, in milliseconds. Compare this with `Date.now()`.
+	 * Represents a timestamp in milliseconds. Compare this with `Date.now()`.
 	 */
 	createdAt: number
 }
@@ -171,6 +171,33 @@ const AdminSessionSchema = new Schema<Session>({
 })
 const AdminSession = mongoose.model("AdminSession", AdminSessionSchema)
 
+/**
+ * Represents a user-submitted report.
+ */
+export type Report = {
+	submittedBy: Types.ObjectId
+	user: Types.ObjectId
+	explanation: string
+} 
+const ReportSchema = new Schema<Report>({
+	submittedBy: {
+		type: Schema.Types.ObjectId,
+		ref: "User",
+		required: true
+	},
+	user: {
+		type: Schema.Types.ObjectId,
+		ref: "User",
+		required: true,
+		index: true
+	},
+	explanation: {
+		type: String,
+		default: () => ""
+	}
+})
+const Report = mongoose.model("Report", ReportSchema)
+
 //
 // Export the namespace.
 //
@@ -184,6 +211,7 @@ const db = {
 	Admin,
 	AdminSession,
 	Listing,
+	Report
 }
 
 export default db

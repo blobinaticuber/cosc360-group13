@@ -1,0 +1,20 @@
+meta {
+  name: Delete Admin
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{baseUrl}}/admin/user
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:pre-request {
+  const resp = await bru.runRequest("Report/Log In Admin")
+  
+}
