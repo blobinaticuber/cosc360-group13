@@ -51,7 +51,7 @@ reportSpec.registerPath({
 
 reportSpec.registerPath({
 	method: "delete",
-	path: "/report/{userId}",
+	path: "/report/{reportId}",
 	summary: "Delete a Report",
 	description: "Deletes a user-submitted report. This can only be done by an admin user.",
 	tags: [ "Report", "Admin" ],

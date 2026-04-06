@@ -24,6 +24,8 @@ export interface UserDetails {
   id: string;
   name: string;
   profilePicture: string;
+  /** @format email */
+  email: string;
 }
 
 /** The credentials used to log a user in. */
@@ -62,6 +64,86 @@ export interface ListingCreation {
   book: string;
 }
 
+/** Specifies the fields to update for a listing. */
+export interface ListingUpdate {
+  /** Set this to `true` if you want to mark the listing as available, and `false` if you want to mark it as unavailable. */
+  available: boolean;
+}
+
+/** The details used to register a new admin user. */
+export interface AdminRegistration {
+  name: string;
+  /** @format email */
+  email: string;
+  password: string;
+  profilePicture?: string;
+  adminKey: string;
+}
+
+/** The public information about an admin user. */
+export interface AdminDetails {
+  id: string;
+  name: string;
+  profilePicture: string;
+}
+
+/** The personal (as opposed to public) details about an admin user */
+export interface AdminPersonalDetails {
+  id: string;
+  name: string;
+  profilePicture: string;
+  email: string;
+}
+
+/** The fields of an admin user that need to be updated. Only include the fields that you want changed. */
+export interface AdminUserUpdate {
+  /** @minLength 1 */
+  name?: string;
+  /**
+   * @format email
+   * @minLength 1
+   */
+  email?: string;
+  /** @minLength 1 */
+  password?: string;
+  /** @minLength 1 */
+  profilePicture?: string;
+}
+
+/** Contains some statistics about the current listings. */
+export interface ListingsAnalytics {
+  /**
+   * The total number of listings, including ones marked as unavaible.
+   * @min 0
+   */
+  totalListings: number;
+  /**
+   * The total number of listings marked unavaible.
+   * @min 0
+   */
+  listingsMarkedUnavailable: number;
+  /**
+   * The average number of listings per user.
+   * @min 0
+   */
+  averageListingsPerUser: number;
+  /** Lists the top 10 users with the most listings. */
+  usersWithTheMostListings: {
+    /** The public information about a user. */
+    user: UserDetails;
+    /**
+     * The total number of listings posted by the user.
+     * @min 0
+     */
+    listingCount: number;
+    /**
+     * The number of currently-available listings posted by the user.
+     * @min 0
+     */
+    availableListingCount: number;
+  }[];
+}
+
 export type UserCreateData = any;
 
 export type UserCreateError =
@@ -87,8 +169,6 @@ export type UserPartialUpdateError = {
 };
 
 export type SessionCreateData = any;
-
-export type SessionCreateError = UserCredentials;
 
 export type SessionDeleteData = any;
 
@@ -133,10 +213,22 @@ export interface ListingDetailData {
     id: string;
     name: string;
     profilePicture: string;
+    /** @format email */
+    email: string;
   };
+  /** The availability of the listing. */
+  available: boolean;
 }
 
 export type ListingDeleteData = any;
+
+export type ListingPartialUpdateData = any;
+
+export type ListingPartialUpdateError = {
+  type: "invalid body";
+  expected?: any;
+  received?: any;
+};
 
 export type ListingDetailResult = {
   /** The unique identifier for the listing. */
@@ -169,7 +261,11 @@ export type ListingDetailResult = {
     id: string;
     name: string;
     profilePicture: string;
+    /** @format email */
+    email: string;
   };
+  /** The availability of the listing. */
+  available: boolean;
 }[];
 
 export type UserDetailData = UserDetails[];
@@ -228,4 +324,64 @@ export type ListingsListData = {
     /** The publication date of the book. */
     publishDate?: string;
   };
+  /** The availability of the listing. */
+  available: boolean;
 }[];
+
+export type ReportUpdateData = any;
+
+export type ReportUpdateError = {
+  type: "invalid body";
+  expected?: any;
+  received?: any;
+};
+
+export type ReportDeleteData = any;
+
+export type UserCreateResult = any;
+
+export type UserCreateFail =
+  | {
+      type: "invalid body";
+      expected?: any;
+      received?: any;
+    }
+  | {
+      type: "conflict";
+      conflicts: Record<string, boolean>;
+    };
+
+export type UserListResult = AdminDetails;
+
+export type UserDeleteResult = any;
+
+export type UserPartialUpdateResult = any;
+
+export type UserPartialUpdateFail = {
+  type: "conflict";
+  conflicts: Record<string, boolean>;
+};
+
+export type UserSessionCreateData = any;
+
+export type UserSessionDeleteData = any;
+
+export type UserMeListData = AdminPersonalDetails;
+
+export type SuspendDeleteData = any;
+
+export type ReportsListData = {
+  /** The ID of the user that is reported. */
+  user: string;
+  /** The reports submitted against this user. */
+  reports: {
+    /** The ID of the report. */
+    id: string;
+    /** The user who submitted the report */
+    submittedBy: string;
+    /** The explanation given when submitting the report. This may be empty. */
+    explanation: string;
+  }[];
+}[];
+
+export type ListingsListResult = ListingsAnalytics;
