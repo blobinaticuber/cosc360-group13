@@ -77,6 +77,7 @@ export const UserDetailsSchema =
 		id: z.string(),
 		name: z.string(),
 		profilePicture: z.string(),
+		email: z.email()
 	})
 	.meta({
 		id: "UserDetails",

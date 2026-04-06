@@ -84,7 +84,8 @@ search.get(
 				return {
 					id: listing._id.toString(),
 					book: listing.book,
-					user: users[idx]
+					user: users[idx],
+					available: listing.available
 				}
 			})
 

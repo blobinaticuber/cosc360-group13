@@ -78,4 +78,24 @@ analytics.get(
 	}
 )
 
+//
+// Gets some statistics about listings.
+//
+
+export const ListingsAnalytics =
+	z.object({
+
+	}).meta({
+		id: "ListingsAnalytics",
+		description: "Contains some statistics about the current listings."
+	})
+
+analytics.get(
+	"/listings",
+	adminAuth,
+	async (req, res) => {
+		res.json({})
+	}
+)
+
 export default analytics

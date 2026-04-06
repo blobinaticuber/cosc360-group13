@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { ReportedUserSchema } from "./analytics.js"
+import { ListingsAnalytics, ReportedUserSchema } from "./analytics.js"
 
 const analyticsSpec = new OpenAPIRegistry()
 
@@ -23,6 +23,34 @@ analyticsSpec.registerPath({
 			content: {
 				"application/json": {
 					schema: z.array(ReportedUserSchema)
+				}
+			}
+		},
+		401: {
+			description: "The request was made by a non-admin user."
+		}
+	}
+})
+
+analyticsSpec.registerPath({
+	method: "get",
+	path: "/analytics/listings",
+	summary: "Get Listings Analytics",
+	description: "Reports some statistics regarding user-posted listings.",
+	tags: [ "Analytics" ],
+	request: {
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login."
+			})
+		})
+	},
+	responses: {
+		200: {
+			description: "Listings analytics were successfully retrieved.",
+			content: {
+				"application/json": {
+					schema: ListingsAnalytics
 				}
 			}
 		},

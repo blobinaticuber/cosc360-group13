@@ -1,0 +1,25 @@
+meta {
+  name: Setup
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/testing/setup
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:post-response {
+  bru.setVar("testData", res.body)
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

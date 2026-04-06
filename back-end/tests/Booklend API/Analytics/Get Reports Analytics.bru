@@ -1,0 +1,21 @@
+meta {
+  name: Get Reports Analytics
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/analytics/reports
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

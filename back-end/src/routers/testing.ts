@@ -1,4 +1,4 @@
-import db, { type Admin, type Listing, type User } from "database/db.js"
+import db, { type Admin, type Listing, type Report, type User } from "database/db.js"
 import { Router } from "express"
 import Status from "types/Status.js"
 import { encrypt } from "util/encryption.js"
@@ -8,13 +8,15 @@ import type { Types } from "mongoose"
 const testing = Router()
 
 const seededData: {
-	users: (User & { id: string })[],
-	admins: (Admin & { id: string })[],
+	users: (User & { id: string })[]
+	admins: (Admin & { id: string })[]
 	listings: (Listing & { id: string })[]
+	reports: (Report & { id: string })[]
 } = {
 	users: [],
 	admins: [],
 	listings: [],
+	reports: []
 }
 
 const BOOKS: BookDetails[] = [
@@ -168,6 +170,7 @@ testing.put(
 		const ADMIN_COUNT = 2
 		const LISTINGS_PER_USER = 10
 		const PROBABILITY_OF_UNAVAILABLE = 0.3
+		const REPORT_PROBABILITY = 0.05
 
 		for (let i = 0; i < USER_COUNT; i++) {
 			const details: User = {
@@ -219,6 +222,26 @@ testing.put(
 			}
 		}
 
+		for (const userA of seededData.users) {
+			for (const userB of seededData.users) {
+				if (userA == userB) continue
+
+				if (Math.random() < REPORT_PROBABILITY) {
+					const details: Report = {
+						submittedBy: userA.id as unknown as Types.ObjectId,
+						user: userB.id as unknown as Types.ObjectId,
+						explanation: "Test report message."
+					}
+					const newReport = new db.Report(details)
+					const seededReport = await newReport.save()
+					seededData.reports.push({
+						...details,
+						id: seededReport._id.toString()
+					})
+				}
+			}
+		}
+
 		res.status(Status.OK).json(seededData)
 	}
 )
@@ -233,6 +256,16 @@ testing.delete(
 			if (record != null) {
 				record.deleteOne().exec()
 			}
+			const userReports = await db.Report.find({ user: user!.id }).exec()
+			for (const report of userReports) {
+				await report.deleteOne()
+			}
+			const userSessions = await db.Session.find({ 
+				user: user!.id 
+			}).exec()
+			for (const session of userSessions) {
+				await session.deleteOne()
+			}
 		}
 
 		while (seededData.admins.length > 0) {
@@ -240,6 +273,12 @@ testing.delete(
 			const record = await db.Admin.findById(admin!.id).exec()
 			if (record != null) {
 				record.deleteOne().exec()
+			}
+			const adminSessions = await db.AdminSession.find({ 
+				user: admin!.id 
+			}).exec()
+			for (const session of adminSessions) {
+				await session.deleteOne()
 			}
 		}
 
