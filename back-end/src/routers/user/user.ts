@@ -137,20 +137,20 @@ user.delete(
 		await db.User.findByIdAndDelete(userId).exec();
 		await db.Session.deleteMany({
 			user: userId,
-		}).exec();
+		}).exec()
 		await db.Listing.deleteMany({
 			user: userId,
-		}).exec();
+		}).exec()
 		await db.Report.deleteMany({
 			$or: [
 				{ user: userId },
 				{ submittedBy: userId }
 			]
-		})
+		}).exec()
 
 		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
-			.end();
+			.end()
 	},
 );
 

@@ -2,6 +2,7 @@ import db from "database/db.js"
 import { Router } from "express"
 import type { Request, Response } from "express"
 import adminAuth from "middleware/adminAuth.js"
+import { UserDetailsSchema } from "routers/user/user.js"
 import Status from "types/Status.js"
 import err from "util/err.js"
 import z from "zod"
@@ -9,6 +10,7 @@ import z from "zod"
 const analytics = Router()
 
 const NUMBER_OF_REPORTED_USERS = 10
+const NUMBER_OF_TOP_USERS = 10
 
 //
 // Admin endpoint for getting the most reported users and the associated
@@ -82,18 +84,44 @@ analytics.get(
 // Gets some statistics about listings.
 //
 
-export const ListingsAnalytics =
+export const ListingsAnalyticsSchema =
 	z.object({
-
+		totalListings: z.int().nonnegative().meta({
+			description: "The total number of listings, including ones marked as unavaible."
+		}),
+		listingsMarkedUnavailable: z.int().nonnegative().meta({
+			description: "The total number of listings marked unavaible."
+		}),
+		averageListingsPerUser: z.number().nonnegative().meta({
+			description: "The average number of listings per user."
+		}),
+		usersWithTheMostListings: z.array(z.object({
+			user: UserDetailsSchema,
+			listingCount: z.int().nonnegative().meta({
+				description: "The total number of listings posted by the user."
+			}),
+			availableListingCount: z.int().nonnegative().meta({
+				description: "The number of currently-available listings posted by the user."
+			})
+		})).meta({
+			description: `Lists the top ${NUMBER_OF_TOP_USERS} users with the most listings.`
+		}),
 	}).meta({
 		id: "ListingsAnalytics",
 		description: "Contains some statistics about the current listings."
 	})
+export type ListingAnalytics = z.infer<typeof ListingsAnalyticsSchema>
 
 analytics.get(
 	"/listings",
 	adminAuth,
-	async (req, res) => {
+	async (
+		req: Request, 
+		res: Response<ListingAnalytics>
+	) => {
+
+
+
 		res.json({})
 	}
 )

@@ -11,7 +11,7 @@ import { COOKIE_SETTINGS } from "routers/user/user.js"
 import z from "zod"
 import adminAuth from "middleware/adminAuth.js"
 
-const adminUser = Router();
+const admin = Router();
 
 if (process.env.ADMIN_KEY! == "dummy key" && 
 	process.env.MODE != "development"
@@ -47,8 +47,8 @@ export const AdminRegistrationSchema =
 	})
 type AdminRegistration = z.infer<typeof AdminRegistrationSchema>
 
-adminUser.post(
-	"/",
+admin.post(
+	"/user",
 	body(AdminRegistrationSchema),
 	async (
 		req: Request<{}, {}, AdminRegistration>,
@@ -103,8 +103,8 @@ export const AdminDetailsSchema =
 	})
 export type AdminDetails = z.infer<typeof AdminDetailsSchema>;
 
-adminUser.get(
-	"/",
+admin.get(
+	"/user",
 	async (
 		req: Request,
 		res: Response<AdminDetails | ErrServer | undefined>,
@@ -143,8 +143,8 @@ adminUser.get(
 // The endpoint for deleting an admin account.
 //
 
-adminUser.delete(
-	"/",
+admin.delete(
+	"/user",
 	adminAuth,
 	async (
 		req: Request,
@@ -178,8 +178,8 @@ export const AdminCredentialsSchema =
 	});
 export type AdminCredentials = z.infer<typeof AdminCredentialsSchema>;
 
-adminUser.post(
-	"/session",
+admin.post(
+	"/user/session",
 	body(AdminCredentialsSchema),
 	async (
 		req: Request<{}, {}, AdminCredentials>,
@@ -211,8 +211,8 @@ adminUser.post(
 // The endpoint for deleting a session i.e., logging out.
 //
 
-adminUser.delete(
-	"/session",
+admin.delete(
+	"/user/session",
 	adminAuth,
 	async (
 		req: Request,
@@ -241,8 +241,8 @@ export const AdminPersonalDetailsSchema =
 	})
 type AdminPersonalDetails = z.infer<typeof AdminPersonalDetailsSchema> 
 
-adminUser.get(
-	"/me",
+admin.get(
+	"/user/me",
 	adminAuth,
 	async (
 		req: Request,
@@ -287,8 +287,8 @@ export const AdminUserUpdateSchema =
 	})
 type AdminUserUpdate = z.infer<typeof AdminUserUpdateSchema>
 
-adminUser.patch(
-	"/",
+admin.patch(
+	"/user",
 	adminAuth,
 	body(AdminUserUpdateSchema),
 	async (
@@ -356,4 +356,37 @@ adminUser.patch(
 	}
 )
 
-export default adminUser;
+//
+// The endpoint for suspending another user.
+//
+
+admin.delete(
+	"/suspend/:userId",
+	adminAuth,
+	async (req, res) => {
+		const { userId } = req.params
+		const user = await db.User.findById(userId).exec()
+		if (user === null) {
+			res.status(Status.NotFound).end()
+			return
+		}
+
+		await db.Session.deleteMany({
+			user: user._id,
+		}).exec()
+		await db.Listing.deleteMany({
+			user: user._id,
+		}).exec()
+		await db.Report.deleteMany({
+			$or: [
+				{ user: user._id },
+				{ submittedBy: user._id }
+			]
+		}).exec()
+		await user.deleteOne().exec()
+
+		res.status(Status.OK).end()
+	}
+)
+
+export default admin;

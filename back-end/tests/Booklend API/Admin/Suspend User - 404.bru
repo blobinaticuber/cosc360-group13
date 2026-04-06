@@ -1,0 +1,20 @@
+meta {
+  name: Suspend User - 404
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/admin/suspend/{{testData.users[0].id}}
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 404
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

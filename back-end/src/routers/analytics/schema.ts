@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { ListingsAnalytics, ReportedUserSchema } from "./analytics.js"
+import { ListingsAnalyticsSchema, ReportedUserSchema } from "./analytics.js"
 
 const analyticsSpec = new OpenAPIRegistry()
 
@@ -9,7 +9,7 @@ analyticsSpec.registerPath({
 	path: "/analytics/reports",
 	summary: "Get Reports Analytics",
 	description: "Finds the top 10 most-reported users and sends their ID's along with each report against them.",
-	tags: [ "Analytics", "Report" ],
+	tags: [ "Analytics" ],
 	request: {
 		cookies: z.object({
 			[process.env.AUTH_COOKIE!]: z.string().meta({
@@ -50,7 +50,7 @@ analyticsSpec.registerPath({
 			description: "Listings analytics were successfully retrieved.",
 			content: {
 				"application/json": {
-					schema: ListingsAnalytics
+					schema: ListingsAnalyticsSchema
 				}
 			}
 		},
