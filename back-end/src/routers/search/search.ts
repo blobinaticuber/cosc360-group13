@@ -234,10 +234,15 @@ search.get(
 )
 
 //
-// Get "browsing" information; i.e., the top-50 most popular books from the 
+// Get "browsing" information; i.e., the top 20 most popular books from the 
 // top 10 most popular categories.
 //
 
-
+search.get(
+	"/browse",
+	async (req, res) => {
+		res.json({ hello: "browser" })
+	}
+)
 
 export default search

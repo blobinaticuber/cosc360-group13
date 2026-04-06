@@ -2,7 +2,7 @@
 
 This is the back-end Rest API for Booklend.
 
-## Running the Development Server
+## Running the Server
 
 To run the local development server, you need to start up two things:
 
@@ -13,23 +13,31 @@ You can start both of these with `docker compose`. If you're in the `back-end/` 
 
 ```sh
 docker compose up -d
-docker compose logs -f server
+docker compose logs -f server # this line is optional; it just enables logs from the server.
 ```
 
-This will start the production server by default. To start up the development server instead, use
-
-```sh
-docker compose -f="docker-compose.dev.yaml" up -d
-docker compose -f="docker-compose.dev.yaml" logs -f server
-```
-
-To shut down the server, you can run the same command but with `down` instead of `up`:
+This will start the production server by default. To shut down the server, just run
 
 ```sh
 docker compose down
+```
 
-# Or, if you were running the development server instead,
-docker compose -f="docker-compose.dev.yaml" down
+### Running the Development Server
+
+To start up the development server, use
+
+```sh
+docker compose -f="docker-compose.db.yaml" up -d
+npm install # only necessary the first time
+npm run dev
+```
+
+This will start up a docker container that only has the database and then run the development server via Node on your machine. This makes it so that you can modify files in the back-end and the changes will cause the server to reload automatically. As far as I know, there's no way to get this behavior in a clean way using Docker alone.
+
+To shut down the development database, you can run:
+
+```sh
+docker compose -f="docker-compose.db.yaml" down
 ```
 
 ### Setting up the Environment
