@@ -13,9 +13,22 @@ section {
 	margin: 1em;
 }
 
+.accountDetails {
+	display: flex;
+	flex-direction: row;
+
+}
+
+.accountDetailsFields {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	padding: 1em;
+	min-width: 200px;
+}
+
 .accountDashboard .profileSummary {
-	grid-column: 1;
-	grid-row: 1;
+	display: flex;
 
 	max-width: 300px;
 	padding: 20px;

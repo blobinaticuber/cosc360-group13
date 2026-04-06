@@ -33,6 +33,17 @@ function Account() {
 	const [emailErr, setEmailErr] = useState<string | undefined>(undefined)
 	const [updateFields, setUpdateFields] = useState<UserUpdate>({})
 
+	// useEffect(() => {
+	// 	// setListings(await server.searchListingsByUser(user.id))
+
+	// 	async () => {
+	// 		const [listings, _] = await server.searchListingsByUser(user.id)
+	// 		setListings([...listings])
+	// 		// console.log(listings)
+	// 	}
+
+	// }, [])
+
 	useEffect(() => {
 		setNameErr(undefined)
 		setEmailErr(undefined)
@@ -43,9 +54,11 @@ function Account() {
 		<main className="accountDashboard">
 			<section className="profileSummary">
 				<h1>Account Details</h1>
-				<img src={user.profilePicture} alt="You!" />
+				<div className="accountDetails">
+					<img src={user.profilePicture} alt="You!" />
 				{editing ?
 					<>
+					<div className="accountDetailsFields">
 						<TextInput
 							type="text"
 							icon={faUser}
@@ -89,13 +102,17 @@ function Account() {
 								})
 							}}
 						/>
+						</div>
 					</>
 					:
 					<>
+					<div className="accountDetailsFields">
 						<p className="name">{user.name}</p>
 						<p className="email">{user.email}</p>
+					</div>
 					</>
 				}
+				</div>
 
 				</section>
 			<section className="accountControls">
@@ -175,10 +192,11 @@ function Account() {
 				</>}
 			</section>
 			<section className="listings">
-				<h1>Listings</h1>
+				<h1>Your Listings</h1>
+				<p>{user.id}</p>
 				<SearchBar
 				search={async (term) => {
-					const [listings, _] = await server.searchListing(term)
+					const [listings, _] = await server.searchListingsByUser(term)
 					return listings ?? []
 				}}
 				onResults={listings => {
