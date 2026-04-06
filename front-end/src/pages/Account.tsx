@@ -3,7 +3,7 @@ import Header from "../components/layout/Header"
 import "./Account.css"
 import { UserContext } from "../App"
 import Button from "../components/Button"
-import { faAt, faPencil, faPerson, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faAt, faPencil, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
 import type { UserUpdate } from "../server/ServerTypes"
 import server, { type ListingDetails } from "../server"
@@ -13,7 +13,6 @@ import { toast } from "react-toastify"
 import validEmail from "../util/validEmail"
 
 import BookCard from "../components/book_search/BookCard"
-import SearchBar from "../components/SearchBar"
 
 function Account() {
 	const navigate = useNavigate()
@@ -33,16 +32,13 @@ function Account() {
 	const [emailErr, setEmailErr] = useState<string | undefined>(undefined)
 	const [updateFields, setUpdateFields] = useState<UserUpdate>({})
 
-	// useEffect(() => {
-	// 	// setListings(await server.searchListingsByUser(user.id))
-
-	// 	async () => {
-	// 		const [listings, _] = await server.searchListingsByUser(user.id)
-	// 		setListings([...listings])
-	// 		// console.log(listings)
-	// 	}
-
-	// }, [])
+	useEffect(() => {
+		const fetchListings = async () => {
+			const [listings, _] = await server.searchListingsByUser(user.id)
+			setListings(listings ?? [])
+		}
+		fetchListings()
+	}, [user.id])
 
 	useEffect(() => {
 		setNameErr(undefined)
@@ -193,19 +189,9 @@ function Account() {
 			</section>
 			<section className="listings">
 				<h1>Your Listings</h1>
-				<p>{user.id}</p>
-				<SearchBar
-				search={async (term) => {
-					const [listings, _] = await server.searchListingsByUser(term)
-					return listings ?? []
-				}}
-				onResults={listings => {
-					setListings([...listings])
-				}}
-			/>
-			<div className="searchResultsContainer">
-				{listings.map(listing => <BookCard book={listing.book} />)}
-			</div>
+				<div className="searchResultsContainer">
+					{listings.map(listing => <BookCard book={listing.book} />)}
+				</div>
 			</section>
 		</main>
 	</>)
