@@ -1,9 +1,9 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
 import { UserListingSchema, UserResultsSchema } from "./search.js"
-import { BookDetailsSchema } from "routers/book/book.js"
-import { ErrServerSchema } from "util/errSchema.js"
-import { ListingDetailsSchema } from "routers/listing/listing.js"
+import { BookDetailsSchema } from "../book/book.js"
+import { ErrServerSchema } from "../../util/errSchema.js"
+import { ListingDetailsSchema } from "../../routers/listing/listing.js"
 
 const searchSpec = new OpenAPIRegistry()
 

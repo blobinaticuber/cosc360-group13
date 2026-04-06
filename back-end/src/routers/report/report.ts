@@ -1,12 +1,12 @@
 import { Router } from "express"
 import type { Request, Response } from "express"
-import auth from "middleware/auth.js"
+import auth from "../../middleware/auth.js"
 import db from "../../database/db.js"
-import Status from "types/Status.js"
+import Status from "../../types/Status.js"
 import z from "zod"
-import body from "middleware/body.js"
-import adminAuth from "middleware/adminAuth.js"
-import err from "util/err.js"
+import body from "../../middleware/body.js"
+import adminAuth from "../../middleware/adminAuth.js"
+import err from "../../util/err.js"
 
 const report = Router()
 

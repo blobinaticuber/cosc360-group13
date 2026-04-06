@@ -1,5 +1,5 @@
 import type { ErrorRequestHandler } from "express-serve-static-core"
-import err from "util/err.js"
+import err from "../util/err.js"
 
 const errorHandler: ErrorRequestHandler = (error, _, res, next) => {
 	console.error(error)

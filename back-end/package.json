@@ -4,7 +4,9 @@
 	"main": "index.js",
 	"scripts": {
 		"dev": "tsx --watch --env-file=.env --env-file=.env.local src/index.ts",
-		"test": "bru run \"./tests/Booklend API/\" --env-file \"./tests/Booklend API/environments/dev.bru\""
+		"test": "bru run \"./tests/Booklend API/\" --env-file \"./tests/Booklend API/environments/dev.bru\"",
+		"build": "npm install && tsc",
+		"start": "node --env-file=.env --env-file=.env.local ./dist/index.js"
 	},
 	"author": "Chad Glazier",
 	"license": "MIT",

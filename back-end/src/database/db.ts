@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose"
-import type { BookDetails } from "routers/book/book.js"
+import type { BookDetails } from "../routers/book/book.js"
 
 //
 // This file contains the schema used for the database, and only those types.

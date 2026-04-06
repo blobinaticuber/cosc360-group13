@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
-import { ErrInvalidBodySchema } from "util/errSchema.js"
+import { ErrInvalidBodySchema } from "../../util/errSchema.js"
 import z from "zod"
 import { ListingCreationSchema, ListingDetailsSchema, ListingUpdateSchema } from "./listing.js"
 

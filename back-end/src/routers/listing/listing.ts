@@ -1,16 +1,16 @@
-import db from "database/db.js";
-import type { Request, Response } from "express";
-import { Router } from "express";
-import auth from "middleware/auth.js";
-import body from "middleware/body.js";
-import { BookDetailsSchema, type BookDetails } from "routers/book/book.js";
-import { UserDetailsSchema } from "routers/user/user.js";
-import Status from "types/Status.js";
-import err from "util/err.js";
-import googleBooks from "util/google.js"
-import z from "zod";
+import db from "../../database/db.js"
+import type { Request, Response } from "express"
+import { Router } from "express"
+import auth from "../../middleware/auth.js"
+import body from "../../middleware/body.js"
+import { BookDetailsSchema, type BookDetails } from "../book/book.js"
+import { UserDetailsSchema } from "../user/user.js"
+import Status from "../../types/Status.js"
+import err from "../../util/err.js"
+import googleBooks from "../../util/google.js"
+import z from "zod"
 
-const listing = Router();
+const listing = Router()
 
 //
 // The endpoint for creating a new listing.
@@ -25,8 +25,8 @@ export const ListingCreationSchema =
 	.meta({
 		id: "ListingCreation",
 		description: "Used to define a new listing.",
-	});
-export type ListingCreation = z.infer<typeof ListingCreationSchema>;
+	})
+export type ListingCreation = z.infer<typeof ListingCreationSchema>
 
 listing.post(
 	"/",
@@ -49,16 +49,16 @@ listing.post(
 			const newListing = new db.Listing({
 				book: book,
 				user: req.session!.user,
-			});
-			await newListing.save();
+			})
+			await newListing.save()
 		} catch (e) {
-			err.server(res);
+			err.server(res)
 			return
 		}
 
-		res.status(Status.Created).end();
+		res.status(Status.Created).end()
 	},
-);
+)
 
 //
 // The endpoint for retrieving a listing from its ID.
@@ -77,8 +77,8 @@ export const ListingDetailsSchema = z.object({
 	available: z.boolean().meta({
 		description: "The availability of the listing."
 	})
-});
-export type ListingDetails = z.infer<typeof ListingDetailsSchema>;
+})
+export type ListingDetails = z.infer<typeof ListingDetailsSchema>
 
 listing.get(
 	"/:id",
@@ -86,12 +86,12 @@ listing.get(
 		req: Request<{ id: string }>,
 		res: Response<ListingDetails>,
 	) => {
-		const listing = await db.Listing.findById(req.params.id).exec();
+		const listing = await db.Listing.findById(req.params.id).exec()
 		if (listing == null) {
-			return res.status(Status.NotFound).end();
+			return res.status(Status.NotFound).end()
 		}
 
-		const user = await db.User.findById(listing.user).exec();
+		const user = await db.User.findById(listing.user).exec()
 
 		const data = ListingDetailsSchema.safeParse({
 			id: listing._id.toString(),
@@ -108,7 +108,7 @@ listing.get(
 
 		res.json(data.data)
 	},
-);
+)
 
 //
 // The endpoint for deleting a listing.
@@ -121,7 +121,7 @@ listing.delete(
 		req: Request<{ id: string }>,
 		res: Response<ListingDetails>,
 	) => {
-		const listing = await db.Listing.findById(req.params.id).exec();
+		const listing = await db.Listing.findById(req.params.id).exec()
 
 		if (listing == null) {
 			return res.status(Status.NotFound).end()
@@ -187,4 +187,4 @@ listing.patch(
 	}
 )
 
-export default listing;
+export default listing
