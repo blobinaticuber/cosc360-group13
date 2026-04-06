@@ -1,21 +1,22 @@
 .accountDashboard {
-	display: grid;
-
-	column-gap: 30px;
-	row-gap: 30px;
-
-	grid-template-columns: 1fr 3fr;
-	grid-template-rows: auto auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
 	width: 100%;
 	height: fit-content;
 	padding: 20px 40px;
 }
 
+section {
+	margin: 1em;
+}
+
 .accountDashboard .profileSummary {
 	grid-column: 1;
 	grid-row: 1;
-	
+
 	max-width: 300px;
 	padding: 20px;
 	display: flex;

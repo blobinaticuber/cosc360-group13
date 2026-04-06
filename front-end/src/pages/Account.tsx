@@ -6,10 +6,14 @@ import Button from "../components/Button"
 import { faAt, faPencil, faPerson, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
 import type { UserUpdate } from "../server/ServerTypes"
+import server, { type ListingDetails } from "../server"
 import TextInput from "../components/forms/TextInput"
-import server from "../server"
+// import server from "../server"
 import { toast } from "react-toastify"
 import validEmail from "../util/validEmail"
+
+import BookCard from "../components/book_search/BookCard"
+import SearchBar from "../components/SearchBar"
 
 function Account() {
 	const navigate = useNavigate()
@@ -19,6 +23,8 @@ function Account() {
 		navigate("/")
 		return <></>
 	}
+
+	const [listings, setListings] = useState<ListingDetails[]>([])
 
 	const [editing, setEditing] = useState(false)
 	const [loading, setLoading] = useState(false)
@@ -36,14 +42,15 @@ function Account() {
 		<Header currentPage="/account" hideProfileMenu />
 		<main className="accountDashboard">
 			<section className="profileSummary">
+				<h1>Account Details</h1>
 				<img src={user.profilePicture} alt="You!" />
-				{editing ? 
+				{editing ?
 					<>
-						<TextInput 
+						<TextInput
 							type="text"
 							icon={faUser}
-							initialValue={user.name} 
-							name="name"	
+							initialValue={user.name}
+							name="name"
 							error={nameErr}
 							onChange={name => {
 								setNameErr(undefined)
@@ -58,10 +65,10 @@ function Account() {
 								})
 							}}
 						/>
-						<TextInput 
+						<TextInput
 							type="email"
 							icon={faAt}
-							initialValue={user.email} 
+							initialValue={user.email}
 							name="email"
 							error={emailErr}
 							onChange={email => {
@@ -81,7 +88,7 @@ function Account() {
 									return { ...prev, email }
 								})
 							}}
-						/>					
+						/>
 					</>
 					:
 					<>
@@ -89,18 +96,18 @@ function Account() {
 						<p className="email">{user.email}</p>
 					</>
 				}
-			
+
 				</section>
 			<section className="accountControls">
-				{!editing && 
+				{!editing &&
 					<Button
 						icon={faPencil}
 						text={"Edit Profile"}
 						onClick={() => setEditing(true)}
-					/>	
+					/>
 				}
 				{editing && <>
-					<Button 
+					<Button
 						icon={faSave}
 						text={"Save Changes"}
 						spinning={loading}
@@ -125,7 +132,7 @@ function Account() {
 									return { ...prev!, ...updateFields }
 								})
 								setEditing(false)
-								return			
+								return
 							case "email already taken":
 								setEmailErr("This email is already in use")
 								return
@@ -150,7 +157,7 @@ function Account() {
 							setEditing(false)
 						}}
 					/>
-					<Button 
+					<Button
 						icon={faTrash}
 						disable={loading}
 						className="deleteAccount"
@@ -168,7 +175,19 @@ function Account() {
 				</>}
 			</section>
 			<section className="listings">
-				Your listings:
+				<h1>Listings</h1>
+				<SearchBar
+				search={async (term) => {
+					const [listings, _] = await server.searchListing(term)
+					return listings ?? []
+				}}
+				onResults={listings => {
+					setListings([...listings])
+				}}
+			/>
+			<div className="searchResultsContainer">
+				{listings.map(listing => <BookCard book={listing.book} />)}
+			</div>
 			</section>
 		</main>
 	</>)
