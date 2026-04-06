@@ -4,4 +4,4 @@ dist
 package-lock.json
 coverage
 .vitest-attachments
-.env.production
+server_logs.txt
