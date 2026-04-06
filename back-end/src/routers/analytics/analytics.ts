@@ -120,9 +120,111 @@ analytics.get(
 		res: Response<ListingAnalytics>
 	) => {
 
+		const results = await db.Listing.aggregate([
+			{
+				$facet: {
+					totalListings: [{ $count: "count" }],
 
+					listingsMarkedUnavailable: [
+						{ $match: { available: false } },
+						{ $count: "count" }
+					],
 
-		res.json({})
+					averageListingsPerUser: [
+						{
+							$group: {
+								_id: "$user",
+								listingCount: { $sum: 1 }
+							}
+						},
+						{
+							$group: {
+								_id: null,
+								avg: { $avg: "$listingCount" }
+							}
+						}
+					],
+
+					usersWithTheMostListings: [
+						{
+							$group: {
+								_id: "$user",
+								listingCount: { $sum: 1 },
+								availableListingCount: {
+									$sum: {
+										$cond: [{ $eq: ["$available", true] }, 1, 0]
+									}
+								}
+							}
+						},
+						{ $sort: { listingCount: -1 } },
+						{ $limit: NUMBER_OF_TOP_USERS },
+						{
+							$lookup: {
+								from: "users",
+								localField: "_id",
+								foreignField: "_id",
+								as: "user"
+							}
+						},
+						{
+							$unwind: "$user"
+						},
+						{
+							$project: {
+								_id: 0,
+								user: "$user",
+								listingCount: 1,
+								availableListingCount: 1
+							}
+						}
+					]
+				}
+			},
+			{
+				$project: {
+					totalListings: {
+						$ifNull: [{ $arrayElemAt: ["$totalListings.count", 0] }, 0]
+					},
+					listingsMarkedUnavailable: {
+						$ifNull: [
+							{ 
+								$arrayElemAt: [
+									"$listingsMarkedUnavailable.count", 
+									0
+								] 
+							}, 
+							0
+						]
+					},
+					averageListingsPerUser: {
+						$ifNull: [
+							{ 
+								$arrayElemAt: [
+									"$averageListingsPerUser.avg", 
+									0
+								] 
+							}, 
+							0
+						]
+					},
+					usersWithTheMostListings: 1
+				}
+			}
+		]).exec();
+
+		const result = results[0]
+		result.usersWithTheMostListings.map(({ user }: any) => {
+			user.id = user._id.toString()
+		})
+
+		const parsed = ListingsAnalyticsSchema.safeParse(result)
+		if (!parsed.success) {
+			err.server(res, "Error parsing results from the database")			
+			return
+		}
+
+		res.status(Status.OK).json(parsed.data)
 	}
 )
 
