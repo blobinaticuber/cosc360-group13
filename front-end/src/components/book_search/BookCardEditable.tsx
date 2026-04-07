@@ -1,14 +1,16 @@
-import { faCalendar, faPenNib, faTags } from "@fortawesome/free-solid-svg-icons"
+import { faCalendar, faEyeSlash, faPenNib, faTags } from "@fortawesome/free-solid-svg-icons"
 import "./BookCardEditable.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import type { BookDetails } from "../../server"
 import Button from "../Button"
 import { faTrash, faEye } from "@fortawesome/free-solid-svg-icons"
 import server from "../../server"
+import { useState } from "react"
 
 type BookCardProps = {
 	book: BookDetails
     listingId: string
+    available: boolean
     update: () => void
 	onClick?: () => void
 }
@@ -16,9 +18,13 @@ type BookCardProps = {
 function BookCard({
 	book,
     listingId,
+    available,
 	onClick,
     update
 }: BookCardProps) {
+
+    const [isAvailable, setAvailability] = useState(available)
+
 	return <div
 		className={"bookCard" + (onClick ? " clickable" : "")}
 		onClick={onClick}
@@ -53,11 +59,14 @@ function BookCard({
 
             <div className="bookCardButtonContainer">
                 <Button
-                    icon={faEye}
+                    icon={isAvailable? faEyeSlash : faEye}
                     className="normal"
-                    text={"Toggle Visibility"}
+                    text={isAvailable? "Hide listing" : "Make public"}
                     onClick={() => {
-                        server.setAvailability(listingId, true)
+                            server.setAvailability(listingId, !isAvailable)
+                            setAvailability(!isAvailable)
+                            update()
+
 
                     }}
                 />

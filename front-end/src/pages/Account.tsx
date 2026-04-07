@@ -200,7 +200,7 @@ function Account() {
 			<section className="listings">
 				<h1>Your Listings</h1>
 				<div className="searchResultsContainer">
-					{listings.length > 0 ? listings.map(listing => <BookCardEditable book={listing.book} update={updateListingView} listingId={listing.id}/>) : "No listings"}
+					{listings.length > 0 ? listings.map(listing => <BookCardEditable book={listing.book} update={updateListingView} listingId={listing.id} available={listing.available}/>) : "No listings"}
 				</div>
 			</section>
 		</main>

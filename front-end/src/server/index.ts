@@ -109,13 +109,23 @@ const server = {
 	 * Deletes a listing given its id
 	 */
 	async deleteListing(listingId: string) {
-		await fetch(
+		const res = await fetch(
 			URL + "/listing/" + listingId,
 			{
 				method: "DELETE",
 				credentials: "include",
 			}
 		)
+
+		switch (res.status) {
+			case 200:
+				return [null, "The listing has been deleted"]
+			case 401:
+				return [null, "Request was made by a user that doesn't own the listing"]
+			case 404:
+				return [null, "No listing with the ID could be found"]
+
+		}
 	},
 
 	/**
