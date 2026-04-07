@@ -7,7 +7,7 @@
 
 .buttonComponent.normal {
 	background-color: var(--ui-green);
-	color: #fff;
+	color: var(--text-colour);
 }
 
 .buttonComponent.normal:hover {
@@ -28,7 +28,7 @@
 }
 
 .buttonComponent.important {
-	color: #fff;
+	color: var(--text-colour);
 	background-color: #F24822;
 }
 
