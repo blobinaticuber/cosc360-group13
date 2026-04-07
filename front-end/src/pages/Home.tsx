@@ -11,19 +11,12 @@ function Home() {
 
 	return <>
 		<Header currentPage="/" />
-		<main className="homeMain">
-			<SearchBar 
-				search={async (term) => {
-					const [listings, _] = await server.searchListing(term)
-					return listings ?? []
-				}} 
-				onResults={listings => {
-					setListings([...listings])
-				}}
-			/>
-			<div className="searchResultsContainer">
-				{listings.map(listing => <BookCard book={listing.book} />)}
-			</div>
+		<main className="home">
+			<section className="search">
+				<SearchBar
+					search={()}
+				/>
+			</section>
 		</main>
 	</>
 }

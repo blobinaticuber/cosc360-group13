@@ -1,4 +1,4 @@
-import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate, ListingUpdate } from "./ServerTypes"
+import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate, ListingUpdate, BrowseListData } from "./ServerTypes"
 import admin from "./admin"
 
 export const URL = import.meta.env.VITE_SERVER_BASE_URL as string
@@ -367,6 +367,21 @@ const server = {
 				credentials: "include",
 			}
 		)
+	},
+
+	/**
+	 * Gets the top listings from the most popular categories.
+	 */
+	async topCategories(): Result<BrowseListData, "unknown error"> {
+		const res = await fetch(URL + "/search/browse")
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json() as BrowseListData
+			return [body, null]
+		default:
+			return [null, "unknown error"]
+		}
 	},
 
 	/**

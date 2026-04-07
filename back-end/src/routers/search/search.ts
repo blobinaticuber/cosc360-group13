@@ -2,7 +2,7 @@ import db from "../../database/db.js"
 import type { Request, Response } from "express"
 import { Router } from "express"
 import { BookDetailsSchema, type BookDetails } from "../book/book.js"
-import { ListingDetailsSchema, ListingUpdateSchema, type ListingDetails } from "../listing/listing.js"
+import listing, { ListingDetailsSchema, ListingUpdateSchema, type ListingDetails } from "../listing/listing.js"
 import { UserDetailsSchema } from "../user/user.js"
 import Status from "../../types/Status.js"
 import err from "../../util/err.js"
@@ -11,7 +11,7 @@ import z from "zod"
 
 const search = Router()
 
-const RESULTS_PER_PAGE = 10
+export const RESULTS_PER_PAGE = 10
 
 //
 // The endpoint for searching for a listing by the title of the associated 
@@ -234,6 +234,111 @@ search.get(
 )
 
 //
+// Conducts a search for books, but only includes those with associated
+// listings (which are attached).
+//
+
+export const MAX_LISTINGS_PER_BOOK = 8
+
+export const ListedBookSchema = z.object({
+	book: BookDetailsSchema,
+	listings: z.array(ListingDetailsSchema.omit({ book: true }))
+})
+
+search.get(
+	"/listed/:title",
+	async (
+		req: Request<{ title: string }>, 
+		res: Response
+	) => {
+		const { title } = req.params
+		let pageIdx = 0
+		const { page } = req.query
+		if (page) {
+			try {
+				pageIdx = Number.parseInt(page as string) - 1
+				pageIdx = Math.max(0, pageIdx)
+			} catch (e) {
+				return res.status(Status.BadRequest).end()
+			}
+		}
+
+		const listingResults = await db.Listing.aggregate([
+			{
+				$match: {
+					"book.title": new RegExp(title, "i")
+				}
+			},
+			{
+				$lookup: {
+					from: "users",
+					localField: "user",
+					foreignField: "_id",
+					as: "user"
+				}
+			},
+			{
+				$unwind: "$user"
+			},
+			{
+				$sort: { available: -1 }
+			},
+			{
+				$group: {
+					_id: "$book.id",
+					book: { $first: "$book" },
+					listings: {
+						$push: {
+							id: { $toString: "$_id" },
+							available: "$available",
+							user: {
+								id: { $toString: "$user._id" },
+								name: "$user.name",
+								email: "$user.email",
+								profilePicture: "$user.profilePicture"
+							},
+						}
+					}
+				}
+			},
+			{
+				$addFields: {
+					listingCount: { $size: "$listings" }
+				}
+			},
+			{
+				$sort: { listingCount: -1 }
+			},
+			{
+				$skip: pageIdx * RESULTS_PER_PAGE
+			},
+			{
+				$limit: RESULTS_PER_PAGE
+			},
+			{
+				$project: {
+					_id: 0,
+					book: 1,
+					listings: { $slice: [ "$listings", 5 ] }
+				}
+			}
+		]).exec()
+
+		if (listingResults.length == 0) {
+			res.status(Status.NotFound).end()
+		}
+
+		const parsed = z.array(ListedBookSchema).safeParse(listingResults)
+		if (!parsed.success) {
+			err.server(res, "Error parsing database response.")
+			return
+		}
+		
+		res.status(Status.OK).json(parsed.data)
+	}
+)
+
+//
 // Get "browsing" information; i.e., the top 20 most popular books from the 
 // top 10 most popular categories.
 //
@@ -241,7 +346,7 @@ search.get(
 export const NUMBER_OF_TOP_CATEGORIES = 10
 export const BOOKS_PER_CATEGORY = 20
 
-const CategoryBooksSchema = z.object({
+export const CategoryBooksSchema = z.object({
 	category: z.string(),
 	listingCount: z.int().nonnegative(),
 	topBooks: z.array(BookDetailsSchema.extend({
@@ -345,8 +450,6 @@ search.get(
 				})
 			})
 		})
-
-		// res.status(Status.OK).json(result)
 
 		// 
 		// Parse the result to ensure it conforms to the schema.

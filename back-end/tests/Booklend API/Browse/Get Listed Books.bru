@@ -1,0 +1,20 @@
+meta {
+  name: Get Listed Books
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/search/listed/:title
+  body: none
+  auth: inherit
+}
+
+params:path {
+  title: Harry
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
