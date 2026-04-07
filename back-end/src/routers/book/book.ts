@@ -11,7 +11,7 @@ export const BookDetailsSchema = z.object({
 	authors: z.array(z.string()).meta({
 		description: "The authors of this book."
 	}),
-	rating: z.number().min(1).max(5).optional().meta({
+	rating: z.number().min(1).max(5).optional().nullable().meta({
 		description: "The average rating (1 to 5) of this book on Google."
 	}),
 	categories: z.array(z.string()).meta({

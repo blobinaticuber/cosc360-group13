@@ -1,8 +1,8 @@
 import db from "../../database/db.js"
 import type { Request, Response } from "express"
 import { Router } from "express"
-import type { BookDetails } from "../book/book.js"
-import { ListingDetailsSchema, type ListingDetails } from "../listing/listing.js"
+import { BookDetailsSchema, type BookDetails } from "../book/book.js"
+import { ListingDetailsSchema, ListingUpdateSchema, type ListingDetails } from "../listing/listing.js"
 import { UserDetailsSchema } from "../user/user.js"
 import Status from "../../types/Status.js"
 import err from "../../util/err.js"
@@ -238,10 +238,126 @@ search.get(
 // top 10 most popular categories.
 //
 
+export const NUMBER_OF_TOP_CATEGORIES = 10
+export const BOOKS_PER_CATEGORY = 20
+
+const CategoryBooksSchema = z.object({
+	category: z.string(),
+	listingCount: z.int().nonnegative(),
+	topBooks: z.array(BookDetailsSchema.extend({
+		listings: z.array(ListingDetailsSchema.omit({ book: true }))
+	}).omit({ categories: true }))
+})
+
 search.get(
 	"/browse",
 	async (req, res) => {
-		res.json({ hello: "browser" })
+		const result = await db.Listing.aggregate([
+			{ $unwind: "$book.categories" },
+			{
+				$group: {
+				_id: "$book.categories",
+				listingCount: { $sum: 1 },
+				},
+			},
+			{ $sort: { listingCount: -1 } },
+			{ $limit: NUMBER_OF_TOP_CATEGORIES },
+			{
+				$lookup: {
+				from: "listings",
+				let: { category: "$_id" },
+				pipeline: [
+					{
+					$match: {
+						$expr: { $in: ["$$category", "$book.categories"] },
+					},
+					},
+					{
+					$group: {
+						_id: "$book.id",
+						title: { $first: "$book.title" },
+						authors: { $first: "$book.authors" },
+						rating: { $first: "$book.rating" },
+						categories: { $first: "$book.categories" },
+						description: { $first: "$book.description" },
+						image: { $first: "$book.image" },
+						publishDate: { $first: "$book.publishDate" },
+						listings: {
+						$push: {
+							id: "$_id",
+							available: "$available",
+							user: {
+								id: "$user",
+								name: "$user.name",
+								profilePicture: "$user.profilePicture",
+								email: "$user.email",
+							},
+						},
+						},
+					},
+					},
+					{ $sort: { "listings.length": -1 } },
+					{ $limit: BOOKS_PER_CATEGORY },
+				],
+				as: "topBooks",
+				},
+			},
+			{
+				$project: {
+				category: "$_id",
+				listingCount: 1,
+				topBooks: 1,
+				_id: 0,
+				},
+			},
+		]).exec();
+
+
+		// 
+		// Populate the `user` field of each listing and format the IDs.
+		//
+
+		const userIds = new Set<string>()
+		result.map(category => {
+			category.topBooks.map((book: any) => {
+				book.listings.map((listing: any) => {
+					userIds.add(listing.user.id)
+				})
+			})
+		})
+
+		const userResults = await db.User.find({ 
+			_id: { $in: Array.from(userIds) } 
+		}).exec()
+		const users = userResults.map(user => user.toObject())
+		users.forEach((user: any) => user.id = user._id.toString())
+
+		result.forEach(category => {
+			category.topBooks.forEach((book: any) => {
+				book.id = book._id.toString()
+				book.listings.forEach((listing: any) => 
+					listing.id = listing.id.toString()
+				)
+				book.listings.forEach((listing: any) => {
+					listing.user = users.find((user: any) => 
+						user.id == listing.user.id
+					)
+				})
+			})
+		})
+
+		// res.status(Status.OK).json(result)
+
+		// 
+		// Parse the result to ensure it conforms to the schema.
+		//
+
+		const parsed = z.array(CategoryBooksSchema).safeParse(JSON.parse(JSON.stringify(result)))
+		if (!parsed.success) {
+			err.server(res, "Error parsing result from database.")
+		}
+
+		res.status(Status.OK).json(parsed.data)
 	}
 )
 

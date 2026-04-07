@@ -1,0 +1,20 @@
+meta {
+  name: Test Setup
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/testing/setup
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

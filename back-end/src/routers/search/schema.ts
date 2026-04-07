@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { UserListingSchema, UserResultsSchema } from "./search.js"
+import { BOOKS_PER_CATEGORY, NUMBER_OF_TOP_CATEGORIES, UserListingSchema, UserResultsSchema } from "./search.js"
 import { BookDetailsSchema } from "../book/book.js"
 import { ErrServerSchema } from "../../util/errSchema.js"
 import { ListingDetailsSchema } from "../../routers/listing/listing.js"
@@ -119,6 +119,32 @@ searchSpec.registerPath({
 	path: "/search/{userId}/listings",
 	summary: "Search for listings by user",
 	description: "Retrieves all listings that were posted by a user.",
+	tags: [ "Listing", "Search" ],
+	request: {
+		params: z.object({
+			userId: z.string()
+		})
+	},
+	responses: {
+		200: {
+			description: "The user's listings were found.",
+			content: {
+				"application/json": {
+					schema: z.array(UserListingSchema)
+				}
+			}
+		},
+		404: {
+			description: "No matching listings were found."
+		},
+	}
+})
+
+searchSpec.registerPath({
+	method: "get",
+	path: "/search/browse",
+	summary: "Get Popular Categories",
+	description: `Selects the top ${NUMBER_OF_TOP_CATEGORIES} most popular categories (based on number of listings), and for each one selects the top ${BOOKS_PER_CATEGORY} most popular books. This data can be used for displaying a section on a page where users can browse popular books across genres. This feature is currently limited, but since the website is meant to be local, it seems appropriate in lieu of a full-fledged recommendation algorithm.`,
 	tags: [ "Listing", "Search" ],
 	request: {
 		params: z.object({
