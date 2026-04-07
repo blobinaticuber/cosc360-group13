@@ -7,17 +7,12 @@ import type { Types } from "mongoose"
 
 const testing = Router()
 
-const seededData: {
+let seededData: null | {
 	users: (User & { id: string })[]
 	admins: (Admin & { id: string })[]
 	listings: (Listing & { id: string })[]
 	reports: (Report & { id: string })[]
-} = {
-	users: [],
-	admins: [],
-	listings: [],
-	reports: []
-}
+} = null
 
 const BOOKS: BookDetails[] = [
   {
@@ -164,6 +159,18 @@ testing.put(
 	"/setup",
 	async (_, res) => {
 
+		if (seededData != null) {
+			res.status(Status.OK).json(seededData)
+			return
+		}
+
+		seededData = {
+			users: [],
+			admins: [],
+			listings: [],
+			reports: []
+		}
+
 		const SEED = Math.floor(Math.random() * 100000)
 
 		const USER_COUNT = 10
@@ -250,6 +257,11 @@ testing.delete(
 	"/teardown",
 	async (_, res) => {
 
+		if (seededData == null) {
+			res.status(Status.OK).end()
+			return
+		}
+
 		while (seededData.users.length > 0) {
 			const user = seededData.users.pop()
 			const record = await db.User.findById(user!.id).exec()
@@ -289,6 +301,8 @@ testing.delete(
 				record.deleteOne().exec()
 			}
 		}
+
+		seededData = null
 
 		res.status(Status.OK).end()
 	}
