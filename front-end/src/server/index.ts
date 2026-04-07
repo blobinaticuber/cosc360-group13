@@ -104,6 +104,20 @@ const server = {
 		}
 	},
 
+
+	/**
+	 * Deletes a listing given its id
+	 */
+	async deleteListing(listingId: string) {
+		await fetch(
+			URL + "/listing/" + listingId,
+			{
+				method: "DELETE",
+				credentials: "include",
+			}
+		)
+	},
+
 	/**
 	 * Lists a book under whichever user is currently logged in. If the listing
 	 * was created successfully, this function will return `null`. Otherwise,

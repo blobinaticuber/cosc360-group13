@@ -55,6 +55,8 @@ function BookCard({
                     className="normal"
                     text={"Toggle Visibility"}
                     onClick={() => {
+                        server.setAvailability(listingId, true)
+
                     }}
                 />
                 <Button
@@ -63,7 +65,7 @@ function BookCard({
                     text={"Delete Listing"}
                     style={"important"}
                     onClick={() => {
-                        server.setAvailability(listingId, true)
+                        server.deleteListing(listingId)
                     }}
                 />
             </div>
