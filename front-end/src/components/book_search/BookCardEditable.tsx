@@ -3,19 +3,21 @@ import "./BookCardEditable.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import type { BookDetails } from "../../server"
 import Button from "../Button"
-import { faTrash, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
+import { faTrash, faEye } from "@fortawesome/free-solid-svg-icons"
 import server from "../../server"
 
 type BookCardProps = {
 	book: BookDetails
     listingId: string
+    update: () => void
 	onClick?: () => void
 }
 
 function BookCard({
 	book,
     listingId,
-	onClick
+	onClick,
+    update
 }: BookCardProps) {
 	return <div
 		className={"bookCard" + (onClick ? " clickable" : "")}
@@ -64,8 +66,14 @@ function BookCard({
                     className="deleteAccount"
                     text={"Delete Listing"}
                     style={"important"}
-                    onClick={() => {
-                        server.deleteListing(listingId)
+                    onClick={
+                        async () => {
+                            if (confirm("Are you sure you want to delete this listing?")) {
+                                await server.deleteListing(listingId)
+                                // updates the parent component (should be account page)
+                                update()
+                            }
+
                     }}
                 />
             </div>

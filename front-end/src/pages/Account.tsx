@@ -22,6 +22,7 @@ function Account() {
 		navigate("/")
 		return <></>
 	}
+	const currentUser = user
 
 	const [listings, setListings] = useState<ListingDetails[]>([])
 
@@ -32,13 +33,22 @@ function Account() {
 	const [emailErr, setEmailErr] = useState<string | undefined>(undefined)
 	const [updateFields, setUpdateFields] = useState<UserUpdate>({})
 
-	useEffect(() => {
+	function updateListingView(): void {
+		const userId = currentUser.id
 		const fetchListings = async () => {
-			const [listings, _] = await server.searchListingsByUser(user.id)
+			const [listings, _] = await server.searchListingsByUser(userId)
 			setListings(listings ?? [])
 		}
 		fetchListings()
-	}, [user.id])
+	}
+
+	useEffect(() => {
+		const fetchListings = async () => {
+			const [listings, _] = await server.searchListingsByUser(currentUser.id)
+			setListings(listings ?? [])
+		}
+		fetchListings()
+	}, [currentUser.id])
 
 	useEffect(() => {
 		setNameErr(undefined)
@@ -190,7 +200,7 @@ function Account() {
 			<section className="listings">
 				<h1>Your Listings</h1>
 				<div className="searchResultsContainer">
-					{listings.map(listing => <BookCardEditable book={listing.book} listingId={listing.id}/>)}
+					{listings.length > 0 ? listings.map(listing => <BookCardEditable book={listing.book} update={updateListingView} listingId={listing.id}/>) : "No listings"}
 				</div>
 			</section>
 		</main>
