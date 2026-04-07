@@ -12,7 +12,6 @@ import TextInput from "../components/forms/TextInput"
 import { toast } from "react-toastify"
 import validEmail from "../util/validEmail"
 
-import BookCard from "../components/book_search/BookCard"
 import BookCardEditable from "../components/book_search/BookCardEditable"
 
 function Account() {
@@ -191,7 +190,7 @@ function Account() {
 			<section className="listings">
 				<h1>Your Listings</h1>
 				<div className="searchResultsContainer">
-					{listings.map(listing => <BookCardEditable book={listing.book} />)}
+					{listings.map(listing => <BookCardEditable book={listing.book} listingId={listing.id}/>)}
 				</div>
 			</section>
 		</main>

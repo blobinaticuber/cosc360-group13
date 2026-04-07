@@ -3,15 +3,18 @@ import "./BookCardEditable.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import type { BookDetails } from "../../server"
 import Button from "../Button"
-import { faAt, faPencil, faSave, faTrash, faUser, faEye } from "@fortawesome/free-solid-svg-icons"
+import { faTrash, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
+import server from "../../server"
 
 type BookCardProps = {
 	book: BookDetails
+    listingId: string
 	onClick?: () => void
 }
 
 function BookCard({
 	book,
+    listingId,
 	onClick
 }: BookCardProps) {
 	return <div
@@ -49,20 +52,18 @@ function BookCard({
             <div className="bookCardButtonContainer">
                 <Button
                     icon={faEye}
-                    // disable={loading}
                     className="normal"
                     text={"Toggle Visibility"}
-                    // style={"important"}
                     onClick={() => {
                     }}
                 />
                 <Button
                     icon={faTrash}
-                    // disable={loading}
                     className="deleteAccount"
                     text={"Delete Listing"}
                     style={"important"}
                     onClick={() => {
+                        server.setAvailability(listingId, true)
                     }}
                 />
             </div>
