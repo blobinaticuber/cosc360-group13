@@ -1,21 +1,35 @@
 .accountDashboard {
-	display: grid;
-
-	column-gap: 30px;
-	row-gap: 30px;
-
-	grid-template-columns: 1fr 3fr;
-	grid-template-rows: auto auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
 	width: 100%;
 	height: fit-content;
 	padding: 20px 40px;
 }
 
+section {
+	margin: 1em;
+}
+
+.accountDetails {
+	display: flex;
+	flex-direction: row;
+
+}
+
+.accountDetailsFields {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	padding: 1em;
+	min-width: 200px;
+}
+
 .accountDashboard .profileSummary {
-	grid-column: 1;
-	grid-row: 1;
-	
+	display: flex;
+
 	max-width: 300px;
 	padding: 20px;
 	display: flex;
@@ -59,6 +73,9 @@
 }
 
 .accountDashboard .listings {
-	grid-column: 2;
-	grid-row: 1 / 2;
+	gap: 1em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-self: center;
 }

@@ -3,13 +3,16 @@ import Header from "../components/layout/Header"
 import "./Account.css"
 import { UserContext } from "../App"
 import Button from "../components/Button"
-import { faAt, faPencil, faPerson, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faAt, faPencil, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
 import type { UserUpdate } from "../server/ServerTypes"
+import server, { type ListingDetails } from "../server"
 import TextInput from "../components/forms/TextInput"
-import server from "../server"
+// import server from "../server"
 import { toast } from "react-toastify"
 import validEmail from "../util/validEmail"
+
+import BookCardEditable from "../components/book_search/BookCardEditable"
 
 function Account() {
 	const navigate = useNavigate()
@@ -19,6 +22,9 @@ function Account() {
 		navigate("/")
 		return <></>
 	}
+	const currentUser = user
+
+	const [listings, setListings] = useState<ListingDetails[]>([])
 
 	const [editing, setEditing] = useState(false)
 	const [loading, setLoading] = useState(false)
@@ -26,6 +32,23 @@ function Account() {
 	const [nameErr, setNameErr] = useState<string | undefined>(undefined)
 	const [emailErr, setEmailErr] = useState<string | undefined>(undefined)
 	const [updateFields, setUpdateFields] = useState<UserUpdate>({})
+
+	function updateListingView(): void {
+		const userId = currentUser.id
+		const fetchListings = async () => {
+			const [listings, _] = await server.searchListingsByUser(userId)
+			setListings(listings ?? [])
+		}
+		fetchListings()
+	}
+
+	useEffect(() => {
+		const fetchListings = async () => {
+			const [listings, _] = await server.searchListingsByUser(currentUser.id)
+			setListings(listings ?? [])
+		}
+		fetchListings()
+	}, [currentUser.id])
 
 	useEffect(() => {
 		setNameErr(undefined)
@@ -36,14 +59,17 @@ function Account() {
 		<Header currentPage="/account" hideProfileMenu />
 		<main className="accountDashboard">
 			<section className="profileSummary">
-				<img src={user.profilePicture} alt="You!" />
-				{editing ? 
+				<h1>Account Details</h1>
+				<div className="accountDetails">
+					<img src={user.profilePicture} alt="You!" />
+				{editing ?
 					<>
-						<TextInput 
+					<div className="accountDetailsFields">
+						<TextInput
 							type="text"
 							icon={faUser}
-							initialValue={user.name} 
-							name="name"	
+							initialValue={user.name}
+							name="name"
 							error={nameErr}
 							onChange={name => {
 								setNameErr(undefined)
@@ -58,10 +84,10 @@ function Account() {
 								})
 							}}
 						/>
-						<TextInput 
+						<TextInput
 							type="email"
 							icon={faAt}
-							initialValue={user.email} 
+							initialValue={user.email}
 							name="email"
 							error={emailErr}
 							onChange={email => {
@@ -81,26 +107,30 @@ function Account() {
 									return { ...prev, email }
 								})
 							}}
-						/>					
+						/>
+						</div>
 					</>
 					:
 					<>
+					<div className="accountDetailsFields">
 						<p className="name">{user.name}</p>
 						<p className="email">{user.email}</p>
+					</div>
 					</>
 				}
-			
+				</div>
+
 				</section>
 			<section className="accountControls">
-				{!editing && 
+				{!editing &&
 					<Button
 						icon={faPencil}
 						text={"Edit Profile"}
 						onClick={() => setEditing(true)}
-					/>	
+					/>
 				}
 				{editing && <>
-					<Button 
+					<Button
 						icon={faSave}
 						text={"Save Changes"}
 						spinning={loading}
@@ -125,7 +155,7 @@ function Account() {
 									return { ...prev!, ...updateFields }
 								})
 								setEditing(false)
-								return			
+								return
 							case "email already taken":
 								setEmailErr("This email is already in use")
 								return
@@ -150,7 +180,7 @@ function Account() {
 							setEditing(false)
 						}}
 					/>
-					<Button 
+					<Button
 						icon={faTrash}
 						disable={loading}
 						className="deleteAccount"
@@ -168,7 +198,10 @@ function Account() {
 				</>}
 			</section>
 			<section className="listings">
-				Your listings:
+				<h1>Your Listings</h1>
+				<div className="searchResultsContainer">
+					{listings.length > 0 ? listings.map(listing => <BookCardEditable book={listing.book} update={updateListingView} listingId={listing.id} available={listing.available}/>) : "No listings"}
+				</div>
 			</section>
 		</main>
 	</>)

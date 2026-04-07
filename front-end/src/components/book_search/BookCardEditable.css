@@ -1,0 +1,77 @@
+.bookCard {
+	min-width: 300px;
+	width: 100%;
+	max-width: 900px;
+
+	height: fit-content;
+
+	border: 1px solid #aaa;
+	border-left: 0;
+	border-right: 0;
+
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	padding: 10px;
+
+	transition: all 400ms;
+}
+
+.bookCardButtonContainer {
+	display: flex;
+	gap: 1em;
+}
+
+.bookCard.clickable:hover {
+	border-color: var(--ui-green);
+	background-color: var(--ui-green);
+	cursor: pointer;
+}
+
+.bookCard .imgContainer {
+	min-width: 100px;
+	width: 100px;
+	max-width: 100px;
+	min-height: 80px;
+	height: 80px;
+	max-height: 80px;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
+.bookCard img {
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.bookCard .textSection {
+	display: flex;
+	flex-direction: column;
+
+	gap: 1rem;
+	margin: 5px;
+}
+
+.bookCard .textSection .icon {
+	color: #46aac8;
+}
+
+.bookCard h1 {
+	font-size: 1.1rem;
+	color: var(--text-colour);
+	max-height: 2lh;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.bookCard .detailsContainer {
+	font-size: 0.9rem;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	column-gap: 1rem;
+	row-gap: 5px;
+}
