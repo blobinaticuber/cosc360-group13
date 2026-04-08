@@ -2,8 +2,7 @@ import "./ListedBookCard.css"
 import type { ListedBook, UserDetails } from "../server"
 import { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPenNib, faCalendar, faTags, faEnvelope, faCheck, faX } from "@fortawesome/free-solid-svg-icons"
-import Popup from "./popup/Popup"
+import { faPenNib, faCalendar, faTags, faCheck, faX } from "@fortawesome/free-solid-svg-icons"
 import UserContactPopup from "./UserContactPopup"
 
 export type ListedBookProps = ListedBook & {

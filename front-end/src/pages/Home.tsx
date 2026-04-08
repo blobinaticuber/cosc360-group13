@@ -49,6 +49,7 @@ function Home() {
 										? " active" : "")
 									}
 								onClick={() => {
+									setActiveBook(null)
 									setActiveCategory(prev => {
 										if (prev == category.category) {
 											setListedBooks([])
@@ -77,6 +78,7 @@ function Home() {
 				<SearchBar
 					search={async (term) => {
 						setActiveCategory(null)
+						setActiveBook(null)
 						const [books, _] = await server.searchListedBooks(term)
 						return books ?? []
 					}}
@@ -91,7 +93,9 @@ function Home() {
 							key={listedBook.book.id}
 							{...listedBook}
 							expanded={activeBook == listedBook.book.id}
-							onClick={() => setActiveBook(listedBook.book.id)}	
+							onClick={() => {
+								setActiveBook(listedBook.book.id)
+							}}	
 							onCollapse={() => setActiveBook(null)}
 						/>)
 				}
