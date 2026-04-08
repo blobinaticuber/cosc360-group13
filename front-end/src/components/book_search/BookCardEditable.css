@@ -17,9 +17,16 @@
 	transition: all 400ms;
 }
 
+.bookCard .textSection {
+	flex: 1;
+}
+
 .bookCardButtonContainer {
 	display: flex;
 	gap: 1em;
+	width: 100%;
+	align-items: flex-end;
+	justify-content: flex-end;
 }
 
 .bookCard.clickable:hover {

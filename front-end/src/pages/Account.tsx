@@ -18,11 +18,6 @@ function Account() {
 	const navigate = useNavigate()
 
 	const [user, setUser] = useContext(UserContext)
-	if (!user) {
-		navigate("/")
-		return <></>
-	}
-	const currentUser = user
 
 	const [listings, setListings] = useState<ListingDetails[]>([])
 
@@ -33,27 +28,28 @@ function Account() {
 	const [emailErr, setEmailErr] = useState<string | undefined>(undefined)
 	const [updateFields, setUpdateFields] = useState<UserUpdate>({})
 
-	function updateListingView(): void {
-		const userId = currentUser.id
-		const fetchListings = async () => {
-			const [listings, _] = await server.searchListingsByUser(userId)
-			setListings(listings ?? [])
-		}
-		fetchListings()
-	}
-
 	useEffect(() => {
-		const fetchListings = async () => {
-			const [listings, _] = await server.searchListingsByUser(currentUser.id)
-			setListings(listings ?? [])
+		if (user == null) {
+			return
 		}
-		fetchListings()
-	}, [currentUser.id])
+		server
+			.searchListingsByUser(user.id)
+			.then(([ listings, _ ]) => {
+				setListings(listings ?? [])
+			})
+	}, [user])
 
 	useEffect(() => {
 		setNameErr(undefined)
 		setEmailErr(undefined)
 	}, [editing])
+
+	if (user == null) {
+		return <>
+			<Header currentPage="/account" hideProfileMenu />
+			<p>Loading...</p>
+		</>
+	}
 
 	return (<>
 		<Header currentPage="/account" hideProfileMenu />
@@ -199,9 +195,24 @@ function Account() {
 			</section>
 			<section className="listings">
 				<h1>Your Listings</h1>
-				<div className="searchResultsContainer">
-					{listings.length > 0 ? listings.map(listing => <BookCardEditable book={listing.book} update={updateListingView} listingId={listing.id} available={listing.available}/>) : "No listings"}
-				</div>
+				{listings.length == 0
+					? <em className="noListingsMessage">No listings.</em>
+					: listings.map(listing => 
+						<BookCardEditable 
+							key={listing.id}
+							book={listing.book} 
+							onDelete={() => {
+								setListings(prev => {
+									return [...prev].filter(({ id }) => 
+										id  != listing.id
+									)
+								})
+							}}
+							listingId={listing.id} 
+							available={listing.available}
+						/>
+					)
+				}
 			</section>
 		</main>
 	</>)

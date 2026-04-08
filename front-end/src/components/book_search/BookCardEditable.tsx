@@ -11,8 +11,11 @@ type BookCardProps = {
 	book: BookDetails
     listingId: string
     available: boolean
-    update: () => void
 	onClick?: () => void
+	/**
+	 * This will be called whenever the user deletes the listing.
+	 */
+	onDelete?: () => void
 }
 
 function BookCard({
@@ -20,9 +23,19 @@ function BookCard({
     listingId,
     available,
 	onClick,
-    update
+	onDelete
 }: BookCardProps) {
 
+	/**
+	 * This holds a value to indicate when a part of the listing is being
+	 * updated. E.g., if we are updating the availability of the listing or
+	 * deleting it, we should set this to mark that the request is pending.
+	 * Whenever any request is pending, we shouldn't allow other update
+	 * operations (race conditions are bad).
+	 */
+	const [updating, setUpdating] = useState<
+		"availability" | "deletion" | null
+	>(null)
     const [isAvailable, setAvailability] = useState(available)
 
 	return <div
@@ -60,39 +73,40 @@ function BookCard({
             <div className="bookCardButtonContainer">
                 <Button
                     icon={isAvailable? faEyeSlash : faEye}
-                    className="normal"
+					style={isAvailable ? "normal" : "subtle" }
                     text={isAvailable? "Hide listing" : "Make public"}
-                    onClick={() => {
-                            server.setAvailability(listingId, !isAvailable)
-                            setAvailability(!isAvailable)
-                            update()
-
-
+					spinning={updating == "availability"}
+					disable={updating != null}
+                    onClick={async () => {
+						setUpdating("availability")
+						await server.setAvailability(listingId, !isAvailable)
+						setUpdating(null)
+						setAvailability(!isAvailable)
                     }}
                 />
                 <Button
                     icon={faTrash}
-                    className="deleteAccount"
+                    className="deleteListing"
                     text={"Delete Listing"}
                     style={"important"}
-                    onClick={
-                        async () => {
-                            if (confirm("Are you sure you want to delete this listing?")) {
-                                await server.deleteListing(listingId)
-                                // updates the parent component (should be account page)
-                                update()
-                            }
-
+					disable={updating != null}
+					spinning={updating == "deletion"}
+                    onClick={async () => {
+						if (!confirm(
+							"Are you sure you want to delete this listing?"
+						)) {
+							return
+						}
+						setUpdating("deletion")
+						await server.deleteListing(listingId)
+						setUpdating(null)
+						if (onDelete) {
+							onDelete()
+						}
                     }}
                 />
             </div>
-
-
-
 		</div>
-
-
-
     </div>
 }
 
