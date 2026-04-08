@@ -3,8 +3,8 @@ import Header from "../components/layout/Header"
 import "./Account.css"
 import { UserContext } from "../App"
 import Button from "../components/Button"
-import { faAt, faPencil, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
-import { useNavigate } from "react-router-dom"
+import { faAt, faEnvelope, faPencil, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
+import { Link, useNavigate } from "react-router-dom"
 import type { UserUpdate } from "../server/ServerTypes"
 import server, { type ListingDetails } from "../server"
 import TextInput from "../components/forms/TextInput"
@@ -28,6 +28,21 @@ function Account() {
 	const [emailErr, setEmailErr] = useState<string | undefined>(undefined)
 	const [updateFields, setUpdateFields] = useState<UserUpdate>({})
 
+	const [pageLoadingMessage, setPageLoadingMessage] = useState(
+		<>Loading...</>
+	)
+
+	useEffect(() => {
+		// If after 2 seconds we haven't retrieved the user information, then
+		// we assume they're not logged in and prompt them to navigate to the
+		// login page.
+		setTimeout(() => {
+			setPageLoadingMessage(<>
+				Log in <Link to="/login">here</Link>.
+			</>)			
+		}, 2000)
+	}, [])
+
 	useEffect(() => {
 		if (user == null) {
 			return
@@ -44,10 +59,11 @@ function Account() {
 		setEmailErr(undefined)
 	}, [editing])
 
+	// If the user information is pending, we render this.
 	if (user == null) {
 		return <>
 			<Header currentPage="/account" hideProfileMenu />
-			<p>Loading...</p>
+			<p className="loadingMessage">{pageLoadingMessage}</p>
 		</>
 	}
 
@@ -82,13 +98,12 @@ function Account() {
 						/>
 						<TextInput
 							type="email"
-							icon={faAt}
+							icon={faEnvelope}
 							initialValue={user.email}
 							name="email"
 							error={emailErr}
 							onChange={email => {
 								setEmailErr(undefined)
-
 
 								if (email == user.email || email.length == 0) {
 									delete updateFields.email
@@ -183,6 +198,10 @@ function Account() {
 						text={"Delete Account"}
 						style={"important"}
 						onClick={() => {
+							if (!confirm("Are you sure you want to delete your account?")) {
+								return
+							}
+
 							setLoading(true)
 							server.deleteUser()
 							setLoading(false)

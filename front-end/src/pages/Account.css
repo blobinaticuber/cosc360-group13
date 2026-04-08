@@ -6,7 +6,15 @@
 
 	width: 100%;
 	height: fit-content;
-	padding: 20px 40px;
+	padding: 20px 0px;
+}
+
+.loadingMessage {
+	width: 100%;
+	text-align: center;
+	padding: 2rem;
+	box-sizing: border-box;
+	color: #777;
 }
 
 section {
@@ -16,7 +24,8 @@ section {
 .accountDetails {
 	display: flex;
 	flex-direction: row;
-
+	flex-direction: wrap;
+	width: min(100%, 600px);
 }
 
 .accountDetailsFields {
@@ -24,13 +33,12 @@ section {
 	flex-direction: column;
 	justify-content: space-evenly;
 	padding: 1em;
-	min-width: 200px;
+	width: min(100%, 400px);
 }
 
 .accountDashboard .profileSummary {
 	display: flex;
 
-	max-width: 300px;
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
