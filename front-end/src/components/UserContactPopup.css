@@ -1,0 +1,48 @@
+.userPopup {
+	background-color: #eee;
+	padding: 1rem;
+	border: 1px solid #aaa;
+
+	width: min(90vw, 400px);
+	height: auto;
+
+	display: grid;
+	grid-template-columns: 100px 4fr;
+	column-gap: 1rem;
+}
+
+.userPopup .profilePicture {
+	width: 80px;
+	height: 80px;
+	border-radius: 100%;
+	margin: 0 auto
+}
+
+.userPopup h1 {
+	font-size: 1.1rem;
+}
+
+.userPopup .overview {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 10px;
+}
+
+.userPopup .prompt {
+	grid-row: 2;
+	grid-column: span 2;
+	width: 100%;
+	text-align: center;
+	padding: 2rem 1rem;
+}
+
+.userPopup .contactInfo {
+	color: rgb(48, 124, 255);
+}
+
+.userPopup .emailLink:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}

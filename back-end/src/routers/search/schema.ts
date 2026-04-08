@@ -1,9 +1,9 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import z from "zod"
-import { UserListingSchema, UserResultsSchema } from "./search.js"
-import { BookDetailsSchema } from "routers/book/book.js"
-import { ErrServerSchema } from "util/errSchema.js"
-import { ListingDetailsSchema } from "routers/listing/listing.js"
+import { BOOKS_PER_CATEGORY, CategoryBooksSchema, ListedBookSchema, MAX_LISTINGS_PER_BOOK, NUMBER_OF_TOP_CATEGORIES, RESULTS_PER_PAGE, UserListingSchema, UserResultsSchema } from "./search.js"
+import { BookDetailsSchema } from "../book/book.js"
+import { ErrServerSchema } from "../../util/errSchema.js"
+import { ListingDetailsSchema } from "../../routers/listing/listing.js"
 
 const searchSpec = new OpenAPIRegistry()
 
@@ -137,6 +137,60 @@ searchSpec.registerPath({
 		404: {
 			description: "No matching listings were found."
 		},
+	}
+})
+
+searchSpec.registerPath({
+	method: "get",
+	path: "/search/listed/{bookTitle}",
+	summary: "Search Listed Books",
+	description: `Searches for the top ${RESULTS_PER_PAGE} books based on the number of listings they have. The search results will include the book details and their associated listings (up to a maximum of ${MAX_LISTINGS_PER_BOOK}). Listings marked as "unavailable" will be included as well, but they will only be shown last. To get beyond the top ${RESULTS_PER_PAGE} results, you can pass a \`page\` number as a query. E.g., to get results ${RESULTS_PER_PAGE + 1} through ${RESULTS_PER_PAGE * 2}, you could set \`?page=2\`.`,
+	tags: [ "Search", "Book" ],
+	request: {
+		params: z.object({
+			bookTitle: z.string().meta({
+				description: "The title of the book to search for."
+			})
+		}),
+		query: z.object({
+			page: z.int().positive().optional().meta({
+				description: "The results page. Defaults to `1`."
+			})
+		})
+	},
+	responses: {
+		200: {
+			description: "Search results were found.",
+			content: {
+				"application/json": {
+					schema: z.array(ListedBookSchema)
+				}
+			}
+		},
+		400: {
+			description: "The `page` query was not an integer.",
+		},
+		404: {
+			description: "No matching results were found."
+		},
+	}
+})
+
+searchSpec.registerPath({
+	method: "get",
+	path: "/search/browse",
+	summary: "Get Popular Categories",
+	description: `Selects the top ${NUMBER_OF_TOP_CATEGORIES} most popular categories (based on number of listings), and for each one selects the top ${BOOKS_PER_CATEGORY} most popular books. This data can be used for displaying a section on a page where users can browse popular books across genres. This feature is currently limited, but since the website is meant to be local, it seems appropriate in lieu of a full-fledged recommendation algorithm.`,
+	tags: [ "Search" ],
+	responses: {
+		200: {
+			description: "Results were found.",
+			content: {
+				"application/json": {
+					schema: z.array(CategoryBooksSchema)
+				}
+			}
+		}
 	}
 })
 

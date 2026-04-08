@@ -33,8 +33,6 @@
 	max-width: fit-content;
 	padding: 5px 1rem;
 	text-align: center;
-
-	z-index: 1;
 }
 
 .navLink:hover, .navLink.activeNavLink {

@@ -1,10 +1,13 @@
+.formComponent {
+	width: min(100%, 450px);
+}
+
 .formComponent fieldset {
 	display: flex;
 	flex-direction: column;
 	padding: 2rem;
 
-	width: 500px;
-	max-width: 90%;
+	width: 100%;
 
 	height: fit-content;
 

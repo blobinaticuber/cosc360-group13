@@ -196,7 +196,7 @@ export interface ListingDetailData {
      * @min 1
      * @max 5
      */
-    rating?: number;
+    rating?: number | null;
     /** The categories of this booke, e.g. "Fiction", "Suspense". */
     categories: string[];
     /** An HTML string containing a description of the book. */
@@ -244,7 +244,7 @@ export type ListingDetailResult = {
      * @min 1
      * @max 5
      */
-    rating?: number;
+    rating?: number | null;
     /** The categories of this booke, e.g. "Fiction", "Suspense". */
     categories: string[];
     /** An HTML string containing a description of the book. */
@@ -280,7 +280,7 @@ export type BookDetailData = {
    * @min 1
    * @max 5
    */
-  rating?: number;
+  rating?: number | null;
   /** The categories of this booke, e.g. "Fiction", "Suspense". */
   categories: string[];
   /** An HTML string containing a description of the book. */
@@ -312,7 +312,7 @@ export type ListingsListData = {
      * @min 1
      * @max 5
      */
-    rating?: number;
+    rating?: number | null;
     /** The categories of this booke, e.g. "Fiction", "Suspense". */
     categories: string[];
     /** An HTML string containing a description of the book. */
@@ -326,6 +326,85 @@ export type ListingsListData = {
   };
   /** The availability of the listing. */
   available: boolean;
+}[];
+
+export type ListedDetailData = {
+  book: {
+    /** The ID of this book/volume in the Google Books database. */
+    id: string;
+    /** The authors of this book. */
+    authors: string[];
+    /**
+     * The average rating (1 to 5) of this book on Google.
+     * @min 1
+     * @max 5
+     */
+    rating?: number | null;
+    /** The categories of this booke, e.g. "Fiction", "Suspense". */
+    categories: string[];
+    /** An HTML string containing a description of the book. */
+    description: string;
+    /** A URL to an image of the book's cover. If Google's database doesn't have such an image, then this uses a default value. */
+    image: string;
+    /** The title (and subtitle, if there is one) of the book. The subtitle is separated from the title like "Title: Subtitle". */
+    title: string;
+    /** The publication date of the book. */
+    publishDate?: string;
+  };
+  listings: {
+    /** The unique identifier for the listing. */
+    id: string;
+    /** The user who posted the listing. */
+    user: {
+      id: string;
+      name: string;
+      profilePicture: string;
+      /** @format email */
+      email: string;
+    };
+    /** The availability of the listing. */
+    available: boolean;
+  }[];
+}[];
+
+export type BrowseListData = {
+  category: string;
+  /** @min 0 */
+  listingCount: number;
+  topBooks: {
+    /** The ID of this book/volume in the Google Books database. */
+    id: string;
+    /** The authors of this book. */
+    authors: string[];
+    /**
+     * The average rating (1 to 5) of this book on Google.
+     * @min 1
+     * @max 5
+     */
+    rating?: number | null;
+    /** An HTML string containing a description of the book. */
+    description: string;
+    /** A URL to an image of the book's cover. If Google's database doesn't have such an image, then this uses a default value. */
+    image: string;
+    /** The title (and subtitle, if there is one) of the book. The subtitle is separated from the title like "Title: Subtitle". */
+    title: string;
+    /** The publication date of the book. */
+    publishDate?: string;
+    listings: {
+      /** The unique identifier for the listing. */
+      id: string;
+      /** The user who posted the listing. */
+      user: {
+        id: string;
+        name: string;
+        profilePicture: string;
+        /** @format email */
+        email: string;
+      };
+      /** The availability of the listing. */
+      available: boolean;
+    }[];
+  }[];
 }[];
 
 export type ReportUpdateData = any;

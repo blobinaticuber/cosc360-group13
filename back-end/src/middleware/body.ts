@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express"
 import type { ZodObject } from "zod"
-import err from "util/err.js"
+import err from "../util/err.js"
 
 /**
  * Returns a middleware function that ensures the request body matches a given

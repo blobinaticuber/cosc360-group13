@@ -2,11 +2,11 @@ import cors from "cors"
 import express from "express"
 
 import cookieParser from "cookie-parser"
-import errorHandler from "middleware/errorHandler.js"
+import errorHandler from "./middleware/errorHandler.js"
 import connect from "./database/connect.js"
 import routers from "./routers/index.js"
 import docs from "./routers/docs.js"
-import startupMessage from "util/startupMessage.js"
+import startupMessage from "./util/startupMessage.js"
 
 const server = express()
 

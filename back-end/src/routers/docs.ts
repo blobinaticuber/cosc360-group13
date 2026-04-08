@@ -1,7 +1,7 @@
 import { OpenApiGeneratorV31 } from "@asteasolutions/zod-to-openapi";
 import type { OpenAPIDefinitions } from "@asteasolutions/zod-to-openapi/dist/openapi-registry.js";
 import { Router } from "express";
-import Status from "types/Status.js";
+import Status from "../types/Status.js";
 import routers from "./index.js";
 
 //

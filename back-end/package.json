@@ -3,8 +3,10 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
-		"dev": "tsx --watch --env-file=.env --env-file=.env.local src/index.ts",
-		"test": "bru run \"./tests/Booklend API/\" --env-file \"./tests/Booklend API/environments/dev.bru\""
+		"dev": "tsx --env-file=.env --env-file=.env.dev --env-file=.env.local --watch src/index.ts",
+		"test": "bru run \"./tests/Booklend API/\" --env-file \"./tests/Booklend API/environments/dev.bru\"",
+		"build": "npm install && tsc",
+		"start": "node ./dist/index.js"
 	},
 	"author": "Chad Glazier",
 	"license": "MIT",

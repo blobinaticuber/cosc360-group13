@@ -14,7 +14,7 @@
 	gap: 1rem;
 	padding: 10px;
 
-	transition: all 400ms;
+	transition: all 200ms;
 }
 
 .bookCard.clickable:hover {

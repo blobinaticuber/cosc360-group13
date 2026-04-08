@@ -2,78 +2,73 @@
 
 This is the back-end Rest API for Booklend.
 
-## Running the Development Server
+## Running the Server
 
 To run the local development server, you need to start up two things:
 
 1. the database, and
 2. the Node server.
 
-If you have everything installed, this can be done with with two commands
+You can start both of these with `docker compose`. If you're in the `back-end/` directory, just run:
 
 ```sh
-docker compose up --detach
-npm run dev
+docker compose up -d
+docker compose logs -f server # this line is optional; it just enables logs from the server.
 ```
 
-However, if it's your first time running the app, you might need to follow the steps explained below.
-
-### Running the Local Database
-
-The [docker compose](docker-compose.yml) file can used to run a local instance of a Mongo database within a docker container. To start the database, first ensure that you have Docker installed:
-
-```sh
-docker version
-```
-
-If the command isn't recognized, then you need to install Docker (which you can do from [here](https://docs.docker.com/desktop/)). If you get some output but it says that the docker engine isn't running, you may need to open your Docker Desktop application to start it. Then try the command again.
-
-If you have Docker working, then you can start the database from this directory by running
-
-```sh
-docker compose up --detach
-```
-
-The first time you run this, Docker will need to install the Mongo image, which might take a second. Once the database starts running, you can close this terminal window and the database will still stay running until you use the docker command to end it.
-
-You can shut down the database with this command:
+This will start the production server by default. To shut down the server, just run
 
 ```sh
 docker compose down
 ```
 
-If you have any issues with the database and need to debug it, I would recommend installing MongoDB's GUI from
-[here](https://www.mongodb.com/products/tools/compass).
+### Running the Development Server
 
-### Running the Node Server
-
-To run the Node server, you must first have Node installed. You can run this command to verify that you have it:
+To start up the development server, use
 
 ```sh
-node --version
-```
-
-If the command isn't recognised, you can install Node from [here](https://nodejs.org/en/download).
-
-If you have Node working, then you can install the dependencies for the server with this command:
-
-```sh
-npm install
-```
-
-You only need to run this once when the project's dependencies change, not every time you want to start the server.
-
-You can start the local server with this command:
-
-```sh
+docker compose -f="docker-compose.db.yaml" up -d
+npm install # only necessary the first time
 npm run dev
 ```
 
-To stop the server, just use `Ctrl+C` or close the terminal window.
+This will start up a docker container that only has the database and then run the development server via Node on your machine. This makes it so that you can modify files in the back-end and the changes will cause the server to reload automatically. As far as I know, there's no way to get this behavior in a clean way using Docker alone.
+
+To shut down the development database, you can run:
+
+```sh
+docker compose -f="docker-compose.db.yaml" down
+```
+
+### Setting up the Environment
+
+You will receive errors if either of the `ADMIN_KEY` or `GOOGLE_BOOKS_KEY` variables are not set in the current environment. To fix this, create a file named `.env.local` with those variables set.
+
+```conf
+ADMIN_KEY="Open, sesame!"
+GOOGLE_BOOKS_KEY="some google books key"
+```
+
+In order for the API to work, the Google books key has to be an actual API key. You can create one (for free) from your personal [Google Cloud Console](https://console.cloud.google.com/); once youre there, you'll have to go through the steps of getting a key for the Google Books API. The `ADMIN_KEY` can be anything, it just defines the key needed to register a new administrator account.
+
+### Viewing the Database
+
+If you have any issues with the database and need to debug it, I would recommend installing MongoDB's GUI from
+[here](https://www.mongodb.com/products/tools/compass). This will let you view the contents of the database directly so you can ensure that it matches up with the requests you've made.
+
+### Installing Docker
+
+You can check whether or not you have Docker installed with this command:
+
+```sh
+docker version
+```
+
+If this command isn't recognized, then you need to install Docker from [here](https://docs.docker.com/desktop/). If you get some output but it says that the docker engine isn't running, you may need to open your Docker Desktop application to start it. Then try the command again.
 
 ## Tests
 
-Integration tests for the API will be implemented with [Bruno](https://www.usebruno.com/). You can install Bruno's CLI tool from NPM:
+Integration tests for the API are implemented with [Bruno](https://www.usebruno.com/). You can install Bruno's CLI tool from NPM:
 
 ```sh
 npm install -g @usebruno/cli
@@ -81,13 +76,13 @@ npm install -g @usebruno/cli
 
 Alternatively, you can install their desktop GUI from [here](https://www.usebruno.com/downloads).
 
-All Bruno tests can be found in [tests/](./tests/). If you have Bruno's CLI tool installed, you can run these tests with:
+All Bruno tests can be found in [tests/](./tests/). If you have Bruno's CLI tool installed and the server is running, you can run the full test suite with:
 
 ```
 bru run --env-file .\environments\dev.bru
 ```
 
-If you're on Windows/Powershell, you can instead just run `.\run_tests.ps1` (this script will also generate an HTML report).
+If you're on Windows/Powershell, you can instead run `.\run_tests.ps1` (this script will also generate an HTML report).
 
 ## Code Structure
 

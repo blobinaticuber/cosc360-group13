@@ -6,17 +6,19 @@ import type { BookDetails } from "../../server"
 type BookCardProps = {
 	book: BookDetails
 	onClick?: () => void
+	className?: string
 }
 
 function BookCard({
 	book,
-	onClick
+	onClick,
+	className
 }: BookCardProps) {
 	return <div 
 		className={"bookCard" + (onClick ? " clickable" : "")} 
 		onClick={onClick}
 	>
-		<div className="imgContainer">
+		<div className={"imgContainer" + (className ? " " + className : "")}>
 			<img src={book.image} alt="book cover" />
 		</div>
 		<div className="textSection">
