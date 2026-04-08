@@ -285,10 +285,10 @@ search.get(
 			},
 			{
 				$group: {
-					_id: "$book.id",
+					_id: { bookId: "$book.id", userId: "$user._id" },
 					book: { $first: "$book" },
-					listings: {
-						$push: {
+					listing: {
+						$first: {
 							id: { $toString: "$_id" },
 							available: "$available",
 							user: {
@@ -299,6 +299,13 @@ search.get(
 							},
 						}
 					}
+				}
+			},
+			{
+				$group: {
+					_id: "$_id.bookId",
+					book: { $first: "$book" },
+					listings: { $push: "$listing" }
 				}
 			},
 			{
@@ -319,13 +326,14 @@ search.get(
 				$project: {
 					_id: 0,
 					book: 1,
-					listings: { $slice: [ "$listings", 5 ] }
+					listings: { $slice: [ "$listings", MAX_LISTINGS_PER_BOOK ] }
 				}
 			}
 		]).exec()
 
 		if (listingResults.length == 0) {
 			res.status(Status.NotFound).end()
+			return
 		}
 
 		const parsed = z.array(ListedBookSchema).safeParse(listingResults)

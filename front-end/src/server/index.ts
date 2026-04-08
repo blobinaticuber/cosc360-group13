@@ -1,4 +1,4 @@
-import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate, ListingUpdate, BrowseListData } from "./ServerTypes"
+import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate, ListingUpdate, BrowseListData, ListedDetailData } from "./ServerTypes"
 import admin from "./admin"
 
 export const URL = import.meta.env.VITE_SERVER_BASE_URL as string
@@ -7,6 +7,7 @@ export type BookDetails = BookDetailData[number]
 export type ListingDetails = ListingDetailData
 export { type UserDetails } from "./ServerTypes"
 export type PersonalDetails = GetUserData
+export type ListedBook = ListedDetailData[number]
 
 export type GeneralErrorValue = string
 export type ResultWithoutValue<ErrorValue extends GeneralErrorValue> = 
@@ -100,6 +101,33 @@ const server = {
 		case 404:
 			return [null, "no matches found"]
 		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Searches for books that have listings. Unlike `searchListing`, the
+	 * results of this search will include a distinct element for each book
+	 * and for each book there will be an attached array of listings.
+	 */
+	async searchListedBooks(title: string, page?: number): Result<
+		ListedBook[], 
+		"unknown error" | "no matches found"
+	> {
+		const query = new URLSearchParams({
+			page: (page ?? 1).toString()
+		})
+		const res = await fetch(
+			URL + "/search/listed/" + title + "?" + query.toString
+		)
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json() as ListedBook[]
+			return [body, null]
+		case 404:
+			return [null, "no matches found"]
+		default: 
 			return [null, "unknown error"]
 		}
 	},
