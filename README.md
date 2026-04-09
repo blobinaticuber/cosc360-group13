@@ -18,7 +18,12 @@ npm run dev
 
 ```sh
 cd front-end
+npm install --save-dev identity-obj-proxy
+npm install --save-dev util
+npm install --save-dev @babel/preset-typescript
+npm install --save-dev @testing-library/react @testing-library/jest-dom
 npm install --save-dev jest
+npm install --save-dev jest-environment-jsdom
 npm install --save-dev @babel/preset-react
 npm run test
 ```
