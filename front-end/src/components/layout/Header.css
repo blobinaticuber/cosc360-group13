@@ -10,7 +10,7 @@
 			var(--ui-green) 30%,
 			rgba(0, 0, 0, 0) 100%
 		),
-		url("book_background_1.jpg");
+		url("/src/assets/book_background_1.jpg");
 
 	--profile-icon-size: 65px;
 }

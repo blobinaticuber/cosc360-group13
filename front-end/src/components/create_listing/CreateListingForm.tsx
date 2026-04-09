@@ -6,6 +6,7 @@ import Button from "../Button"
 import BookCard from "../book_search/BookCard"
 import { toast } from "react-toastify"
 import server from "../../server"
+import placeholderImage from "../../assets/placeholder.png"
 
 type CreateListingFormProps = {
 	onClose?: () => void
@@ -34,7 +35,7 @@ function CreateListingForm({
 				id: "",
 				authors: ["Author Name"],
 				categories: ["Category 1", "Category 2"],
-				image: "/placeholder.png",
+				image: placeholderImage,
 				title: "Some Book title",
 				publishDate: "YYYY",
 				description: "Some description."
