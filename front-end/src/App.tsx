@@ -12,6 +12,7 @@ import type { PersonalDetails } from "./server"
 import server from "./server"
 import AdminLogin from "./pages/AdminLogin"
 import AdminRegister from "./pages/AdminRegister"
+import type { AdminPersonalDetails } from "./server/ServerTypes"
 
 export type PagePath = 
 	  "/" 
@@ -42,15 +43,28 @@ type UserContextType = [
 ]
 export const UserContext = createContext<UserContextType>([ null, null ])
 
+type AdminContextType = [
+	admin: AdminPersonalDetails | null,
+	setAdmin: Dispatch<SetStateAction<AdminPersonalDetails | null>> | null
+]
+export const AdminContext = createContext<AdminContextType>([ null, null ])
+
 function App() {
 	const [user, setUser] = useState<PersonalDetails | null>(null)
+	const [admin, setAdmin] = useState<AdminPersonalDetails | null>(null)
 
 	useEffect(() => {
-		server.currentUser().then(([ user, _ ]) => setUser(user))
+		server
+			.currentUser()
+			.then(([ user, _ ]) => setUser(user))
+		server.admin
+			.currentUser()
+			.then(([ admin, _ ]) => setAdmin(admin))
 	}, [])
 
 	return (
 		<UserContext value={[user, setUser]}>
+		<AdminContext value={[admin, setAdmin]}>
 			<HashRouter>
 				<Routes>
 					<Route path="/" element={<Home />} />
@@ -63,7 +77,8 @@ function App() {
 					<Route path="/admin/login" element={<AdminLogin />} />
 					<Route path="/admin/register" element={<AdminRegister />} />
 				</Routes>
-			</HashRouter>			
+			</HashRouter>	
+		</AdminContext>		
 		</UserContext>
 	);
 }

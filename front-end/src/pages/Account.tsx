@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Header from "../components/layout/Header"
 import "./Account.css"
-import { UserContext } from "../App"
 import Button from "../components/Button"
 import { faEnvelope, faPencil, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
 import { Link, useNavigate } from "react-router-dom"
@@ -12,11 +11,12 @@ import { toast } from "react-toastify"
 import validEmail from "../util/validEmail"
 
 import BookCardEditable from "../components/book_search/BookCardEditable"
+import useUser from "../hooks/useUser"
 
 function Account() {
 	const navigate = useNavigate()
 
-	const [user, setUser] = useContext(UserContext)
+	const [user, setUser] = useUser()
 
 	const [listings, setListings] = useState<ListingDetails[]>([])
 
