@@ -7,9 +7,18 @@ import BookCard from "../book_search/BookCard"
 import { toast } from "react-toastify"
 import server from "../../server"
 import placeholderImage from "../../assets/placeholder.png"
+import { faAdd, faCancel } from "@fortawesome/free-solid-svg-icons"
 
 type CreateListingFormProps = {
 	onClose?: () => void
+	/**
+	 * Invoked whenever the popup selector is opened.
+	 */
+	onSelectorOpen?: () => void
+	/**
+	 * Invoked whenever the popup selector is closed.
+	 */
+	onSelectorClose?: () => void
 }
 
 /**
@@ -19,14 +28,14 @@ type CreateListingFormProps = {
  * @returns 
  */
 function CreateListingForm({
-	onClose
+	onClose, onSelectorOpen, onSelectorClose
 }: CreateListingFormProps) {
 
 	const [selectedBook, setSelectedBook] = useState<BookDetails | null>(null)
 	const [loading, setLoading] = useState(false)
 
 	return <div className="createListingForm">
-		<h1>List a Book</h1>
+		<h1>New Listing</h1>
 		<p>
 			Create a listing to show that you have a book you're willing to lend out.
 		</p>
@@ -42,17 +51,22 @@ function CreateListingForm({
 			}} 
 		/>
 		<BookSelector 
+			buttonClass="bookSelectButton"
 			onSelect={setSelectedBook} 
-			text={selectedBook ? "Select a Different Book" : "Select a Book"}	
+			text={selectedBook ? "Select a Different Book" : "Select a Book"}
+			onOpen={onSelectorOpen}
+			onClose={onSelectorClose}	
 		/>
 		<div className="buttonsContainer">
 			<Button 
+				icon={faCancel}
 				text="Cancel" 
 				style="subtle" 
-				onClick={onClose}	
+				onClick={onClose}
 			/>
 			<Button 
 				text="Post Listing" 
+				icon={faAdd}
 				spinning={loading}
 				onClick={async () => {
 					if (!selectedBook) {

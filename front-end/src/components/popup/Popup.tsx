@@ -53,7 +53,12 @@ function Popup({
 
 	return <div className="popupContainer">
 		<Modal
-			onClickAway={onClickAway}
+			onClickAway={e => {
+				if (onClickAway) {
+					onClickAway()
+					e.stopPropagation()
+				}	
+			}}
 			show={show}
 		>
 			{children}

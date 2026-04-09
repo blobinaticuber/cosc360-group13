@@ -87,3 +87,16 @@ section {
 	align-items: center;
 	justify-self: center;
 }
+
+.accountDashboard .createListingButton {
+	width: min(100%, 400px);
+	border: 2px solid #aaa;
+	background: none;
+	color: #444;
+}
+
+.accountDashboard .createListingButton:hover {
+	border-color: var(--ui-green);
+	background-color: var(--ui-green);
+	color: white;
+}

@@ -24,6 +24,16 @@ type BookSelectorProps = {
 	 * component.
 	 */
 	buttonClass?: string
+
+	/**
+	 * Invoked whenever the popup is opened.
+	 */
+	onOpen?: () => void
+
+	/**
+	 * Invoked whenever the popup is closed.
+	 */
+	onClose?: () => void
 }
 
 /**
@@ -38,7 +48,9 @@ type BookSelectorProps = {
  * clicked, so you can safely include this component in a `<form>` without
  * accidentally submitting it.
  */
-function BookSelector({ onSelect, text, buttonClass }: BookSelectorProps) {
+function BookSelector({ 
+	onSelect, text, buttonClass, onOpen, onClose
+}: BookSelectorProps) {
 	const [showBookSelect, setShowBookSelect] = useState(false)
 
 	return <>
@@ -48,16 +60,27 @@ function BookSelector({ onSelect, text, buttonClass }: BookSelectorProps) {
 			onClick={e => {
 				e.preventDefault()
 				setShowBookSelect(true)
+				if (onOpen) {
+					onOpen()
+				}
 			}}
 		/>
 		<Popup
 			show={showBookSelect}	
-			onClickAway={() => setShowBookSelect(false)}
+			onClickAway={() => {
+				setShowBookSelect(false)
+				if (onClose) {
+					onClose()
+				}
+			}}
 		>
 			<BookSelect 
 				onSelect={book => {
 					onSelect(book)
 					setShowBookSelect(false)
+					if (onClose) {
+						onClose()
+					}
 				}}
 			/>
 		</Popup>

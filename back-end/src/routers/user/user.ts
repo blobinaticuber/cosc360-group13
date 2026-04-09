@@ -7,7 +7,9 @@ import Status from "../../types/Status.js"
 import { compare, encrypt } from "../../util/encryption.js"
 import err from "../../util/err.js"
 import { type ErrServer } from "../../util/errSchema.js"
-import z from "zod"
+import z, { date } from "zod"
+import multer from "multer"
+import path from "path"
 
 const user = Router();
 
@@ -343,6 +345,50 @@ user.patch(
 
 		await user.save()
 		res.status(Status.OK).end()
+	}
+)
+
+//
+// Endpoint for handling profile picture uploads.
+//
+
+const uploadsStorage: multer.StorageEngine = multer.diskStorage({
+	destination: (req, file, fn) => {
+		fn(null, "public/uploads/")
+	},
+	filename: (req, file, fn) => {
+		const name = Date.now() + path.extname(file.originalname)
+		fn(null, name)
+	}
+})
+
+const imgFilter: multer.Options["fileFilter"] = (req, file, fn) => {
+	if (!file.mimetype.startsWith("image/")) {
+		fn(new Error("Upload must be an image."))
+		return
+	}
+	fn(null, true)
+}
+
+const profilePictureUpload = multer({ 
+	storage: uploadsStorage, 
+	fileFilter: imgFilter,
+	limits: {
+		fileSize: 10 * 1024 * 1024
+	}
+})
+
+user.post(
+	"/profile_picture",
+	auth,
+	profilePictureUpload.single("profilePicture"),
+	async (req, res) => {
+		if (!req.file) {
+			res.status(Status.BadRequest).end()
+			return 
+		}
+
+		res.status(Status.OK)
 	}
 )
 

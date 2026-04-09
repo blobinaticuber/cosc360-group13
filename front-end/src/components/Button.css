@@ -12,6 +12,7 @@
 
 .buttonComponent.normal:hover {
 	background-color: #40974c;
+	color: white;
 	cursor: pointer;
 }
 

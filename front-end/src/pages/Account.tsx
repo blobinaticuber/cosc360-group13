@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import Header from "../components/layout/Header"
 import "./Account.css"
 import Button from "../components/Button"
-import { faEnvelope, faPencil, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faEnvelope, faPencil, faPlusCircle, faSave, faTrash, faUser } from "@fortawesome/free-solid-svg-icons"
 import { Link, useNavigate } from "react-router-dom"
 import type { UserUpdate } from "../server/ServerTypes"
 import server, { type ListingDetails } from "../server"
@@ -216,6 +216,11 @@ function Account() {
 			</section>
 			<section className="listings">
 				<h1>Your Listings</h1>
+				<Button
+					text="Create a New Listing"
+					icon={faPlusCircle}
+					className="createListingButton"
+				/>
 				{listings.length == 0
 					? <em className="noListingsMessage">No listings.</em>
 					: listings.map(listing => 
