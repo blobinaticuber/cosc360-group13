@@ -13,6 +13,20 @@
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
+}
+
+.adminSidebar .adminLogoutButton {
+	border-radius: 0;
+	border: 2px solid #444;
+	color: #aaa;
+	background: none;
+}
+
+.adminSidebar .adminLogoutButton:hover {
+	border-color: red;
+	color: red;
+	background: none;
 }
 
 .adminTitle {
@@ -38,13 +52,15 @@
 	border-radius: 0px;
 	cursor: pointer;
 	transition: all 200ms;
-	font-size: 0.95rem;
+	font-size: 1rem;
 }
 
-.navButton:hover, .navButton.activeNav {
+.adminNav .navButton:hover, 
+.adminNav .navButton.activeNav {
 	background-color: var(--ui-green);
 	border-color: var(--ui-green);
 	color: #000;
+
 }
 
 .adminMain {

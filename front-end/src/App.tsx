@@ -34,7 +34,7 @@ export const pageTitle: Record<PagePath, string> = {
 	"/test": "Test",
 	"/admin/login": "Admin Login",
 	"/admin/register": "Admin Registration",
-	"/admin": "Admin Page",
+	"/admin": "Admin Dashboard",
 }
 
 type UserContextType = [ 

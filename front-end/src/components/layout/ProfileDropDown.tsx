@@ -7,6 +7,7 @@ import Button from "../Button"
 import Modal from "../popup/Modal"
 import "./ProfileDropDown.css"
 import server from "../../server"
+import useUser from "../../hooks/useUser"
 
 type ProfileDropDownProps = {
 	/**
@@ -34,6 +35,7 @@ function ProfileDropDown({ user }: ProfileDropDownProps) {
 	const navigate = useNavigate()
 	const [showProfileMenu, setShowProfileMenu] = useState(false)
 	const profileIcon = useRef<HTMLImageElement | null>(null)
+	const [_, setUser] = useUser()
 
 	return (
 		<div className="profileDropDownContainer">
@@ -71,8 +73,10 @@ function ProfileDropDown({ user }: ProfileDropDownProps) {
 						<Button
 							onClick={async () => {
 								await server.logOut()
-
-								navigate(0)
+								
+								setUser!(null)
+								setShowProfileMenu(false)
+								navigate("/")
 							}}
 							className="profileDropDownButton"
 							style="subtle"

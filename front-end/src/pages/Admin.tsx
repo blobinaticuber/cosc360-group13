@@ -7,7 +7,10 @@ import type { PersonalDetails } from "../server"
 import server from "../server"
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSpinner } from "@fortawesome/free-solid-svg-icons"
+import { faArrowRightFromBracket, faLineChart, faSpinner, faUserGroup, faWarning } from "@fortawesome/free-solid-svg-icons"
+import Button from "../components/Button"
+import useAdmin from "../hooks/useAdmin"
+import { toast } from "react-toastify"
 
 type Panel = 
 	  "reports"
@@ -30,6 +33,8 @@ panelTitle.set("user analytics", "User Analytics")
 function Admin() {
 	const navigate = useNavigate()
 
+	const [_, setContextAdmin] = useAdmin()
+
 	// The current admin user. `undefined` means that we're waiting for
 	// authentication from the server; `null` means that we're not
 	// authenticated.
@@ -37,6 +42,8 @@ function Admin() {
 		useState<undefined | null | PersonalDetails>(undefined)
 
 	const [ activePanel, setActivePanel ] = useState<Panel | null>(null)
+
+	const [ pendingLogout, setPendingLogout ] = useState(false)
 
 
 	useEffect(() => {
@@ -60,32 +67,50 @@ function Admin() {
 		<div className="adminLayout">
 
 			<aside className="adminSidebar">
-				<div className="adminTitle">Booklend | Admin</div>
-				<nav className="adminNav">
-					<button
-						onClick={() => setActivePanel("reports")} 
-						className={"navButton" + 
-							(activePanel === "reports"
-								? " activeNav" : "")}
-					>
-						Reports
-					</button>
-					<button 
-						onClick={() => setActivePanel("user analytics")}
-						className={"navButton" + 
-							(activePanel === "user analytics"
-								? " activeNav" : "")}					>
-						User Analytics
-					</button>
-					<button 
-						onClick={() => setActivePanel("listing analytics")}
-						className={"navButton" + 
-							(activePanel === "listing analytics"
-								? " activeNav" : "")}
-					>
-						Listing Analytics
-					</button>
-				</nav>
+				<div className="topOfSidebar">
+					<div className="adminTitle">Booklend | Admin</div>
+					<nav className="adminNav">
+						<Button
+							icon={faWarning}
+							text="Reports"
+							onClick={() => setActivePanel("reports")} 
+							className={"navButton" + 
+								(activePanel === "reports"
+									? " activeNav" : "")}
+						/>
+						<Button 
+							icon={faUserGroup}
+							text="User Analytics"
+							onClick={() => setActivePanel("user analytics")}
+							className={"navButton" + 
+								(activePanel === "user analytics"
+									? " activeNav" : "")}					
+						/>
+						<Button
+							icon={faLineChart} 
+							text="Listing Analytics"
+							onClick={() => setActivePanel("listing analytics")}
+							className={"navButton" + 
+								(activePanel === "listing analytics"
+									? " activeNav" : "")}
+						/>
+					</nav>					
+				</div>
+				<Button
+					spinning={pendingLogout}
+					onClick={async () => {
+						setPendingLogout(true)
+						await server.admin.logOut()
+						setPendingLogout(false)
+
+						setContextAdmin!(null)
+						toast.success("Logged out of admin account")
+						navigate("/")
+					}}
+					text="Log Out"
+					className="adminLogoutButton"
+					icon={faArrowRightFromBracket}
+				/>
 			</aside>
 
 			<div className="adminMain">
