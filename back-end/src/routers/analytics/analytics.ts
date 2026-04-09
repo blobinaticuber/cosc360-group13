@@ -228,4 +228,55 @@ analytics.get(
 	}
 )
 
+//
+// Gets some basic user analytics
+//
+
+export const UserAnalyticsSchema = 
+	z.object({
+		totalUsers: z.int().nonnegative().meta({
+			description: "The total number of users."
+		}),
+		activeSessions: z.int().nonnegative().meta({
+			description: "The total number of users that have logged in throughout the last 30 days."
+		})
+	}).meta({
+		id: "UserAnalytics",
+		description: "Some basic statistics about users."
+	})
+type UserAnalytics = z.infer<typeof UserAnalyticsSchema>
+
+analytics.get(
+	"/users",
+	adminAuth,
+	async (req, res) => {	
+		const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000
+		
+		const userAnalytics: UserAnalytics = {
+			totalUsers: 0,
+			activeSessions: 0
+		}
+
+		const userCountResult = await db.User.aggregate([
+			{ $count: "count" }
+		]).exec()
+
+		if (userCountResult.length > 0) {
+			userAnalytics.totalUsers = userCountResult[0].count
+		}
+		
+		const activeSessionsResult = await db.Session.aggregate([
+			{ $match: { createdAt: { $gte: Date.now() - THIRTY_DAYS } } },
+			{ $group: { _id: "$user" } },
+			{ $count: "count" }
+		]).exec()
+
+		if (activeSessionsResult.length > 0) {
+			userAnalytics.activeSessions = activeSessionsResult[0].count
+		}
+
+		res.status(Status.OK).json(userAnalytics)
+	}
+)
+
 export default analytics

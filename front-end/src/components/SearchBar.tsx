@@ -6,10 +6,12 @@ import { useEffect, useRef, useState } from "react"
 export type SearchBarProps<T extends any> = {
 	search: (searchTerm: string) => T[] | Promise<T[]>
 	onResults?: (results: T[]) => void
+	lightText?: boolean
+	placeholder?: string
 }
 
 function SearchBar<T>({
-	search, onResults
+	search, onResults, lightText, placeholder
 }: SearchBarProps<T>) {
 
 	const [focused, setFocused] = useState(false)
@@ -67,8 +69,9 @@ function SearchBar<T>({
 		<input
 			type="text"
 			ref={inputRef}
-			placeholder="Enter the title of a book"
+			placeholder={placeholder ?? "Enter the title of a book"}
 			disabled={loading}
+			style={lightText ? { color: "white" } : {}}
 		/>
 	</div>
 }

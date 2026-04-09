@@ -1,0 +1,19 @@
+.adminRegisterContainer {
+	width: 100%;
+	margin-top: 0px;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (orientation: landscape) and (max-height: 800px) {
+	.adminRegisterContainer {
+		position: relative;
+		top: -150px;
+	}
+
+	.adminRegisterContainer form {
+		background-color: var(--background-colour);
+	}
+}

@@ -55,9 +55,8 @@
 }
 
 .home .categories .categoryLabel {
-	border: 2px solid #777;
+	border: 2px solid #aaa;
 	text-align: center;
-	border-radius: 10px;
 	font-size: 1rem;
 	padding: 5px;
 	transition: all 200ms;

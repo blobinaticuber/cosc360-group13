@@ -144,6 +144,20 @@ export interface ListingsAnalytics {
   }[];
 }
 
+/** Some basic statistics about users. */
+export interface UserAnalytics {
+  /**
+   * The total number of users.
+   * @min 0
+   */
+  totalUsers: number;
+  /**
+   * The total number of user sessions (i.e., logins) from the past 30 days.
+   * @min 0
+   */
+  activeSessions: number;
+}
+
 export type UserCreateData = any;
 
 export type UserCreateError =
@@ -464,3 +478,5 @@ export type ReportsListData = {
 }[];
 
 export type ListingsListResult = ListingsAnalytics;
+
+export type UsersListData = UserAnalytics;

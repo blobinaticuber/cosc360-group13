@@ -1,73 +1,104 @@
-import {useEffect, useState} from "react";
-// Import reusable components
-import ReportList from "../components/ReportList";
-import AnalyticsPanel from "../components/AnalyticsPanel";
+import { useEffect, useState, type JSX } from "react"
+import "./Admin.css"
+import Reports from "../components/admin/Reports"
+import ListingAnalytics from "../components/admin/ListingAnalytics"
+import UserAnalytics from "../components/admin/UserAnalytics"
+import type { PersonalDetails } from "../server"
+import server from "../server"
+import { useNavigate } from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSpinner } from "@fortawesome/free-solid-svg-icons"
 
-// Type definition for a report object
-interface Report {
-    id: string;
-    reason: string;
-    reportedUser: string;
-    date: string;
-}
+type Panel = 
+	  "reports"
+	| "user analytics"
+	| "listing analytics"
+	| "my account"
 
-// Type definition for analytics data
-interface Analytics {
-    totalUsers: number;
-    activeUsers: number;
-    totalReports: number;
-}
+const panelDisplay = new Map<Panel | null, JSX.Element>()
+panelDisplay.set(null, <></>)
+panelDisplay.set("reports", <Reports />)
+panelDisplay.set("listing analytics", <ListingAnalytics />)
+panelDisplay.set("user analytics", <UserAnalytics />)
 
-const Admin = () => {
-    // State to store reports and analytical data
-    const [reports, setReports] = useState<Report[]>([]);
-    const [analytics, setAnalytics] = useState<Analytics | null>(null);
-    // Loading state for UI feedback
-    const [loading, setLoading] = useState(true);
+const panelTitle = new Map<Panel | null, string>()
+panelTitle.set(null, "Dashboard")
+panelTitle.set("reports", "User Reports")
+panelTitle.set("listing analytics", "Listing Analytics")
+panelTitle.set("user analytics", "User Analytics")
 
-    // Runs once when component mounts
-    useEffect(() => {
-        const fetchAdminData = async () => {
-            try {
-                // Fetch reports and analytics at the same time
-                const [reportsRes, analyticsRes] = await Promise.all([
-                    fetch("/api/admin/reports"),
-                    fetch("/api/admin/analytics"),
-                ])
+function Admin() {
+	const navigate = useNavigate()
 
-                const reportsData = await reportsRes.json();
-                const analyticsData = await analyticsRes.json();
+	// The current admin user. `undefined` means that we're waiting for
+	// authentication from the server; `null` means that we're not
+	// authenticated.
+	const [ admin, setAdmin ] = 
+		useState<undefined | null | PersonalDetails>(undefined)
 
-                // Update state with fetched data
-                setReports(reportsData);
-                setAnalytics(analyticsData);
+	const [ activePanel, setActivePanel ] = useState<Panel | null>(null)
 
-            } catch (err) {
-                console.error("Error fetching admin data: ", err);
-            } finally {
-                // Stop loading regardless of success/failure
-                setLoading(false);
-            }
-        };
 
-        fetchAdminData();
-    }, []);
+	useEffect(() => {
+		server.admin.currentUser()
+			.then(([ data, _ ]) => {
+				setAdmin(data)
+			})
+	}, [])
 
-    // Show loading message while fetching data
-    if (loading) return <div>Loading Admin dashboard...</div>;
+	if (admin === null) {
+		navigate("/admin/login")
+	}
 
-    return (
-        <div style={{ padding: "2rem" }}>
-        <h1>Admin Dashboard</h1>
+	if (admin === undefined) {
+		return <div className="loadingScreen">
+			<p><FontAwesomeIcon icon={faSpinner} spin={true} /> Loading...</p>
+		</div>
+	}
 
-        {/* Only render analytics if data exists */}
-        {analytics && <AnalyticsPanel analytics={analytics}/>}
+	return <>
+		<div className="adminLayout">
 
-        <h2 style={{ marginTop: "2rem" }}>User Reports</h2>
-        {/* Pass reports data into ReportList component */}
-        <ReportList reports={reports} />
-        </div>
-    );
+			<aside className="adminSidebar">
+				<div className="adminTitle">Booklend | Admin</div>
+				<nav className="adminNav">
+					<button
+						onClick={() => setActivePanel("reports")} 
+						className={"navButton" + 
+							(activePanel === "reports"
+								? " activeNav" : "")}
+					>
+						Reports
+					</button>
+					<button 
+						onClick={() => setActivePanel("user analytics")}
+						className={"navButton" + 
+							(activePanel === "user analytics"
+								? " activeNav" : "")}					>
+						User Analytics
+					</button>
+					<button 
+						onClick={() => setActivePanel("listing analytics")}
+						className={"navButton" + 
+							(activePanel === "listing analytics"
+								? " activeNav" : "")}
+					>
+						Listing Analytics
+					</button>
+				</nav>
+			</aside>
+
+			<div className="adminMain">
+				<header className="adminHeader">
+					<h1>{panelTitle.get(activePanel)}</h1>
+				</header>
+
+				<main className="adminContent">
+					{panelDisplay.get(activePanel)}
+				</main>
+			</div>
+		</div>	
+	</>
 };
 
 export default Admin;

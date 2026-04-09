@@ -4,9 +4,10 @@ import type {
 	AdminUserUpdate,
 	ListingsAnalytics,
 	ReportsListData,
+	UserAnalytics,
 	UserCredentials
 } from "./ServerTypes"
-import { URL, type Result, type ResultWithoutValue } from "./index"
+import { URL, type ReportedUser, type Result, type ResultWithoutValue } from "./index"
 
 const admin = {
 	/**
@@ -177,6 +178,9 @@ const admin = {
 		}
 	},
 
+	/**
+	 * Delete the current admin user.
+	 */
 	async delete() {
 		await fetch(URL + "/admin/user", {
 			method: "DELETE",
@@ -196,7 +200,7 @@ const admin = {
 		"unauthorized" | "user not found" | "unknown error"
 	> {
 		const res = await fetch(
-			URL + "/suspend/" + userId, 
+			URL + "/admin/suspend/" + userId, 
 			{
 				method: "DELETE",
 				credentials: "include"
@@ -249,7 +253,7 @@ const admin = {
 	 * Retrieves data about the top 10 most-reported users.
 	 */
 	async reportsAnalytics(): Result<
-		ReportsListData,
+		ReportedUser[],
 		"unauthorized" | "unknown error"
 	> {
 		const res = await fetch(URL + "/analytics/reports", {
@@ -284,6 +288,31 @@ const admin = {
 		switch (res.status) {
 		case 200:
 			const body = await res.json() as ListingsAnalytics
+			return [body, null]
+		case 401:
+			return [null, "unauthorized"]
+		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Retrieves analytics regarding users.
+	 */
+	async userAnalytics(): Result<
+		UserAnalytics,
+		"unauthorized" | "unknown error"
+	> {
+		const res = await fetch(
+			URL + "/analytics/users",
+			{
+				credentials: "include"
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json() as UserAnalytics
 			return [body, null]
 		case 401:
 			return [null, "unauthorized"]

@@ -10,6 +10,8 @@ import CreateListing from "./pages/CreateListing"
 import Testing from "./pages/Testing"
 import type { PersonalDetails } from "./server"
 import server from "./server"
+import AdminLogin from "./pages/AdminLogin"
+import AdminRegister from "./pages/AdminRegister"
 
 export type PagePath = 
 	  "/" 
@@ -19,6 +21,8 @@ export type PagePath =
 	| "/admin"
 	| "/test"
 	| "/submit"
+	| "/admin/register"
+	| "/admin/login"
 
 export const pageTitle: Record<PagePath, string> = {
 	"/": "Home",
@@ -27,7 +31,9 @@ export const pageTitle: Record<PagePath, string> = {
 	"/register": "Create an Account",
 	"/account": "My Account",
 	"/test": "Test",
-	"/admin": "Admin Page"
+	"/admin/login": "Admin Login",
+	"/admin/register": "Admin Registration",
+	"/admin": "Admin Page",
 }
 
 type UserContextType = [ 
@@ -54,6 +60,8 @@ function App() {
 					<Route path="/account" element={<Account />} />
 					<Route path="/test" element={<Testing />} />
 					<Route path="/admin" element={<Admin />} />
+					<Route path="/admin/login" element={<AdminLogin />} />
+					<Route path="/admin/register" element={<AdminRegister />} />
 				</Routes>
 			</BrowserRouter>			
 		</UserContext>
