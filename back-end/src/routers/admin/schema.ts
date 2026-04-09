@@ -87,7 +87,7 @@ adminSpec.registerPath({
 	description: "Delete the admin user that is currently logged in.",
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string().meta({
+			[process.env.ADMIN_AUTH_COOKIE!]: z.string().meta({
 				description:
 					"The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login.",
 			}),
@@ -143,7 +143,7 @@ adminSpec.registerPath({
 	description: "Log out (delete the admin session).",
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string().meta({
+			[process.env.ADMIN_AUTH_COOKIE!]: z.string().meta({
 				description:
 					"The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login.",
 			}),
@@ -168,7 +168,7 @@ adminSpec.registerPath({
 		"Retrieves the personal data about the currently logged-in admin user.",
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string().meta({
+			[process.env.ADMIN_AUTH_COOKIE!]: z.string().meta({
 				description:
 					"The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login.",
 			}),
@@ -202,7 +202,7 @@ adminSpec.registerPath({
 		"Updates the details about the currently logged-in admin user.",
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string().meta({
+			[process.env.ADMIN_AUTH_COOKIE!]: z.string().meta({
 				description:
 					"The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login.",
 			}),
@@ -248,7 +248,7 @@ adminSpec.registerPath({
 		"Suspends a specific non-admin user account. At the time of writing, this is done by simply deleting the user records from the database though it's possible that the procedure might be different in the future.",
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string().meta({
+			[process.env.ADMIN_AUTH_COOKIE!]: z.string().meta({
 				description:
 					"The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login.",
 			}),

@@ -31,10 +31,11 @@ function Account() {
 		<>Loading...</>
 	)
 
+	// If after 2 seconds we haven't retrieved the user information, then
+	// we assume they're not logged in and prompt them to navigate to the
+	// login page.
 	useEffect(() => {
-		// If after 2 seconds we haven't retrieved the user information, then
-		// we assume they're not logged in and prompt them to navigate to the
-		// login page.
+
 		setTimeout(() => {
 			setPageLoadingMessage(<>
 				Log in <Link to="/login">here</Link>.
@@ -42,6 +43,7 @@ function Account() {
 		}, 2000)
 	}, [])
 
+	// Fetch the user's listings.
 	useEffect(() => {
 		if (user == null) {
 			return
@@ -53,6 +55,7 @@ function Account() {
 			})
 	}, [user])
 
+	// Reset the errors when we toggle the `editing` state.
 	useEffect(() => {
 		setNameErr(undefined)
 		setEmailErr(undefined)
@@ -66,7 +69,7 @@ function Account() {
 		</>
 	}
 
-	return (<>
+	return <>
 		<Header currentPage="/account" hideProfileMenu />
 		<main className="accountDashboard">
 			<section className="profileSummary">
@@ -233,7 +236,7 @@ function Account() {
 				}
 			</section>
 		</main>
-	</>)
+	</>
 }
 
 export default Account

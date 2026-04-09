@@ -9,7 +9,7 @@ const maxLifeMs = Number.parseInt(process.env.AUTH_COOKIE_MAX_DAYS!) *
  * Ensures that the request is made by an administrative user.
  */
 const adminAuth: RequestHandler = async (req, res, next) => {
-	const sessionId = req.cookies[process.env.AUTH_COOKIE!];
+	const sessionId = req.cookies[process.env.ADMIN_AUTH_COOKIE!];
 
 	if (typeof sessionId != "string") {
 		res.status(Status.Unauthorized).end();
