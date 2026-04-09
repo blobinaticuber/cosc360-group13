@@ -19,7 +19,7 @@ function AdminRegister() {
 	const [ loading, setLoading ] = useState(false)
 
 	return (<>
-		<main className="registerContainer">
+		<main className="adminRegisterContainer">
 			<Form
 				method="POST"
 				url={server.paths.adminRegister}
@@ -130,7 +130,7 @@ function AdminRegister() {
 					spinning={loading}
 				/>
 				<p>
-					Already have an admin account? <Link to="/login">Log in</Link>.
+					Already have an admin account? <Link to="/admin/login">Log in</Link>.
 				</p>
 			</Form>
 		</main>

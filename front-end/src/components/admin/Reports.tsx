@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import server, { type ReportedUser } from "../../server"
 import Button from "../Button"
 import { toast } from "react-toastify"
-import { faBan, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
+import { faBan, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 function Reports() {
 	const [reportedUsers, setReportedUsers] = useState<ReportedUser[]>([])
@@ -62,6 +62,10 @@ function Reports() {
 		toast.success("User Suspended", { theme: "dark" })
 		setReportedUsers(prev => 
 			prev.filter(details => details.user != id))
+	}
+
+	if (reportedUsers.length == 0) {
+		return <p className="noReportsMessage">No user reports.</p>
 	}
 
 	return <>

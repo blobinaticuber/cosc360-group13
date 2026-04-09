@@ -112,7 +112,7 @@
 	border-color: #3a4358;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
 	.adminContent .reportedUser {
 		grid-template-columns: 1fr;
 		grid-template-rows: auto auto auto;
@@ -136,7 +136,7 @@
 	}
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
 	.adminContent .reportHeading {
 		font-size: 1.3rem;
 	}

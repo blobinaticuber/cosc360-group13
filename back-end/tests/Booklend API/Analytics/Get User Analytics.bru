@@ -1,0 +1,15 @@
+meta {
+  name: Get User Analytics
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/analytics/users
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

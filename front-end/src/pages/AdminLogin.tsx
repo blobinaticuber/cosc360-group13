@@ -18,7 +18,7 @@ function AdminLogin() {
 	const [passwordErr, setPasswordErr] = useState("")
 
 	return (<>
-		<main className="loginContainer">
+		<main className="adminLoginContainer">
 			<Form
 				method="POST"
 				url={server.paths.adminLogin}
@@ -46,7 +46,10 @@ function AdminLogin() {
 				onResponse={async (res) => {
 
 					if (res.ok) {
-						toast.success("Logged in", { autoClose: 2000 })
+						toast.success("Logged in", { 
+							autoClose: 2000,
+							theme: "dark"
+						})
 						navigate("/admin")
 
 						return
