@@ -1,4 +1,4 @@
-import { pageTitle, type PagePath } from "../../App"
+import { type PagePath } from "../../App"
 import "./Header.css"
 import Nav from "./Nav"
 import ProfileDropDown from "./ProfileDropDown"
@@ -14,15 +14,10 @@ type HeaderProps = {
 	 * will hide it.
 	 */
 	hideProfileMenu?: boolean
-
-	/**
-	 * Set this to omit the page title from the header.
-	 */
-	hidePageTitle?: boolean
 }
 
 function Header({ 
-	currentPage, hideProfileMenu, hidePageTitle 
+	currentPage, hideProfileMenu 
 }: HeaderProps) {
 
 	const [ user, _ ] = useContext(UserContext)

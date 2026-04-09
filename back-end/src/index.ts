@@ -7,6 +7,7 @@ import connect from "./database/connect.js"
 import routers from "./routers/index.js"
 import docs from "./routers/docs.js"
 import startupMessage from "./util/startupMessage.js"
+import path from "path"
 
 const server = express()
 

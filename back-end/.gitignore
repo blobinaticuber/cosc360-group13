@@ -5,3 +5,4 @@ package-lock.json
 coverage
 .vitest-attachments
 server_logs.txt
+public/client/*

@@ -22,7 +22,6 @@ function Register() {
 		<Header
 			currentPage="/register"
 			hideProfileMenu
-			hidePageTitle
 		/>
 		<main className="registerContainer">
 			<Form

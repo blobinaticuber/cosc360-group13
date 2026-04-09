@@ -22,7 +22,6 @@ function Login() {
 		<Header
 			currentPage="/login"
 			hideProfileMenu
-			hidePageTitle
 		/>
 		<main className="loginContainer">
 			<Form

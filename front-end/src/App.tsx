@@ -1,5 +1,5 @@
 import "./App.css"
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { HashRouter, Route, Routes } from "react-router-dom"
 import { createContext, useEffect, useState, type Dispatch, type SetStateAction } from "react"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
@@ -51,7 +51,7 @@ function App() {
 
 	return (
 		<UserContext value={[user, setUser]}>
-			<BrowserRouter>
+			<HashRouter>
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/submit" element={<CreateListing />} />
@@ -63,7 +63,7 @@ function App() {
 					<Route path="/admin/login" element={<AdminLogin />} />
 					<Route path="/admin/register" element={<AdminRegister />} />
 				</Routes>
-			</BrowserRouter>			
+			</HashRouter>			
 		</UserContext>
 	);
 }
