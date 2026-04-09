@@ -88,13 +88,13 @@
 	font-style: italic;
 }
 
-.description::before {
+/* .description::before {
 	content: '"';
 	padding-left: 1rem;
 }
 .description::after {
 	content: '"';
-}
+} */
 
 .listed.expanded .listings {
 	grid-column: 2;

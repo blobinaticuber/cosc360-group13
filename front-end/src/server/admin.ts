@@ -6,7 +6,7 @@ import type {
 	ReportsListData,
 	UserCredentials
 } from "./ServerTypes"
-import { URL, type Result, type ResultWithoutValue } from "./index"
+import { URL, type ReportedUser, type Result, type ResultWithoutValue } from "./index"
 
 const admin = {
 	/**
@@ -196,7 +196,7 @@ const admin = {
 		"unauthorized" | "user not found" | "unknown error"
 	> {
 		const res = await fetch(
-			URL + "/suspend/" + userId, 
+			URL + "/admin/suspend/" + userId, 
 			{
 				method: "DELETE",
 				credentials: "include"
@@ -249,7 +249,7 @@ const admin = {
 	 * Retrieves data about the top 10 most-reported users.
 	 */
 	async reportsAnalytics(): Result<
-		ReportsListData,
+		ReportedUser[],
 		"unauthorized" | "unknown error"
 	> {
 		const res = await fetch(URL + "/analytics/reports", {

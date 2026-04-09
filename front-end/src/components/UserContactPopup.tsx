@@ -40,7 +40,7 @@ function UserContactPopup({
 				</p>
 			</div>
 			<p className="prompt">
-				{user.name} has a copy of &quot;{book.title}&quot; available. Contact them and arrange a time pick it up.
+				{user.name} has a copy of <em>{book.title}</em> available. Contact them and arrange a time pick it up.
 			</p>
 		</div>
 	</Popup>

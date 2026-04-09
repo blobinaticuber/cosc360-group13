@@ -1,5 +1,6 @@
 .bookSelectContainer {
-	border: 1px solid #777;
+	border: 2px solid #aaa;
+	border-radius: 1rem;
 	/* border-left: 0;
 	border-right: 0; */
 	/* border-radius: 10px; */

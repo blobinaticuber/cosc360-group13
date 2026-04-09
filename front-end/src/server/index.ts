@@ -1,4 +1,4 @@
-import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate, ListingUpdate, BrowseListData, ListedDetailData } from "./ServerTypes"
+import type { BookDetailData, GetUserData, ListingCreation, ListingDetailData, UserDetails, UserPartialUpdateError, UserUpdate, ListingUpdate, BrowseListData, ListedDetailData, ReportsListData } from "./ServerTypes"
 import admin from "./admin"
 
 export const URL = import.meta.env.VITE_SERVER_BASE_URL as string
@@ -8,6 +8,7 @@ export type ListingDetails = ListingDetailData
 export { type UserDetails } from "./ServerTypes"
 export type PersonalDetails = GetUserData
 export type ListedBook = ListedDetailData[number]
+export type ReportedUser = ReportsListData[number]
 
 export type GeneralErrorValue = string
 export type ResultWithoutValue<ErrorValue extends GeneralErrorValue> =
@@ -350,6 +351,30 @@ const server = {
 	},
 
 	/**
+	 * Gets the public information about a user from their ID.
+	 */
+	async getUserById(id: string): Result<
+		UserDetails,
+		| "user not found" 
+		| "unknown error"
+	> {
+		const query = new URLSearchParams({
+			id: id
+		})
+		const res = await fetch(URL + "/user?" + query.toString())
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json() as UserDetails
+			return [body, null]
+		case 404:
+			return [null, "user not found"]
+		default:
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
 	 * Get the details about the currently logged-in user.
 	 */
 	async currentUser(): Result<
@@ -472,7 +497,9 @@ const server = {
 	 */
 	paths: {
 		login: URL + "/user/session",
-		register: URL + "/user"
+		register: URL + "/user",
+		adminLogin: URL + "/admin/user/session",
+		adminRegister: URL + "/admin/user"
 	}
 }
 

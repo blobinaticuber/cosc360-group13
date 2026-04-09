@@ -59,7 +59,7 @@ function ListedBookCard({ book, listings, expanded, onClick, onCollapse }: Liste
 					<p className="categories">
 						<FontAwesomeIcon icon={faTags} className="icon" />
 						&nbsp;
-						{book.categories.join(", ")}
+						{book.categories.slice(0, 3).join(", ")}
 					</p>
 				}
 				<p className="listingsSummary">
@@ -70,21 +70,19 @@ function ListedBookCard({ book, listings, expanded, onClick, onCollapse }: Liste
 					Available
 					&nbsp;
 					{availableListings.length > 0 
-						? <FontAwesomeIcon icon={faCheck} /> 
-						: <FontAwesomeIcon icon={faX} />
-					}
+						&& <FontAwesomeIcon icon={faCheck} />}
 				</p>
 			</div>
 			{expanded && <>
-				<p className="description">
-					{book.description.length > 1000 
-						? book.description.substring(0, 997) + "..."
-						: book.description
-					}
-				</p>
+				{/* We can trust the HTML here because it comes from the Google
+					Books API and they've already sanitized it. There is no way
+					for any user to modify the description of a listing. */}
+				<p className="description"
+					dangerouslySetInnerHTML={{ __html: book.description}}
+				></p>
 			</>}
 		</div>
-		{expanded && <div className="listings">
+		{expanded && availableListings.length > 0 && <div className="listings">
 			<h1>Users with this Book Listed</h1>
 			{availableListings.map(listing => 
 				<div 

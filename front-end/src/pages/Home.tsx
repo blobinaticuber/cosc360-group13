@@ -38,7 +38,7 @@ function Home() {
 				</h1>
 				{/* I know how this looks. I'll refactor it later, surely. */}
 				{categories === null 
-					? <FontAwesomeIcon spin={true} icon={faSpinner} />
+					? <FontAwesomeIcon spin={true} icon={faSpinner} className="noListingsMessage" />
 					: categories.length == 0 
 						? <p className="noListingsMessage"><em>No listings yet.</em></p>
 						: categories.sort().map(category => 

@@ -1,0 +1,92 @@
+.adminLayout {
+	display: grid;
+	grid-template-columns: 240px 1fr;
+	min-height: 100vh;
+	background-color: #0f1115;
+	color: #e5e7eb;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.adminSidebar {
+	background-color: #151821;
+	border-right: 1px solid #222633;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.adminTitle {
+	font-size: 1.25rem;
+	font-weight: 600;
+	margin-bottom: 30px;
+	color: #ffffff;
+}
+
+.adminNav {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.adminNav .navButton {
+	background: none;
+	border: none;
+	color: #aaa;
+	border: 2px solid #444;
+	text-align: left;
+	padding: 10px 12px;
+	border-radius: 0px;
+	cursor: pointer;
+	transition: all 200ms;
+	font-size: 0.95rem;
+}
+
+.navButton:hover, .navButton.activeNav {
+	background-color: var(--ui-green);
+	border-color: var(--ui-green);
+	color: #000;
+}
+
+.adminMain {
+	display: flex;
+	flex-direction: column;
+}
+
+.adminHeader {
+	padding: 20px 30px;
+	border-bottom: 1px solid #222633;
+	background-color: #0f1115;
+}
+
+.adminHeader h1 {
+	font-size: 1.4rem;
+	font-weight: 500;
+	margin: 0;
+}
+
+.adminContent {
+	padding: 30px;
+	flex: 1;
+	margin: 0 auto;
+	width: min(100%, 800px);
+}
+
+@media (max-width: 800px) {
+	.adminLayout {
+		grid-template-columns: 1fr;
+	}
+
+	.adminSidebar {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.adminNav {
+		flex-direction: row;
+	}
+
+	.navButton {
+		padding: 8px 10px;
+	}
+}

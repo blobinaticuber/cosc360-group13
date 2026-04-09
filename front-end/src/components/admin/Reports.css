@@ -1,0 +1,151 @@
+.reportHeading {
+	font-size: 1.6rem;
+	font-weight: 600;
+	margin-bottom: 24px;
+	color: #ffffff;
+}
+
+.adminContent .reportHeading {
+	display: block;
+}
+
+.adminContent .reportedUser {
+	background-color: #151821;
+	border: 1px solid #222633;
+	padding: 18px 20px;
+	margin-bottom: 16px;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: auto auto;
+	gap: 8px 12px;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.adminContent .reportedUser:hover {
+	border-color: #2a3142;
+	background-color: #181c26;
+}
+
+.adminContent .reportedUser .reportedUserId {
+	grid-column: 1 / 2;
+	font-size: 1.05rem;
+	font-weight: 500;
+	color: #e5e7eb;
+	margin: 0;
+}
+
+.adminContent .reportedUser .reportCount {
+	grid-column: 1 / 2;
+	font-size: 0.85rem;
+	color: #9ca3af;
+	margin: 0;
+}
+
+.adminContent .reportedUser .suspendUserButton {
+	grid-column: 2 / 3;
+	grid-row: 1 / span 2;
+	align-self: center;
+	justify-self: end;
+	background-color: transparent;
+	border: 1px solid #2a3142;
+	color: #9ca3af;
+	padding: 6px 12px;
+	transition: all 0.15s ease;
+}
+
+.adminContent .reportedUser .suspendUserButton:hover {
+	background-color: red;
+	color: #ffffff;
+	border-color: #3a4358;
+}
+
+.adminContent .reportedUser .report {
+	grid-column: 1 / -1;
+	background-color: #0f1115;
+	border: 1px solid #222633;
+	border-radius: 10px;
+	padding: 14px;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: auto auto;
+	gap: 6px 10px;
+	margin-top: 10px;
+}
+
+.adminContent .reportedUser .report .reportId {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: #9ca3af;
+	margin: 0;
+}
+
+.adminContent .reportedUser .report .submittedBy {
+	font-size: 0.8rem;
+	color: #6b7280;
+	margin: 0;
+}
+
+.adminContent .reportedUser .report .explanation {
+	grid-column: 1 / -1;
+	font-size: 0.9rem;
+	color: #d1d5db;
+	margin: 4px 0 0 0;
+	line-height: 1.4;
+}
+
+.adminContent .reportedUser .report .dismissReportButton {
+	grid-row: 1 / span 2;
+	grid-column: 2;
+	align-self: center;
+	justify-self: end;
+	background-color: transparent;
+	border: 1px solid #2a3142;
+	color: #9ca3af;
+	padding: 6px 10px;
+	transition: all 0.15s ease;
+}
+
+.adminContent .reportedUser .report .dismissReportButton:hover {
+	background-color: red;
+	color: #ffffff;
+	border-color: #3a4358;
+}
+
+@media (max-width: 768px) {
+	.adminContent .reportedUser {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto auto auto;
+	}
+
+	.adminContent .reportedUser .suspendUserButton {
+		grid-column: 1 / -1;
+		grid-row: auto;
+		justify-self: start;
+		width: fit-content;
+	}
+
+	.adminContent .reportedUser .report {
+		grid-template-columns: 1fr;
+	}
+
+	.adminContent .reportedUser .report .dismissReportButton {
+		grid-row: auto;
+		justify-self: start;
+		margin-top: 8px;
+	}
+}
+
+@media (max-width: 480px) {
+	.adminContent .reportHeading {
+		font-size: 1.3rem;
+	}
+
+	.adminContent .reportedUser {
+		padding: 14px;
+	}
+
+	.adminContent .reportedUser .report {
+		padding: 12px;
+	}
+}

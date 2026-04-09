@@ -1,73 +1,69 @@
-import {useEffect, useState} from "react";
-// Import reusable components
-import ReportList from "../components/ReportList";
-import AnalyticsPanel from "../components/AnalyticsPanel";
+import { useState, type JSX } from "react"
+import "./Admin.css"
+import Reports from "../components/admin/Reports"
+import ListingAnalytics from "../components/admin/ListingAnalytics"
 
-// Type definition for a report object
-interface Report {
-    id: string;
-    reason: string;
-    reportedUser: string;
-    date: string;
-}
+type Panel = 
+	  "reports"
+	| "user analytics"
+	| "listing analytics"
+	| "my account"
 
-// Type definition for analytics data
-interface Analytics {
-    totalUsers: number;
-    activeUsers: number;
-    totalReports: number;
-}
+const panelDisplay = new Map<Panel | null, JSX.Element>()
+panelDisplay.set(null, <></>)
+panelDisplay.set("reports", <Reports />)
+panelDisplay.set("listing analytics", <ListingAnalytics />)
 
-const Admin = () => {
-    // State to store reports and analytical data
-    const [reports, setReports] = useState<Report[]>([]);
-    const [analytics, setAnalytics] = useState<Analytics | null>(null);
-    // Loading state for UI feedback
-    const [loading, setLoading] = useState(true);
+const panelTitle = new Map<Panel | null, string>()
+panelTitle.set(null, "")
+panelTitle.set("reports", "User Reports")
+panelTitle.set("listing analytics", "Listing Analytics")
 
-    // Runs once when component mounts
-    useEffect(() => {
-        const fetchAdminData = async () => {
-            try {
-                // Fetch reports and analytics at the same time
-                const [reportsRes, analyticsRes] = await Promise.all([
-                    fetch("/api/admin/reports"),
-                    fetch("/api/admin/analytics"),
-                ])
+function Admin() {
+	const [ activePanel, setActivePanel ] = useState<Panel | null>(null)
 
-                const reportsData = await reportsRes.json();
-                const analyticsData = await analyticsRes.json();
+	return <>
+		<div className="adminLayout">
 
-                // Update state with fetched data
-                setReports(reportsData);
-                setAnalytics(analyticsData);
+			<aside className="adminSidebar">
+				<div className="adminTitle">Booklend | Admin</div>
+				<nav className="adminNav">
+					<button
+						onClick={() => setActivePanel("reports")} 
+						className={"navButton" + 
+							(activePanel === "reports"
+								? " activeNav" : "")}					>
+						Reports
+					</button>
+					<button 
+						onClick={() => setActivePanel("user analytics")}
+						className={"navButton" + 
+							(activePanel === "user analytics"
+								? " activeNav" : "")}					>
+						User Analytics
+					</button>
+					<button 
+						onClick={() => setActivePanel("listing analytics")}
+						className={"navButton" + 
+							(activePanel === "listing analytics"
+								? " activeNav" : "")}
+					>
+						Listing Analytics
+					</button>
+				</nav>
+			</aside>
 
-            } catch (err) {
-                console.error("Error fetching admin data: ", err);
-            } finally {
-                // Stop loading regardless of success/failure
-                setLoading(false);
-            }
-        };
+			<div className="adminMain">
+				<header className="adminHeader">
+					<h1>{panelTitle.get(activePanel)}</h1>
+				</header>
 
-        fetchAdminData();
-    }, []);
-
-    // Show loading message while fetching data
-    if (loading) return <div>Loading Admin dashboard...</div>;
-
-    return (
-        <div style={{ padding: "2rem" }}>
-        <h1>Admin Dashboard</h1>
-
-        {/* Only render analytics if data exists */}
-        {analytics && <AnalyticsPanel analytics={analytics}/>}
-
-        <h2 style={{ marginTop: "2rem" }}>User Reports</h2>
-        {/* Pass reports data into ReportList component */}
-        <ReportList reports={reports} />
-        </div>
-    );
+				<main className="adminContent">
+					{panelDisplay.get(activePanel)}
+				</main>
+			</div>
+		</div>	
+	</>
 };
 
 export default Admin;

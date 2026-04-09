@@ -241,7 +241,7 @@ adminSpec.registerPath({
 
 adminSpec.registerPath({
 	method: "delete",
-	path: "/suspend/{userId}",
+	path: "/admin/suspend/{userId}",
 	tags: [ "Admin" ],
 	summary: "Suspend User",
 	description:
@@ -252,6 +252,11 @@ adminSpec.registerPath({
 				description:
 					"The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login.",
 			}),
+		}),
+		params: z.object({
+			userId: z.string().meta({
+				description: "The ID of the user to suspend."
+			})
 		})
 	},
 	responses: {

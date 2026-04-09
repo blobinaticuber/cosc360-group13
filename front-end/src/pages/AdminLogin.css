@@ -1,0 +1,14 @@
+.loginContainer {
+	width: 100%;
+	margin-top: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (orientation: landscape) and (max-height: 800px) {
+	.loginContainer {
+		position: relative;
+		top: -150px;
+	}
+}
