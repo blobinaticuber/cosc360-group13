@@ -4,13 +4,13 @@
 	justify-content: center;
 	padding: 2rem;
 
-	width: min(calc(100vw - 2rem), 800px);
+	width: min(100%, 600px);
 
 	height: fit-content;
 
 	gap: 1.2rem;
 
-	border: 1px solid #777;
+	border: 2px solid #ddd;
 
 	background-color: white;
 }

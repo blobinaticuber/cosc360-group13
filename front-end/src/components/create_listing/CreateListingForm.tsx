@@ -11,24 +11,12 @@ import { faAdd, faCancel } from "@fortawesome/free-solid-svg-icons"
 
 type CreateListingFormProps = {
 	onClose?: () => void
-	/**
-	 * Invoked whenever the popup selector is opened.
-	 */
-	onSelectorOpen?: () => void
-	/**
-	 * Invoked whenever the popup selector is closed.
-	 */
-	onSelectorClose?: () => void
+	onNewListing?: () => void
 }
 
-/**
- * This is a sim
- * 
- * @param param0 
- * @returns 
- */
 function CreateListingForm({
-	onClose, onSelectorOpen, onSelectorClose
+	onClose,
+	onNewListing
 }: CreateListingFormProps) {
 
 	const [selectedBook, setSelectedBook] = useState<BookDetails | null>(null)
@@ -54,8 +42,6 @@ function CreateListingForm({
 			buttonClass="bookSelectButton"
 			onSelect={setSelectedBook} 
 			text={selectedBook ? "Select a Different Book" : "Select a Book"}
-			onOpen={onSelectorOpen}
-			onClose={onSelectorClose}	
 		/>
 		<div className="buttonsContainer">
 			<Button 
@@ -83,6 +69,9 @@ function CreateListingForm({
 						toast.success("Listing posted")
 						if (onClose) {
 							onClose()
+						}
+						if (onNewListing) {
+							onNewListing()
 						}
 						setSelectedBook(null)
 						return

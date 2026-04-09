@@ -2,6 +2,7 @@ import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import { PersonalDetailsSchema, RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema, UserUpdateSchema } from "./user.js"
 import { ErrConflictSchema, ErrInvalidBodySchema } from "../../util/errSchema.js"
 import z from "zod"
+import { MAX_IMAGE_SIZE_MB } from "middleware/imageUpload.js"
 
 const userSpec = new OpenAPIRegistry()
 
@@ -246,13 +247,22 @@ userSpec.registerPath({
 	},
 	responses: {
 		200: {
-			description: "Profile picture successfully uploaded and set."
+			description: "Profile picture successfully uploaded and set.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						profilePicture: z.string().meta({
+							description: "The URL of the new image."
+						})
+					})
+				}
+			}
 		},
 		400: {
 			description: "No file was included in the request."
 		},
 		500: {
-			description: "There was an error handling the incoming file. This could be because the file was larger than 10MB or because it was not an image."
+			description: `There was an error handling the incoming file. This could be because the file was larger than ${MAX_IMAGE_SIZE_MB}MB or because it was not an image.`
 		}
 	}
 })

@@ -490,6 +490,37 @@ const server = {
 	},
 
 	/**
+	 * Uploads a new profile profile picture for the user, returning the path
+	 * of the new image.
+	 */
+	async uploadProfilePicture(image: File): Result<
+		string,
+		"file too large" | "unknown error"
+	> {
+		const formData = new FormData()
+		formData.append("profilePicture", image)
+
+		const res = await fetch(
+			URL + "/user/profile_picture",
+			{
+				method: "POST",
+				credentials: "include",
+				body: formData
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json()
+			return [body.profilePicture as string, null]
+		case 500:
+			return [null, "file too large"]
+		default: 
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
 	 * Contains full URL for certain endpoints. This can be useful if you want
 	 * to set the `url` property of a `<Form>`, for example, or if you just
 	 * want to send a custom `fetch` request rather than using the methods of
