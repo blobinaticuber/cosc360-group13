@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import Form from "../components/Form"
-import server from "../util/server"
+import server from "@server"
 import "./Login.css"
 import Button from "../components/Button"
 import { faArrowRightToBracket, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons"

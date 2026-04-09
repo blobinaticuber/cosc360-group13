@@ -2,7 +2,7 @@ import { faArrowRightToBracket, faEnvelope, faLock, faUser } from "@fortawesome/
 import Button from "../components/Button"
 import "./Register.css"
 import { Link } from "react-router-dom"
-import server from "../util/server"
+import server from "@server"
 import Form from "../components/Form"
 import { useState } from "react"
 import TextInput from "../components/TextInput"
