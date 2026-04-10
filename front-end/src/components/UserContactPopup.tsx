@@ -50,7 +50,7 @@ function UserContactPopup({
 					icon={faWarning}
 					style="important"
 					onClick={() => {
-						if (activeUser == null) {
+						if (activeUser === null) {
 							toast.info("You must be logged in to submit a report")
 							return
 						}
