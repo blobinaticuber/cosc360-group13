@@ -49,7 +49,13 @@ function UserContactPopup({
 					className="reportButton"
 					icon={faWarning}
 					style="important"
-					onClick={() => setShowReportForm(true)}
+					onClick={() => {
+						if (activeUser == null) {
+							toast.info("You must be logged in to submit a report")
+							return
+						}
+						setShowReportForm(true)
+					}}
 				/>}
 			</div>
 			{!showReportForm && <p className="prompt">
