@@ -1,8 +1,4 @@
 import z from "zod"
-import type { Request, Response } from "express"
-import { Router } from "express"
-
-const book = Router()
 
 export const BookDetailsSchema = z.object({
 	id: z.string().meta({ 
@@ -30,19 +26,5 @@ export const BookDetailsSchema = z.object({
 		description: "The publication date of the book."
 	})
 })
+
 export type BookDetails = z.infer<typeof BookDetailsSchema>
-
-//
-// The endpoint for getting book details from one or more volume IDs.
-//
-
-// book.get(
-// 	"/",
-// 	async (req, res) => {
-
-// 	}
-// )
-
-
-
-export default book
