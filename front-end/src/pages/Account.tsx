@@ -54,7 +54,7 @@ function Account() {
 	}
 
 	return <>
-		<Header currentPage="/account" hideProfileMenu />
+		<Header currentPage="/account" />
 		<main className="accountDashboard">
 			<section className="profileSummary">
 				<ProfileOverview />

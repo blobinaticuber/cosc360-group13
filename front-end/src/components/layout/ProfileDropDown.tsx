@@ -63,6 +63,7 @@ function ProfileDropDown({ user }: ProfileDropDownProps) {
 						<h2>{name}</h2>
 						<Button
 							onClick={() => {
+								setShowProfileMenu(false)
 								navigate("/account")
 							}}
 							className="profileDropDownButton"

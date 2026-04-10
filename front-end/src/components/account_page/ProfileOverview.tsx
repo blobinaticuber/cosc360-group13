@@ -107,7 +107,7 @@ function ProfileOverview() {
 			{editing && <>
 				<Button
 					icon={faSave}
-					text={"Save Changes"}
+					text={"Save"}
 					spinning={loading}
 					onClick={async () => {
 
@@ -148,7 +148,7 @@ function ProfileOverview() {
 					}}
 				/>
 				<Button
-					text={"Cancel Changes"}
+					text={"Cancel"}
 					icon={faCancel}
 					style="subtle"
 					disable={loading}
