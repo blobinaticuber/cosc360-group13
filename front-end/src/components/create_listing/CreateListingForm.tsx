@@ -6,26 +6,24 @@ import Button from "../Button"
 import BookCard from "../book_search/BookCard"
 import { toast } from "react-toastify"
 import server from "../../server"
+import placeholderImage from "../../assets/placeholder.png"
+import { faAdd, faCancel } from "@fortawesome/free-solid-svg-icons"
 
 type CreateListingFormProps = {
 	onClose?: () => void
+	onNewListing?: () => void
 }
 
-/**
- * This is a sim
- * 
- * @param param0 
- * @returns 
- */
 function CreateListingForm({
-	onClose
+	onClose,
+	onNewListing
 }: CreateListingFormProps) {
 
 	const [selectedBook, setSelectedBook] = useState<BookDetails | null>(null)
 	const [loading, setLoading] = useState(false)
 
 	return <div className="createListingForm">
-		<h1>List a Book</h1>
+		<h1>New Listing</h1>
 		<p>
 			Create a listing to show that you have a book you're willing to lend out.
 		</p>
@@ -34,24 +32,27 @@ function CreateListingForm({
 				id: "",
 				authors: ["Author Name"],
 				categories: ["Category 1", "Category 2"],
-				image: "/placeholder.png",
+				image: placeholderImage,
 				title: "Some Book title",
 				publishDate: "YYYY",
 				description: "Some description."
 			}} 
 		/>
 		<BookSelector 
+			buttonClass="bookSelectButton"
 			onSelect={setSelectedBook} 
-			text={selectedBook ? "Select a Different Book" : "Select a Book"}	
+			text={selectedBook ? "Select a Different Book" : "Select a Book"}
 		/>
 		<div className="buttonsContainer">
 			<Button 
+				icon={faCancel}
 				text="Cancel" 
 				style="subtle" 
-				onClick={onClose}	
+				onClick={onClose}
 			/>
 			<Button 
 				text="Post Listing" 
+				icon={faAdd}
 				spinning={loading}
 				onClick={async () => {
 					if (!selectedBook) {
@@ -68,6 +69,9 @@ function CreateListingForm({
 						toast.success("Listing posted")
 						if (onClose) {
 							onClose()
+						}
+						if (onNewListing) {
+							onNewListing()
 						}
 						setSelectedBook(null)
 						return

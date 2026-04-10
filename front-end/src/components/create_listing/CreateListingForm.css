@@ -4,14 +4,15 @@
 	justify-content: center;
 	padding: 2rem;
 
-	width: 500px;
-	max-width: 90%;
+	width: min(100%, 600px);
 
 	height: fit-content;
 
 	gap: 1.2rem;
 
-	border: 1px solid #777;
+	border: 2px solid #ddd;
+
+	background-color: white;
 }
 
 .createListingForm>h1 {
@@ -21,11 +22,9 @@
 }
 
 .createListingForm>p {
-	max-width: 30ch;
 	margin: 0 auto;
 	color: var(--text-colour);
 	font-size: 0.9rem;
-	font-style: italic;
 	text-align: center;
 }
 

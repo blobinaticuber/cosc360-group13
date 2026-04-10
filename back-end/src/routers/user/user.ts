@@ -7,7 +7,10 @@ import Status from "../../types/Status.js"
 import { compare, encrypt } from "../../util/encryption.js"
 import err from "../../util/err.js"
 import { type ErrServer } from "../../util/errSchema.js"
-import z from "zod"
+import z, { date } from "zod"
+import multer from "multer"
+import path from "path"
+import imageUpload from "middleware/imageUpload.js"
 
 const user = Router();
 
@@ -343,6 +346,37 @@ user.patch(
 
 		await user.save()
 		res.status(Status.OK).end()
+	}
+)
+
+//
+// Endpoint for handling profile picture uploads.
+//
+
+
+
+user.post(
+	"/profile_picture",
+	auth,
+	imageUpload("profilePicture"),
+	async (req, res) => {
+		if (!req.file) {
+			res.status(Status.BadRequest).end()
+			return 
+		}
+
+		const newProfilePictureUrl = 
+			process.env.SERVER_URL! + "/" 
+			+ req.file!.destination
+			+ req.file!.filename
+
+		await db.User.findByIdAndUpdate(req.session!.user, {
+			profilePicture: newProfilePictureUrl
+		}).exec()
+
+		res.status(Status.OK).json({
+			profilePicture: newProfilePictureUrl
+		})
 	}
 )
 

@@ -1,6 +1,6 @@
 .userPopup {
 	background-color: #fff;
-	padding: 1rem;
+	padding: 2rem;
 	border: 1px solid #aaa;
 
 	width: min(90vw, 400px);
@@ -9,13 +9,15 @@
 	display: grid;
 	grid-template-columns: 100px 4fr;
 	column-gap: 1rem;
+
+	position: relative;
 }
 
 .userPopup .profilePicture {
 	width: 80px;
 	height: 80px;
 	border-radius: 100%;
-	margin: 0 auto
+	margin: 0 auto;
 }
 
 .userPopup h1 {
@@ -45,4 +47,22 @@
 .userPopup .emailLink:hover {
 	cursor: pointer;
 	text-decoration: underline;
+}
+
+.userPopup .reportButton {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+.userPopup .reportButton {
+	background: none;
+	border: 2px solid #aaa;
+	color: #aaa;
+}
+
+.userPopup .reportButton:hover {
+	border: 2px solid red;
+	color: red;
+	background: none;
 }

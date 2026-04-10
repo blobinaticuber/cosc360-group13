@@ -7,7 +7,8 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons"
 
 function ListingAnalytics() {
 	const [analytics, setAnalytics] = useState<ListingsAnalytics | null>(null)
-
+	const [totalUsers, setTotalUsers] = useState(1)
+	
 	useEffect(() => {
 		server.admin
 			.listingsAnalytics()
@@ -16,6 +17,14 @@ function ListingAnalytics() {
 					return
 				}
 				setAnalytics({ ...data })
+			})
+		server.admin
+			.userAnalytics()
+			.then(([ data, err ]) => {
+				if (err != null) {
+					return
+				}
+				setTotalUsers(data.totalUsers)
 			})
 	}, [])
 
@@ -58,7 +67,7 @@ function ListingAnalytics() {
 				<tr>
 					<td>Average Number of Listings per User</td>
 					<td>
-						{analytics.averageListingsPerUser.toFixed(2)}
+						{(analytics.totalListings / totalUsers).toFixed(2)}
 					</td>
 				</tr>
 			</tbody>

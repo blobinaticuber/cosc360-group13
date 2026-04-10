@@ -157,7 +157,7 @@ admin.delete(
 			user: userId,
 		}).exec();
 
-		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
+		res.clearCookie(process.env.ADMIN_AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
 			.end();
 	},
@@ -201,7 +201,7 @@ admin.post(
 		});
 		await session.save();
 
-		res.cookie(process.env.AUTH_COOKIE!, session.id, COOKIE_SETTINGS)
+		res.cookie(process.env.ADMIN_AUTH_COOKIE!, session.id, COOKIE_SETTINGS)
 			.status(Status.OK)
 			.end();
 	},
@@ -220,7 +220,7 @@ admin.delete(
 	) => {
 		await req.session!.deleteOne();
 
-		res.clearCookie(process.env.AUTH_COOKIE!, COOKIE_SETTINGS)
+		res.clearCookie(process.env.ADMIN_AUTH_COOKIE!, COOKIE_SETTINGS)
 			.status(Status.OK)
 			.end();
 	},

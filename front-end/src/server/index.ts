@@ -490,6 +490,72 @@ const server = {
 	},
 
 	/**
+	 * Uploads a new profile profile picture for the user, returning the path
+	 * of the new image.
+	 */
+	async uploadProfilePicture(image: File): Result<
+		string,
+		"file too large" | "unknown error"
+	> {
+		const formData = new FormData()
+		formData.append("profilePicture", image)
+
+		const res = await fetch(
+			URL + "/user/profile_picture",
+			{
+				method: "POST",
+				credentials: "include",
+				body: formData
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+			const body = await res.json()
+			return [body.profilePicture as string, null]
+		case 500:
+			return [null, "file too large"]
+		default: 
+			return [null, "unknown error"]
+		}
+	},
+
+	/**
+	 * Submits a report against the identified user.
+	 */
+	async submitReport(
+		userId: string, explanation?: string
+	): ResultWithoutValue<
+		"unknown error" | "unauthorized user" | "user not found"
+	> {
+		const res = await fetch(
+			URL + "/report/" + userId,
+			{
+				method: "PUT",
+				credentials: "include",
+				headers: [
+					[ "Content-Type", "application/json" ]
+				],
+				body: JSON.stringify({
+					explanation: explanation ?? ""
+				})
+			}
+		)
+
+		switch (res.status) {
+		case 200:
+		case 201:
+			return null
+		case 401:
+			return "unauthorized user"
+		case 404:
+			return "user not found"
+		default:
+			return "unknown error"
+		}
+	},
+
+	/**
 	 * Contains full URL for certain endpoints. This can be useful if you want
 	 * to set the `url` property of a `<Form>`, for example, or if you just
 	 * want to send a custom `fetch` request rather than using the methods of

@@ -9,9 +9,12 @@ import validEmail from "../util/validEmail"
 import { useNavigate } from "react-router-dom"
 import "./AdminLogin.css"
 import { toast } from "react-toastify"
+import useAdmin from "../hooks/useAdmin"
 
 function AdminLogin() {
 
+	const [_, setAdmin] = useAdmin()
+	
 	const navigate = useNavigate()
 
 	const [emailErr, setEmailErr] = useState("")
@@ -51,6 +54,9 @@ function AdminLogin() {
 							theme: "dark"
 						})
 						navigate("/admin")
+
+						const [admin, _] = await server.admin.currentUser()
+						setAdmin!(admin)
 
 						return
 					}

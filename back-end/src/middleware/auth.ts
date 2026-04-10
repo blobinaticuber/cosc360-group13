@@ -30,10 +30,6 @@ const auth: RequestHandler = async (req, res, next) => {
 		return;
 	}
 
-	// Refresh the session.
-	// session.createdAt = Date.now();
-	// session.save();
-
 	// Attach the user ID to the request.
 	req.session = session;
 

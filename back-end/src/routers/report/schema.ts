@@ -57,7 +57,7 @@ reportSpec.registerPath({
 	tags: [ "Report", "Admin" ],
 	request: {
 		cookies: z.object({
-			[process.env.AUTH_COOKIE!]: z.string().meta({
+			[process.env.ADMIN_AUTH_COOKIE!]: z.string().meta({
 				description: "The authentication cookie for an admin user session. One of these will be set on a client after a successful admin login."
 			})
 		}),

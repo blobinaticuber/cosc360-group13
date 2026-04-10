@@ -1,5 +1,5 @@
 import "./App.css"
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { HashRouter, Route, Routes } from "react-router-dom"
 import { createContext, useEffect, useState, type Dispatch, type SetStateAction } from "react"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
@@ -12,6 +12,7 @@ import type { PersonalDetails } from "./server"
 import server from "./server"
 import AdminLogin from "./pages/AdminLogin"
 import AdminRegister from "./pages/AdminRegister"
+import type { AdminPersonalDetails } from "./server/ServerTypes"
 
 export type PagePath = 
 	  "/" 
@@ -33,7 +34,7 @@ export const pageTitle: Record<PagePath, string> = {
 	"/test": "Test",
 	"/admin/login": "Admin Login",
 	"/admin/register": "Admin Registration",
-	"/admin": "Admin Page",
+	"/admin": "Admin Dashboard",
 }
 
 type UserContextType = [ 
@@ -42,16 +43,29 @@ type UserContextType = [
 ]
 export const UserContext = createContext<UserContextType>([ null, null ])
 
+type AdminContextType = [
+	admin: AdminPersonalDetails | null,
+	setAdmin: Dispatch<SetStateAction<AdminPersonalDetails | null>> | null
+]
+export const AdminContext = createContext<AdminContextType>([ null, null ])
+
 function App() {
 	const [user, setUser] = useState<PersonalDetails | null>(null)
+	const [admin, setAdmin] = useState<AdminPersonalDetails | null>(null)
 
 	useEffect(() => {
-		server.currentUser().then(([ user, _ ]) => setUser(user))
+		server
+			.currentUser()
+			.then(([ user, _ ]) => setUser(user))
+		server.admin
+			.currentUser()
+			.then(([ admin, _ ]) => setAdmin(admin))
 	}, [])
 
 	return (
 		<UserContext value={[user, setUser]}>
-			<BrowserRouter>
+		<AdminContext value={[admin, setAdmin]}>
+			<HashRouter>
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/submit" element={<CreateListing />} />
@@ -63,7 +77,8 @@ function App() {
 					<Route path="/admin/login" element={<AdminLogin />} />
 					<Route path="/admin/register" element={<AdminRegister />} />
 				</Routes>
-			</BrowserRouter>			
+			</HashRouter>	
+		</AdminContext>		
 		</UserContext>
 	);
 }

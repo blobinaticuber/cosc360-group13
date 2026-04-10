@@ -2,6 +2,7 @@ import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import { PersonalDetailsSchema, RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema, UserUpdateSchema } from "./user.js"
 import { ErrConflictSchema, ErrInvalidBodySchema } from "../../util/errSchema.js"
 import z from "zod"
+import { MAX_IMAGE_SIZE_MB } from "middleware/imageUpload.js"
 
 const userSpec = new OpenAPIRegistry()
 
@@ -218,6 +219,50 @@ userSpec.registerPath({
 					schema: ErrConflictSchema
 				}
 			}
+		}
+	}
+})
+
+userSpec.registerPath({
+	method: "post",
+	path: "/user/profile_picture",
+	tags: [ "User" ],
+	summary: "Upload Profile Picture",
+	description: "Accepts a file upload from a user, which will then be set as their new profile picture.",
+	request: {
+		cookies: z.object({
+			[process.env.AUTH_COOKIE!]: z.string().meta({
+				description: "The authentication cookie for a user session. One of these will be set on a client after a successful login."
+			})
+		}),
+		body: {
+			content: {
+				"multipart/form-data": {
+					schema: z.object({
+						profilePicture: z.literal("Image File")
+					})
+				}
+			}
+		}
+	},
+	responses: {
+		200: {
+			description: "Profile picture successfully uploaded and set.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						profilePicture: z.string().meta({
+							description: "The URL of the new image."
+						})
+					})
+				}
+			}
+		},
+		400: {
+			description: "No file was included in the request."
+		},
+		500: {
+			description: `There was an error handling the incoming file. This could be because the file was larger than ${MAX_IMAGE_SIZE_MB}MB or because it was not an image.`
 		}
 	}
 })
