@@ -7,12 +7,12 @@ import connect from "./database/connect.js"
 import routers from "./routers/index.js"
 import docs from "./routers/docs.js"
 import startupMessage from "./util/startupMessage.js"
-import path from "path"
 
 const server = express()
 
 async function main() {
-	await connect();
+
+	await connect(); // connect to the database
 
 	//
 	// Register global middleware and settings.
@@ -57,7 +57,7 @@ async function main() {
 	if (process.env.PORT == undefined) {
 		throw new Error(
 			"\nThe `PORT` variable is undefined. Ensure that it's set in" +
-				"\nthe `.env` file.",
+			"\nthe `.env` file.",
 		)
 	}
 
@@ -66,8 +66,9 @@ async function main() {
 	//
 
 	server.get("/", (_, res) => res.redirect("/public/client/index.html"))
-	server.get("/admin", (_, res) => res.redirect(
-		"/public/client/index.html#/admin"))
+	server.get("/admin", (_, res) => {
+		res.redirect("/public/client/index.html#/admin")
+	})
 
 
 	server.listen(process.env.PORT, () => console.log(startupMessage()));
