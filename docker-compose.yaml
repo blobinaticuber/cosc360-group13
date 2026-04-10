@@ -17,7 +17,7 @@ services:
     env_file:
       - ./back-end/.env.prod
       - ./back-end/.env
-      - .env.local.example
+      - ./.env.local.example
     depends_on:
       - mongo
 
