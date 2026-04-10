@@ -62,6 +62,10 @@
 	transition: all 200ms;
 }
 
+.categoryLabel {
+	user-select: none;
+}
+
 .home .categories .categoryLabel:hover,
 .home .categories .categoryLabel.active {
 	border-color: var(--ui-green);

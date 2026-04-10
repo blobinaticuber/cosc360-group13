@@ -14,6 +14,15 @@ function Home() {
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
 	useEffect(() => {
+		if (activeCategory === null) {
+			server.searchListedBooks("h")
+			.then(([ books, _ ]) => setListedBooks(books ?? []))
+		}
+
+
+	}, [activeCategory])
+
+	useEffect(() => {
 		server.topCategories()
 			.then(([data, _]) => {
 				if (data) {
@@ -37,15 +46,15 @@ function Home() {
 					Popular Categories
 				</h1>
 				{/* I know how this looks. I'll refactor it later, surely. */}
-				{categories === null 
+				{categories === null
 					? <FontAwesomeIcon spin={true} icon={faSpinner} className="noListingsMessage" />
-					: categories.length == 0 
+					: categories.length == 0
 						? <p className="noListingsMessage"><em>No listings yet.</em></p>
-						: categories.sort().map(category => 
+						: categories.sort().map(category =>
 							<p
 								key={category.category}
-								className={"categoryLabel" + 
-									(activeCategory == category.category 
+								className={"categoryLabel" +
+									(activeCategory == category.category
 										? " active" : "")
 									}
 								onClick={() => {
@@ -61,7 +70,7 @@ function Home() {
 									setListedBooks(category.topBooks.map(book => {
 										return {
 											book: {
-												...book, 
+												...book,
 												categories: [category.category]
 											},
 											listings: [...book.listings]
@@ -88,14 +97,14 @@ function Home() {
 			<section className="results">
 				{listedBooks.length == 0
 					? <p className="noResultsMessage"><em>No results</em></p>
-					: listedBooks.map(listedBook => 
-						<ListedBookCard 
+					: listedBooks.map(listedBook =>
+						<ListedBookCard
 							key={listedBook.book.id}
 							{...listedBook}
 							expanded={activeBook == listedBook.book.id}
 							onClick={() => {
 								setActiveBook(listedBook.book.id)
-							}}	
+							}}
 							onCollapse={() => setActiveBook(null)}
 						/>)
 				}
