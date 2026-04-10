@@ -7,3 +7,4 @@ coverage
 server_logs.txt
 public/client/*
 public/uploads/*
+!public/uploads/placeholder.txt

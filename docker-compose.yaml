@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: booklend-dev-db
+    ports:
+      - "27017:27017"
+    volumes: 
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+  app:
+    build: .
+    ports:
+      - "4000:3000"
+    env_file:
+      - ./back-end/.env.prod
+      - ./back-end/.env
+      - .env.local.example
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:

@@ -7,10 +7,8 @@ import Status from "../../types/Status.js"
 import { compare, encrypt } from "../../util/encryption.js"
 import err from "../../util/err.js"
 import { type ErrServer } from "../../util/errSchema.js"
-import z, { date } from "zod"
-import multer from "multer"
-import path from "path"
-import imageUpload from "middleware/imageUpload.js"
+import z from "zod"
+import imageUpload from "../../middleware/imageUpload.js"
 
 const user = Router();
 
@@ -352,8 +350,6 @@ user.patch(
 //
 // Endpoint for handling profile picture uploads.
 //
-
-
 
 user.post(
 	"/profile_picture",

@@ -2,7 +2,7 @@ import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi"
 import { PersonalDetailsSchema, RegistrationDetailsSchema, UserCredentialsSchema, UserDetailsSchema, UserUpdateSchema } from "./user.js"
 import { ErrConflictSchema, ErrInvalidBodySchema } from "../../util/errSchema.js"
 import z from "zod"
-import { MAX_IMAGE_SIZE_MB } from "middleware/imageUpload.js"
+import { MAX_IMAGE_SIZE_MB } from "../../middleware/imageUpload.js"
 
 const userSpec = new OpenAPIRegistry()
 
