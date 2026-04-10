@@ -61,6 +61,15 @@ async function main() {
 		)
 	}
 
+	//
+	// Redirect specific paths to the client.
+	//
+
+	server.get("/", (_, res) => res.redirect("/public/client/index.html"))
+	server.get("/admin", (_, res) => res.redirect(
+		"/public/client/index.html#/admin"))
+
+
 	server.listen(process.env.PORT, () => console.log(startupMessage()));
 }
 
